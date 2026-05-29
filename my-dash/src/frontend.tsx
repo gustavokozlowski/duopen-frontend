@@ -8,11 +8,16 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./auth/AuthContext";
+import { ToastContainer } from "./components/Toast";
 import { App } from "./App";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false },
+    queries: {
+      staleTime: 5 * 60_000, // 5 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
   },
 });
 
@@ -24,6 +29,8 @@ const app = (
       <BrowserRouter>
         <AuthProvider>
           <App />
+          {/* ToastContainer renders via portal — outside the component tree */}
+          <ToastContainer />
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>

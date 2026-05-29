@@ -1,9 +1,6 @@
 import { useCallback, useRef, useState } from "react";
-import { getAccessToken } from "../../auth/tokenStore";
-import type { Message, Source, SSEEvent } from "./types";
-
-const BASE_URL =
-  (typeof process !== "undefined" && process.env["BUN_PUBLIC_API_URL"]) || "/proxy";
+import { postConsulta } from "../../services/ia";
+import type { Message, Source } from "./types";
 
 let counter = 0;
 function genId() {
@@ -16,7 +13,6 @@ export function useChat() {
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef(new AbortController());
 
-  // Granular updaters avoid full-array rebuilds on every chunk
   const appendContent = useCallback((id: string, text: string) => {
     setMessages((prev) =>
       prev.map((m) => (m.id === id ? { ...m, content: m.content + text } : m))
@@ -52,58 +48,20 @@ export function useChat() {
       abortRef.current = new AbortController();
 
       try {
-        const res = await fetch(`${BASE_URL}/api/v1/ia/consulta`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "text/event-stream",
-            Authorization: `Bearer ${getAccessToken() ?? ""}`,
-          },
-          body: JSON.stringify({ pergunta }),
-          signal: abortRef.current.signal,
-        });
-
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status} — ${res.statusText}`);
-        }
-        if (!res.body) throw new Error("Resposta sem corpo.");
-
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
-
-          for (const line of lines) {
-            if (!line.startsWith("data:")) continue;
-            const raw = line.replace(/^data:\s*/, "").trim();
-            if (!raw || raw === "[DONE]") continue;
-
-            try {
-              const event = JSON.parse(raw) as SSEEvent;
-              if (event.type === "content" && "text" in event) {
-                appendContent(assistantMsgId, event.text);
-              } else if (event.type === "sources" && "sources" in event) {
-                setSources(assistantMsgId, event.sources);
-              } else if (event.type === "error" && "message" in event) {
-                throw new Error(event.message);
-              }
-            } catch {
-              // Ignore malformed chunks — stream continues
-            }
+        // Consume the async generator from services/ia
+        for await (const chunk of postConsulta(pergunta, abortRef.current.signal)) {
+          if (chunk.type === "content" && "text" in chunk && chunk.text) {
+            appendContent(assistantMsgId, chunk.text);
+          } else if (chunk.type === "sources" && "sources" in chunk) {
+            setSources(assistantMsgId, chunk.sources);
+          } else if (chunk.type === "error" && "message" in chunk) {
+            throw new Error(chunk.message);
           }
         }
       } catch (err) {
         if ((err as Error).name === "AbortError") return;
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
         setError(msg);
-        // Remove the empty assistant placeholder on error
         setMessages((prev) => prev.filter((m) => m.id !== assistantMsgId));
       } finally {
         finishStreaming(assistantMsgId);
