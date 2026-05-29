@@ -1,0 +1,54 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.title {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: var(--space-4);
+}
+
+.dateRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dateRow:last-child { border-bottom: none; }
+
+.dateLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.dateValue {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+}
+
+.atrasoPositive {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-danger);
+}
+
+.atrasoNegative {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-success);
+}
+
+.atrasoZero {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-muted);
+}
