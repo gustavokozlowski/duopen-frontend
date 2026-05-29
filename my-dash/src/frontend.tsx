@@ -1,5 +1,5 @@
 /**
- * Entry point for the React app — sets up global providers and renders App.
+ * Entry point — global providers, then App.
  * Included in `src/index.html`.
  */
 
@@ -7,15 +7,12 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./auth/AuthContext";
 import { App } from "./App";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
+    queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false },
   },
 });
 
@@ -25,7 +22,9 @@ const app = (
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>

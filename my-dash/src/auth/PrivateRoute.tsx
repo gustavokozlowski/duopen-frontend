@@ -1,0 +1,17 @@
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuthContext } from "./AuthContext";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+
+export function PrivateRoute() {
+  const { isAuthenticated, isLoading } = useAuthContext();
+
+  if (isLoading) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+        <LoadingSpinner size="lg" label="Verificando sessão…" />
+      </div>
+    );
+  }
+
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+}
