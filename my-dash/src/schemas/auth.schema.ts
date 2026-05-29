@@ -1,5 +1,23 @@
 import { z } from "zod";
 
+// ── Perfil de acesso ──────────────────────────────────────────────
+//  admin    → acesso total, pode disparar re-treinamento ML
+//  gestor   → acesso ao dashboard e consultas RAG
+//  readonly → apenas visualização, sem RAG
+export const perfilSchema = z.enum(["admin", "gestor", "readonly"]);
+export type Perfil = z.infer<typeof perfilSchema>;
+
+// Usuário retornado por /me, /login e /register.
+// perfil tem default "gestor" (espelha o DEFAULT da coluna no backend),
+// então respostas sem o campo continuam válidas.
+export const userResponseSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  nome: z.string(),
+  perfil: perfilSchema.default("gestor"),
+});
+export type UserResponse = z.infer<typeof userResponseSchema>;
+
 // Login — validação mínima (o backend valida credenciais).
 export const loginSchema = z.object({
   email: z.string().min(1, "Informe seu e-mail").email("E-mail inválido"),

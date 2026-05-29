@@ -7,15 +7,13 @@ import {
   type ReactNode,
 } from "react";
 import { getMe, loginUser, refreshTokens, registerUser } from "../services/auth";
+import type { UserResponse } from "../schemas/auth.schema";
 import { clearTokens, getRefreshToken, setTokens } from "./tokenStore";
 
 // ── Types ─────────────────────────────────────────────────────────
 
-export interface AuthUser {
-  id: string;
-  email: string;
-  nome: string;
-}
+// Usuário autenticado = UserResponse do schema (inclui perfil de acesso).
+export type AuthUser = UserResponse;
 
 interface AuthState {
   user: AuthUser | null;

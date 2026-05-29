@@ -66,4 +66,9 @@ src/
 
 ## Tests
 
-Nenhum framework configurado. Alinhar antes de adicionar Vitest ou outro.
+- Runner: **`bun test`** (alternativa ao Vitest) + **React Testing Library** + happy-dom.
+- Preloads em [bunfig.toml](bunfig.toml): `test/happydom.ts` (registra o DOM antes do
+  testing-library) e `test/setup.ts` (matchers do jest-dom + cleanup).
+- Testes co-localizados como `*.test.ts(x)` ao lado do código; snapshots em
+  `__snapshots__/`. Mock de módulo com `mock.module(...)` + import dinâmico.
+- Rodar: `bun test`. CI roda em todo push via [.github/workflows/ci.yml](../.github/workflows/ci.yml).

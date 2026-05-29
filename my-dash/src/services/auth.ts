@@ -1,5 +1,8 @@
 import axios from "axios";
 import { apiClient, BASE_URL } from "./api";
+import { userResponseSchema, type UserResponse } from "../schemas/auth.schema";
+
+export type { UserResponse };
 
 // ── Contratos do backend (FastAPI) ───────────────────────────────
 // POST /register → 201 UserResponse (sem token)
@@ -11,12 +14,6 @@ export interface TokenResponse {
   access_token: string;
   refresh_token: string;
   token_type: string;
-}
-
-export interface UserResponse {
-  id: string;
-  email: string;
-  nome: string;
 }
 
 export interface RegisterPayload {
@@ -32,8 +29,8 @@ const rawClient = axios.create({
 });
 
 export async function registerUser(payload: RegisterPayload): Promise<UserResponse> {
-  const { data } = await apiClient.post<UserResponse>("/api/v1/auth/register", payload);
-  return data;
+  const { data } = await apiClient.post("/api/v1/auth/register", payload);
+  return userResponseSchema.parse(data);
 }
 
 export async function loginUser(email: string, password: string): Promise<TokenResponse> {
@@ -49,6 +46,6 @@ export async function refreshTokens(refreshToken: string): Promise<TokenResponse
 }
 
 export async function getMe(): Promise<UserResponse> {
-  const { data } = await apiClient.get<UserResponse>("/api/v1/auth/me");
-  return data;
+  const { data } = await apiClient.get("/api/v1/auth/me");
+  return userResponseSchema.parse(data);
 }
