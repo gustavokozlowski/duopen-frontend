@@ -5,6 +5,7 @@ import { PrivateRoute } from "./auth/PrivateRoute";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Dashboard } from "./pages/Dashboard";
 import { MapaPage } from "./pages/MapaPage";
+import { ObrasPage } from "./pages/ObrasPage";
 
 export function App() {
   return (
@@ -14,6 +15,7 @@ export function App() {
 
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/obras" element={<ObrasPage />} />
           <Route path="/mapa" element={<MapaPage />} />
           <Route path="/*" element={<Dashboard />} />
         </Route>

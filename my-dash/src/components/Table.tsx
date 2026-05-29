@@ -15,6 +15,7 @@ interface TableProps<T extends Record<string, unknown>> {
   searchable?: boolean;
   searchKeys?: (keyof T & string)[];
   emptyMessage?: string;
+  onRowClick?: (row: T) => void;
 }
 
 type SortDir = "asc" | "desc";
@@ -26,6 +27,7 @@ export function Table<T extends Record<string, unknown>>({
   searchable = true,
   searchKeys,
   emptyMessage = "Nenhum registro encontrado.",
+  onRowClick,
 }: TableProps<T>) {
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<keyof T | null>(null);
@@ -132,7 +134,11 @@ export function Table<T extends Record<string, unknown>>({
               </tr>
             ) : (
               pageRows.map((row, i) => (
-                <tr key={i}>
+                <tr
+                  key={i}
+                  onClick={onRowClick ? () => onRowClick(row) : undefined}
+                  className={onRowClick ? styles.clickableRow : undefined}
+                >
                   {columns.map((col) => (
                     <td key={col.key}>
                       {col.render

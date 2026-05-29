@@ -72,6 +72,10 @@
 .sortIcon.asc  { opacity: 1; }
 .sortIcon.desc { opacity: 1; }
 
+.clickableRow {
+  cursor: pointer;
+}
+
 .table td {
   padding: var(--space-3) var(--space-4);
   color: var(--color-text-primary);
