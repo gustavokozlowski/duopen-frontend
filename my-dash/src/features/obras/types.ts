@@ -1,7 +1,15 @@
 import type { ObraStatus } from "../dashboard/types";
 import type { RiscoNivel } from "../mapa/types";
+// O tipo do filtro e o default vêm do schema Zod (z.infer) — fonte única
+// compartilhada entre o formulário de filtro e a validação.
+import {
+  type ObrasFilterValues,
+  DEFAULT_OBRAS_FILTER,
+} from "../../schemas/obras.schema";
 
 export type { ObraStatus, RiscoNivel };
+export type ObrasFilter = ObrasFilterValues;
+export const DEFAULT_FILTER = DEFAULT_OBRAS_FILTER;
 
 export interface ObraListItem {
   id: string;
@@ -16,23 +24,3 @@ export interface ObraListItem {
   previsao_termino: string;     // YYYY-MM-DD
   [key: string]: unknown;       // satisfaz Record<string, unknown> para Table<T>
 }
-
-export interface ObrasFilter {
-  search: string;
-  status: ObraStatus | "todos";
-  secretaria: string;   // "todas" | nome
-  bairro: string;       // "todos" | nome
-  risco: RiscoNivel | "todos";
-  periodoInicio: string; // YYYY-MM-DD | ""
-  periodoFim: string;    // YYYY-MM-DD | ""
-}
-
-export const DEFAULT_FILTER: ObrasFilter = {
-  search: "",
-  status: "todos",
-  secretaria: "todas",
-  bairro: "todos",
-  risco: "todos",
-  periodoInicio: "",
-  periodoFim: "",
-};

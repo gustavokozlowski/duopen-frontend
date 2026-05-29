@@ -1,14 +1,11 @@
+// Fonte única: o enum vive no schema Zod (compartilhado com a validação de filtros).
+import type { ObraStatus } from "../../schemas/obras.schema";
+export type { ObraStatus };
+
 export interface Period {
   dataInicio: string; // YYYY-MM-DD
   dataFim: string;
 }
-
-export type ObraStatus =
-  | "em_andamento"
-  | "concluida"
-  | "paralisada"
-  | "atrasada"
-  | "nao_iniciada";
 
 export interface StatusCount {
   status: ObraStatus | string;

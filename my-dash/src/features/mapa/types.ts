@@ -1,6 +1,7 @@
 import type { ObraStatus } from "../dashboard/types";
+import type { RiscoNivel } from "../../schemas/obras.schema";
 
-export type RiscoNivel = "baixo" | "medio" | "alto";
+export type { RiscoNivel };
 
 export interface ObraMapPoint {
   id: string;

@@ -1,6 +1,9 @@
-import { type FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthContext } from "./AuthContext";
+import { loginSchema, type LoginForm } from "../schemas/auth.schema";
 import styles from "./authForm.module.css";
 
 // Ícones inline (stroke = currentColor), consistentes com o tema escuro.
@@ -65,25 +68,24 @@ export function LoginPage() {
   const location = useLocation();
   const from = (location.state as { from?: string } | null)?.from ?? "/";
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
-  const hasError = errorMsg !== null;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setErrorMsg(null);
-    setIsSubmitting(true);
-
+  async function onSubmit(values: LoginForm) {
+    setServerError(null);
     try {
-      await login(email, password);
+      await login(values.email, values.password);
       navigate(from, { replace: true });
     } catch (err) {
-      setErrorMsg(resolveErrorMessage(err));
-    } finally {
-      setIsSubmitting(false);
+      setServerError(resolveErrorMessage(err));
     }
   }
 
@@ -100,11 +102,11 @@ export function LoginPage() {
           <p className={styles.subtitle}>Índice de Eficiência de Obras Públicas · RJ</p>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          {hasError && (
+        <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+          {serverError && (
             <div className={styles.errorBanner} role="alert">
               <span aria-hidden>⚠</span>
-              {errorMsg}
+              {serverError}
             </div>
           )}
 
@@ -112,44 +114,46 @@ export function LoginPage() {
             <label htmlFor="email" className={styles.label}>
               E-mail
             </label>
-            <div className={`${styles.inputWrap} ${hasError ? styles.errorWrap : ""}`}>
+            <div className={`${styles.inputWrap} ${errors.email ? styles.errorWrap : ""}`}>
               <span className={styles.inputIcon}>
                 <MailIcon />
               </span>
               <input
                 id="email"
                 type="email"
-                className={`${styles.input} ${hasError ? styles.error : ""}`}
+                className={`${styles.input} ${errors.email ? styles.error : ""}`}
                 placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                required
+                aria-invalid={Boolean(errors.email)}
                 disabled={isSubmitting}
+                {...register("email")}
               />
             </div>
+            {errors.email && <span className={styles.fieldError}>{errors.email.message}</span>}
           </div>
 
           <div className={styles.field}>
             <label htmlFor="password" className={styles.label}>
               Senha
             </label>
-            <div className={`${styles.inputWrap} ${hasError ? styles.errorWrap : ""}`}>
+            <div className={`${styles.inputWrap} ${errors.password ? styles.errorWrap : ""}`}>
               <span className={styles.inputIcon}>
                 <LockIcon />
               </span>
               <input
                 id="password"
                 type="password"
-                className={`${styles.input} ${hasError ? styles.error : ""}`}
+                className={`${styles.input} ${errors.password ? styles.error : ""}`}
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
-                required
+                aria-invalid={Boolean(errors.password)}
                 disabled={isSubmitting}
+                {...register("password")}
               />
             </div>
+            {errors.password && (
+              <span className={styles.fieldError}>{errors.password.message}</span>
+            )}
           </div>
 
           <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>

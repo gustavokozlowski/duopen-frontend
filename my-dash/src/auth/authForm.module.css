@@ -238,6 +238,12 @@
   to { transform: rotate(360deg); }
 }
 
+.fieldError {
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  margin-top: 2px;
+}
+
 .footer {
   margin-top: var(--space-6);
   text-align: center;

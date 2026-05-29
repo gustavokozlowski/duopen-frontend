@@ -1,6 +1,9 @@
-import { type FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthContext } from "./AuthContext";
+import { registerSchema, type RegisterForm } from "../schemas/auth.schema";
 import styles from "./authForm.module.css";
 
 // Ícones inline (stroke = currentColor)
@@ -58,8 +61,6 @@ function ArrowIcon() {
   );
 }
 
-const MIN_PASSWORD = 6;
-
 function resolveErrorMessage(err: unknown): string {
   if (err instanceof Error && "response" in err) {
     const status = (err as { response?: { status?: number } }).response?.status;
@@ -73,44 +74,26 @@ function resolveErrorMessage(err: unknown): string {
 }
 
 export function RegisterPage() {
-  const { register } = useAuthContext();
+  const { register: registerUser } = useAuthContext();
   const navigate = useNavigate();
+  const [serverError, setServerError] = useState<string | null>(null);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { nome: "", email: "", password: "", confirm: "" },
+  });
 
-  const hasError = errorMsg !== null;
-
-  function validate(): string | null {
-    if (!name.trim()) return "Informe seu nome.";
-    if (!email.trim()) return "Informe seu e-mail.";
-    if (password.length < MIN_PASSWORD)
-      return `A senha deve ter ao menos ${MIN_PASSWORD} caracteres.`;
-    if (password !== confirm) return "As senhas não coincidem.";
-    return null;
-  }
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const validationError = validate();
-    if (validationError) {
-      setErrorMsg(validationError);
-      return;
-    }
-
-    setErrorMsg(null);
-    setIsSubmitting(true);
+  async function onSubmit(values: RegisterForm) {
+    setServerError(null);
     try {
-      await register(name.trim(), email.trim(), password);
+      await registerUser(values.nome.trim(), values.email.trim(), values.password);
       navigate("/", { replace: true });
     } catch (err) {
-      setErrorMsg(resolveErrorMessage(err));
-    } finally {
-      setIsSubmitting(false);
+      setServerError(resolveErrorMessage(err));
     }
   }
 
@@ -127,100 +110,104 @@ export function RegisterPage() {
           <p className={styles.subtitle}>IEOP · Índice de Eficiência de Obras Públicas</p>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          {hasError && (
+        <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+          {serverError && (
             <div className={styles.errorBanner} role="alert">
               <span aria-hidden>⚠</span>
-              {errorMsg}
+              {serverError}
             </div>
           )}
 
           <div className={styles.field}>
-            <label htmlFor="name" className={styles.label}>
+            <label htmlFor="nome" className={styles.label}>
               Nome
             </label>
-            <div className={`${styles.inputWrap} ${hasError ? styles.errorWrap : ""}`}>
+            <div className={`${styles.inputWrap} ${errors.nome ? styles.errorWrap : ""}`}>
               <span className={styles.inputIcon}>
                 <UserIcon />
               </span>
               <input
-                id="name"
+                id="nome"
                 type="text"
-                className={`${styles.input} ${hasError ? styles.error : ""}`}
+                className={`${styles.input} ${errors.nome ? styles.error : ""}`}
                 placeholder="Seu nome completo"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
                 autoComplete="name"
-                required
+                aria-invalid={Boolean(errors.nome)}
                 disabled={isSubmitting}
+                {...register("nome")}
               />
             </div>
+            {errors.nome && <span className={styles.fieldError}>{errors.nome.message}</span>}
           </div>
 
           <div className={styles.field}>
             <label htmlFor="email" className={styles.label}>
               E-mail
             </label>
-            <div className={`${styles.inputWrap} ${hasError ? styles.errorWrap : ""}`}>
+            <div className={`${styles.inputWrap} ${errors.email ? styles.errorWrap : ""}`}>
               <span className={styles.inputIcon}>
                 <MailIcon />
               </span>
               <input
                 id="email"
                 type="email"
-                className={`${styles.input} ${hasError ? styles.error : ""}`}
+                className={`${styles.input} ${errors.email ? styles.error : ""}`}
                 placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                required
+                aria-invalid={Boolean(errors.email)}
                 disabled={isSubmitting}
+                {...register("email")}
               />
             </div>
+            {errors.email && <span className={styles.fieldError}>{errors.email.message}</span>}
           </div>
 
           <div className={styles.field}>
             <label htmlFor="password" className={styles.label}>
               Senha
             </label>
-            <div className={`${styles.inputWrap} ${hasError ? styles.errorWrap : ""}`}>
+            <div className={`${styles.inputWrap} ${errors.password ? styles.errorWrap : ""}`}>
               <span className={styles.inputIcon}>
                 <LockIcon />
               </span>
               <input
                 id="password"
                 type="password"
-                className={`${styles.input} ${hasError ? styles.error : ""}`}
+                className={`${styles.input} ${errors.password ? styles.error : ""}`}
                 placeholder="Mínimo 6 caracteres"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"
-                required
+                aria-invalid={Boolean(errors.password)}
                 disabled={isSubmitting}
+                {...register("password")}
               />
             </div>
+            {errors.password && (
+              <span className={styles.fieldError}>{errors.password.message}</span>
+            )}
           </div>
 
           <div className={styles.field}>
             <label htmlFor="confirm" className={styles.label}>
               Confirmar senha
             </label>
-            <div className={`${styles.inputWrap} ${hasError ? styles.errorWrap : ""}`}>
+            <div className={`${styles.inputWrap} ${errors.confirm ? styles.errorWrap : ""}`}>
               <span className={styles.inputIcon}>
                 <LockIcon />
               </span>
               <input
                 id="confirm"
                 type="password"
-                className={`${styles.input} ${hasError ? styles.error : ""}`}
+                className={`${styles.input} ${errors.confirm ? styles.error : ""}`}
                 placeholder="Repita a senha"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
                 autoComplete="new-password"
-                required
+                aria-invalid={Boolean(errors.confirm)}
                 disabled={isSubmitting}
+                {...register("confirm")}
               />
             </div>
+            {errors.confirm && (
+              <span className={styles.fieldError}>{errors.confirm.message}</span>
+            )}
           </div>
 
           <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
