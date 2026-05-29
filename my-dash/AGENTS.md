@@ -7,7 +7,7 @@ Bun + React 19 SPA com servidor Bun (SSR-lite + proxy reverso) e Streamlit em `s
 ## Commands
 
 - Instalar deps: `bun install`
-- Dev (HMR): `bun dev` → http://localhost:3000
+- Dev: `bun dev` → http://localhost:3000 (HMR client-side desligado — ver nota abaixo)
 - Build: `bun run build`
 - Prod: `bun start`
 - Streamlit: `cd streamlit && streamlit run app.py` → http://localhost:8501
@@ -52,7 +52,7 @@ src/
 
 - **Variaveis de ambiente React**: prefixo `BUN_PUBLIC_` (ex: `BUN_PUBLIC_API_URL`)
 - **TypeScript path alias**: `@/*` → `./src/*`
-- **HMR**: preservar bloco `import.meta.hot` em [src/frontend.tsx](src/frontend.tsx)
+- **HMR**: preservar bloco `import.meta.hot` em [src/frontend.tsx](src/frontend.tsx). O HMR client-side está **desligado por padrão** em [src/index.ts](src/index.ts) — o HMR do Bun 1.3.8 quebra imports de CSS Modules (`ReferenceError: import_X_module is not defined` → tela branca). Reative com `HMR=true bun dev` após atualizar o Bun. Validar render com browser (não só `bun build`, que bundla mas não executa).
 - **CSS**: CSS Modules por componente (`.module.css`); tokens globais em `tokens.css`
 - **Estilo de componente**: cada componente tem seu `.module.css` proprio — sem inline style para layout, sem CSS global para componentes
 - **Autenticacao**: `access_token` em memoria; `refresh_token` em httpOnly cookie; interceptor axios renova silenciosamente em 401

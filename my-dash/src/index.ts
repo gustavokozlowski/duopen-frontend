@@ -41,8 +41,11 @@ const server = serve({
   },
 
   development: process.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
-    hmr: true,
+    // HMR desligado por padrão: o HMR client-side do Bun 1.3.8 quebra os
+    // imports de CSS Modules (ReferenceError: import_X_module is not defined),
+    // resultando em tela branca. Opt-in com `HMR=true bun dev` quando atualizar
+    // o Bun para uma versão que corrija isso.
+    hmr: process.env.HMR === "true",
 
     // Echo console logs from the browser to the server
     console: true,
