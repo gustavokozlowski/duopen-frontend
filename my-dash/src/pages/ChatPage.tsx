@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PageLayout, type NavItem } from "../components/PageLayout";
+import { PageLayout } from "../components/PageLayout";
 import { ChatMessage } from "../features/chat/ChatMessage";
 import { ChatInput } from "../features/chat/ChatInput";
 import { SuggestionList } from "../features/chat/SuggestionList";
@@ -7,23 +7,6 @@ import { SessionHistory } from "../features/chat/SessionHistory";
 import { useChat } from "../features/chat/useChat";
 import styles from "./ChatPage.module.css";
 
-const NAV = [
-  {
-    items: [
-      { path: "/", label: "Dashboard", icon: "◈" },
-      { path: "/obras", label: "Obras", icon: "◉" },
-      { path: "/fornecedores", label: "Fornecedores", icon: "◎" },
-      { path: "/ia", label: "Agente IA", icon: "✦" },
-    ] satisfies NavItem[],
-  },
-  {
-    label: "Relatórios",
-    items: [
-      { path: "/metricas", label: "Métricas", icon: "▦" },
-      { path: "/mapa", label: "Mapa", icon: "◌" },
-    ] satisfies NavItem[],
-  },
-];
 
 export function ChatPage() {
   const { messages, userMessages, isLoading, error, sendMessage, abort, clearHistory } = useChat();
@@ -56,7 +39,7 @@ export function ChatPage() {
   const hasMessages = messages.length > 0;
 
   return (
-    <PageLayout nav={NAV} pageTitle="Agente IA">
+    <PageLayout pageTitle="Agente IA">
       <div className={styles.container}>
         {/* Sidebar: session history (visible when there are messages) */}
         {hasMessages && (

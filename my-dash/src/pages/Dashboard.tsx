@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
-import { PageLayout, type NavItem } from "../components/PageLayout";
+import { PageLayout } from "../components/PageLayout";
 import { PeriodFilter } from "../features/dashboard/PeriodFilter";
 import { MetricCards } from "../features/dashboard/MetricCards";
 import { AlertCard } from "../features/dashboard/AlertCard";
@@ -10,22 +10,6 @@ import { LineChart } from "../features/dashboard/LineChart";
 import { defaultPeriod, useDashboardSummary, useTopAlerts } from "../features/dashboard/useDashboard";
 import styles from "./Dashboard.module.css";
 
-const NAV = [
-  {
-    items: [
-      { path: "/", label: "Dashboard", icon: "◈" },
-      { path: "/obras", label: "Obras", icon: "◉" },
-      { path: "/secretarias", label: "Secretarias", icon: "◎" },
-    ] satisfies NavItem[],
-  },
-  {
-    label: "Relatórios",
-    items: [
-      { path: "/metricas", label: "Métricas", icon: "▦" },
-      { path: "/mapa", label: "Mapa", icon: "◌" },
-    ] satisfies NavItem[],
-  },
-];
 
 export function Dashboard() {
   const { user, logout } = useAuthContext();
@@ -36,7 +20,6 @@ export function Dashboard() {
 
   return (
     <PageLayout
-      nav={NAV}
       pageTitle="Dashboard"
       headerRight={
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>

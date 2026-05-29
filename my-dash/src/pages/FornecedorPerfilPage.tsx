@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { PageLayout, type NavItem } from "../components/PageLayout";
+import { PageLayout } from "../components/PageLayout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useFornecedorPerfil } from "../features/fornecedores/perfil/useFornecedorPerfil";
 import { PerfilHeader } from "../features/fornecedores/perfil/PerfilHeader";
@@ -9,29 +9,13 @@ import { ObraHistoricoTable } from "../features/fornecedores/perfil/ObraHistoric
 import { PerfilSkeleton } from "../features/fornecedores/perfil/PerfilSkeleton";
 import styles from "./FornecedorPerfilPage.module.css";
 
-const NAV = [
-  {
-    items: [
-      { path: "/", label: "Dashboard", icon: "◈" },
-      { path: "/obras", label: "Obras", icon: "◉" },
-      { path: "/fornecedores", label: "Fornecedores", icon: "◎" },
-    ] satisfies NavItem[],
-  },
-  {
-    label: "Relatórios",
-    items: [
-      { path: "/metricas", label: "Métricas", icon: "▦" },
-      { path: "/mapa", label: "Mapa", icon: "◌" },
-    ] satisfies NavItem[],
-  },
-];
 
 export function FornecedorPerfilPage() {
   const { id = "" } = useParams<{ id: string }>();
   const { data: perfil, isLoading, error } = useFornecedorPerfil(id);
 
   return (
-    <PageLayout nav={NAV} pageTitle="Perfil do fornecedor">
+    <PageLayout pageTitle="Perfil do fornecedor">
       <ErrorBoundary>
         {isLoading || !perfil ? (
           <PerfilSkeleton />

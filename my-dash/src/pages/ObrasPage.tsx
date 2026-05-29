@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PageLayout, type NavItem } from "../components/PageLayout";
+import { PageLayout } from "../components/PageLayout";
 import { Badge } from "../components/Badge";
 import { Table, type Column } from "../components/Table";
 import { ObrasFilters } from "../features/obras/ObrasFilters";
@@ -22,22 +22,6 @@ const STATUS_VARIANT: Record<ObraStatus, BadgeVariant> = {
   nao_iniciada: "neutral",
 };
 
-const NAV = [
-  {
-    items: [
-      { path: "/", label: "Dashboard", icon: "◈" },
-      { path: "/obras", label: "Obras", icon: "◉" },
-      { path: "/secretarias", label: "Secretarias", icon: "◎" },
-    ] satisfies NavItem[],
-  },
-  {
-    label: "Relatórios",
-    items: [
-      { path: "/metricas", label: "Métricas", icon: "▦" },
-      { path: "/mapa", label: "Mapa", icon: "◌" },
-    ] satisfies NavItem[],
-  },
-];
 
 const COLUMNS: Column<ObraListItem>[] = [
   {
@@ -108,7 +92,6 @@ export function ObrasPage() {
 
   return (
     <PageLayout
-      nav={NAV}
       pageTitle="Obras"
       headerRight={
         <button

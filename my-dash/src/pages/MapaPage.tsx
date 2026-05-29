@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { PageLayout, type NavItem } from "../components/PageLayout";
+import { PageLayout } from "../components/PageLayout";
 import { MacaeMap } from "../features/mapa/MacaeMap";
 import { MapFilters } from "../features/mapa/MapFilters";
 import { useMapaObras } from "../features/mapa/useMapa";
@@ -13,22 +13,6 @@ const DEFAULT_FILTER: MapFilter = {
   status: "todos",
 };
 
-const NAV = [
-  {
-    items: [
-      { path: "/", label: "Dashboard", icon: "◈" },
-      { path: "/obras", label: "Obras", icon: "◉" },
-      { path: "/secretarias", label: "Secretarias", icon: "◎" },
-    ] satisfies NavItem[],
-  },
-  {
-    label: "Relatórios",
-    items: [
-      { path: "/metricas", label: "Métricas", icon: "▦" },
-      { path: "/mapa", label: "Mapa", icon: "◌" },
-    ] satisfies NavItem[],
-  },
-];
 
 export function MapaPage() {
   const { data: obras = [], isLoading } = useMapaObras();
@@ -38,7 +22,7 @@ export function MapaPage() {
   const obrasFiltradas = useMemo(() => filterObras(obras, filter), [obras, filter]);
 
   return (
-    <PageLayout nav={NAV} pageTitle="Mapa de obras">
+    <PageLayout pageTitle="Mapa de obras">
       <div className={styles.wrapper}>
         <div className={styles.toolbar}>
           <div className={styles.toolbarLeft}>

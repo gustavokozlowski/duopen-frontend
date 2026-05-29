@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { PageLayout, type NavItem } from "../components/PageLayout";
+import { PageLayout } from "../components/PageLayout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useObraDetalhe } from "../features/obras/detalhe/useObraDetalhe";
 import { HeaderObra } from "../features/obras/detalhe/HeaderObra";
@@ -12,29 +12,13 @@ import { CardFornecedor } from "../features/obras/detalhe/CardFornecedor";
 import { DetailSkeleton } from "../features/obras/detalhe/DetailSkeleton";
 import styles from "./ObraDetalhePage.module.css";
 
-const NAV = [
-  {
-    items: [
-      { path: "/", label: "Dashboard", icon: "◈" },
-      { path: "/obras", label: "Obras", icon: "◉" },
-      { path: "/secretarias", label: "Secretarias", icon: "◎" },
-    ] satisfies NavItem[],
-  },
-  {
-    label: "Relatórios",
-    items: [
-      { path: "/metricas", label: "Métricas", icon: "▦" },
-      { path: "/mapa", label: "Mapa", icon: "◌" },
-    ] satisfies NavItem[],
-  },
-];
 
 export function ObraDetalhePage() {
   const { id = "" } = useParams<{ id: string }>();
   const { data: obra, isLoading, error } = useObraDetalhe(id);
 
   return (
-    <PageLayout nav={NAV} pageTitle="Detalhe da obra">
+    <PageLayout pageTitle="Detalhe da obra">
       <ErrorBoundary>
         {isLoading || !obra ? (
           <DetailSkeleton />

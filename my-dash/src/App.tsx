@@ -10,7 +10,7 @@ import { ObrasPage } from "./pages/ObrasPage";
 import { ObraDetalhePage } from "./pages/ObraDetalhePage";
 import { FornecedoresPage } from "./pages/FornecedoresPage";
 import { FornecedorPerfilPage } from "./pages/FornecedorPerfilPage";
-import { ChatPage } from "./pages/ChatPage";
+import { RagRoute } from "./auth/RagRoute";
 
 export function App() {
   return (
@@ -25,7 +25,7 @@ export function App() {
           <Route path="/obras/:id" element={<ObraDetalhePage />} />
           <Route path="/fornecedores" element={<FornecedoresPage />} />
           <Route path="/fornecedores/:id" element={<FornecedorPerfilPage />} />
-          <Route path="/ia" element={<ChatPage />} />
+          <Route path="/ia" element={<RagRoute />} />
           <Route path="/mapa" element={<MapaPage />} />
           <Route path="/*" element={<Dashboard />} />
         </Route>

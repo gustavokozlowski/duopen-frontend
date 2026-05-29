@@ -1,17 +1,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuthContext } from "../auth/AuthContext";
+import { buildNav, type NavGroup } from "./nav";
 import styles from "./PageLayout.module.css";
 
-export interface NavItem {
-  path: string;
-  label: string;
-  icon?: ReactNode;
-}
-
-interface NavGroup {
-  label?: string;
-  items: NavItem[];
-}
+export type { NavItem } from "./nav";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -20,9 +13,14 @@ interface PageLayoutProps {
   headerRight?: ReactNode;
 }
 
-export function PageLayout({ children, nav = [], pageTitle, headerRight }: PageLayoutProps) {
+export function PageLayout({ children, nav, pageTitle, headerRight }: PageLayoutProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuthContext();
+
+  // Nav canônico, filtrado por perfil (ex.: readonly não vê o Agente IA).
+  // A prop `nav` permite override pontual, mas o padrão vem do perfil.
+  const groups = nav ?? buildNav(user?.perfil);
 
   // Fecha o drawer ao navegar (mobile)
   useEffect(() => {
@@ -47,7 +45,7 @@ export function PageLayout({ children, nav = [], pageTitle, headerRight }: PageL
         </div>
 
         <nav className={styles.nav}>
-          {nav.map((group, gi) => (
+          {groups.map((group, gi) => (
             <div key={gi}>
               {group.label && <p className={styles.navLabel}>{group.label}</p>}
               {group.items.map((item) => (
