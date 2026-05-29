@@ -1,10 +1,11 @@
 import { apiClient } from "./api";
-import type { ObraListItem } from "../features/obras/types";
+import { obraListItemSchema, type ObraListItem } from "../schemas/obras.schema";
 import type { ObraDetalhe } from "../features/obras/detalhe/types";
 
 export async function getObras(): Promise<ObraListItem[]> {
-  const { data } = await apiClient.get<ObraListItem[]>("/api/v1/obras");
-  return data;
+  const { data } = await apiClient.get("/api/v1/obras");
+  // Valida o payload em runtime — protege a UI de respostas fora do contrato.
+  return obraListItemSchema.array().parse(data);
 }
 
 export async function getObraById(id: string): Promise<ObraDetalhe> {

@@ -16,6 +16,26 @@ export type ObraStatus = z.infer<typeof obraStatusSchema>;
 export const riscoNivelSchema = z.enum(["baixo", "medio", "alto"]);
 export type RiscoNivel = z.infer<typeof riscoNivelSchema>;
 
+// ── Resposta da API: item da lista de obras ───────────────────────
+// Validado em runtime no serviço. .catchall(unknown) tolera campos extras
+// do backend e preserva a index signature exigida pelo Table<T>.
+export const obraListItemSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+    numero_contrato: z.string(),
+    secretaria: z.string(),
+    bairro: z.string(),
+    status: obraStatusSchema,
+    execucao_percentual: z.number(),
+    valor_contratado: z.number(),
+    prob_atraso: z.number(),
+    previsao_termino: z.string(),
+  })
+  .catchall(z.unknown());
+
+export type ObraListItem = z.infer<typeof obraListItemSchema>;
+
 // ── Formulário de filtro de obras ─────────────────────────────────
 // "todos"/"todas" = sem filtro. O tipo do formulário sai daqui via z.infer.
 
