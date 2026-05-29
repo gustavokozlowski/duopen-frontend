@@ -41,7 +41,7 @@ export function Dashboard() {
       headerRight={
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
           <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)" }}>
-            {user?.name ?? user?.email}
+            {user?.nome ?? user?.email}
           </span>
           <button
             onClick={logout}

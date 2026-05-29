@@ -6,7 +6,12 @@
  */
 
 import axios from "axios";
-import { clearAccessToken, getAccessToken, setAccessToken } from "../auth/tokenStore";
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+} from "../auth/tokenStore";
 
 declare module "axios" {
   interface InternalAxiosRequestConfig {
@@ -41,7 +46,15 @@ function drainQueue(err: unknown, token: string | null) {
 }
 
 // Separate instance to avoid interceptor loop during refresh
-const rawAxios = axios.create({ baseURL: BASE_URL, withCredentials: true });
+const rawAxios = axios.create({
+  baseURL: BASE_URL,
+  headers: { "Content-Type": "application/json" },
+});
+
+interface TokenResponse {
+  access_token: string;
+  refresh_token: string;
+}
 
 apiClient.interceptors.response.use(
   (res) => res,
@@ -51,8 +64,17 @@ apiClient.interceptors.response.use(
     const original = err.config;
     const status = err.response?.status;
 
-    // ── 401: silent refresh ───────────────────────────────────────
+    // ── 401: silent refresh usando o refresh_token armazenado ─────
     if (status === 401 && original && !original._retry) {
+      const refreshToken = getRefreshToken();
+
+      // Sem refresh_token não há o que renovar → desautentica.
+      if (!refreshToken) {
+        clearTokens();
+        window.dispatchEvent(new Event("auth:logout"));
+        return Promise.reject(err);
+      }
+
       if (refreshing) {
         return new Promise<string>((resolve, reject) => queue.push({ resolve, reject })).then(
           (token) => {
@@ -66,13 +88,15 @@ apiClient.interceptors.response.use(
       refreshing = true;
 
       try {
-        const { data } = await rawAxios.post<{ access_token: string }>("/api/v1/auth/refresh");
-        setAccessToken(data.access_token);
+        const { data } = await rawAxios.post<TokenResponse>("/api/v1/auth/refresh", {
+          refresh_token: refreshToken,
+        });
+        setTokens(data.access_token, data.refresh_token);
         drainQueue(null, data.access_token);
         original.headers.Authorization = `Bearer ${data.access_token}`;
         return apiClient(original);
       } catch (refreshErr) {
-        clearAccessToken();
+        clearTokens();
         drainQueue(refreshErr, null);
         window.dispatchEvent(new Event("auth:logout"));
         return Promise.reject(refreshErr);

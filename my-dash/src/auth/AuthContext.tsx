@@ -6,15 +6,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { apiClient } from "../hooks/useApi";
-import { clearAccessToken, setAccessToken } from "./tokenStore";
+import { getMe, loginUser, refreshTokens, registerUser } from "../services/auth";
+import { clearTokens, getRefreshToken, setTokens } from "./tokenStore";
 
 // ── Types ─────────────────────────────────────────────────────────
 
 export interface AuthUser {
   id: string;
   email: string;
-  name?: string;
+  nome: string;
 }
 
 interface AuthState {
@@ -25,12 +25,8 @@ interface AuthState {
 
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-}
-
-interface LoginResponse {
-  access_token: string;
-  user: AuthUser;
+  register: (nome: string, email: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
 // ── Context ───────────────────────────────────────────────────────
@@ -47,31 +43,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const setUnauthenticated = useCallback(() => {
-    clearAccessToken();
+    clearTokens();
     setState({ user: null, isAuthenticated: false, isLoading: false });
   }, []);
 
-  const setAuthenticated = useCallback((user: AuthUser, token: string) => {
-    setAccessToken(token);
+  const setAuthenticated = useCallback((user: AuthUser) => {
     setState({ user, isAuthenticated: true, isLoading: false });
   }, []);
 
-  // Verify existing session via refresh_token cookie on mount
+  // Restaura a sessão no mount: se há refresh_token, renova e busca /me.
   useEffect(() => {
     let cancelled = false;
 
-    async function checkSession() {
+    async function restoreSession() {
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) {
+        if (!cancelled) setUnauthenticated();
+        return;
+      }
       try {
-        const { data } = await apiClient.post<LoginResponse>("/api/v1/auth/refresh");
-        if (!cancelled) setAuthenticated(data.user, data.access_token);
+        const tokens = await refreshTokens(refreshToken);
+        setTokens(tokens.access_token, tokens.refresh_token);
+        const user = await getMe();
+        if (!cancelled) setAuthenticated(user);
       } catch {
         if (!cancelled) setUnauthenticated();
       }
     }
 
-    checkSession();
+    restoreSession();
 
-    // Interceptor signals logout when refresh fails mid-session
+    // Interceptor sinaliza logout quando o refresh falha no meio da sessão
     const onAuthLogout = () => setUnauthenticated();
     window.addEventListener("auth:logout", onAuthLogout);
 
@@ -83,26 +85,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (email: string, password: string) => {
-      const { data } = await apiClient.post<LoginResponse>("/api/v1/auth/login", {
-        email,
-        password,
-      });
-      setAuthenticated(data.user, data.access_token);
+      const tokens = await loginUser(email, password);
+      setTokens(tokens.access_token, tokens.refresh_token);
+      const user = await getMe();
+      setAuthenticated(user);
     },
     [setAuthenticated]
   );
 
-  const logout = useCallback(async () => {
-    try {
-      await apiClient.post("/api/v1/auth/logout");
-    } catch {
-      // Clear local state even if the server request fails
-    }
+  const register = useCallback(
+    async (nome: string, email: string, password: string) => {
+      // O backend não retorna token no cadastro → cria e faz login em seguida.
+      await registerUser({ nome, email, password });
+      await login(email, password);
+    },
+    [login]
+  );
+
+  const logout = useCallback(() => {
+    // Não há endpoint de logout no backend — limpeza é client-side.
     setUnauthenticated();
   }, [setUnauthenticated]);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider value={{ ...state, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

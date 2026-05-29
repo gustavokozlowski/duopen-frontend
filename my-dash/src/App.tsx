@@ -1,6 +1,7 @@
 import "./index.css";
 import { Routes, Route } from "react-router-dom";
 import { LoginPage } from "./auth/LoginPage";
+import { RegisterPage } from "./auth/RegisterPage";
 import { PrivateRoute } from "./auth/PrivateRoute";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Dashboard } from "./pages/Dashboard";
@@ -16,6 +17,7 @@ export function App() {
     <ErrorBoundary>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Dashboard />} />

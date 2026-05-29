@@ -9,6 +9,7 @@ interface ToastItem {
   type: ToastType;
   title: string;
   detail?: string;
+  dedupeKey: string;
 }
 
 interface ApiErrorDetail {
@@ -66,11 +67,15 @@ export function ToastContainer() {
     function handleApiError(e: Event) {
       const { status, url, method } = (e as CustomEvent<ApiErrorDetail>).detail;
       const { title, detail } = messageForStatus(status);
+      const dedupeKey = `${status}:${method}:${url}`;
       const id = makeId();
 
-      setToasts((prev) => [...prev, { id, type: "error", title, detail: `${method.toUpperCase()} ${url} — ${detail}` }]);
-
-      timers.current.set(id, setTimeout(() => dismiss(id), 6_000));
+      setToasts((prev) => {
+        // Ignora toasts idênticos já visíveis (ex.: StrictMode dispara 2×)
+        if (prev.some((t) => t.dedupeKey === dedupeKey)) return prev;
+        timers.current.set(id, setTimeout(() => dismiss(id), 6_000));
+        return [...prev, { id, type: "error", title, detail: `${method.toUpperCase()} ${url} — ${detail}`, dedupeKey }];
+      });
     }
 
     window.addEventListener("api:error", handleApiError);

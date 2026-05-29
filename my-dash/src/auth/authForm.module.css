@@ -237,3 +237,21 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.footer {
+  margin-top: var(--space-6);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.footerLink {
+  color: var(--color-success);
+  font-weight: var(--font-medium);
+  transition: opacity var(--transition-fast);
+}
+
+.footerLink:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
