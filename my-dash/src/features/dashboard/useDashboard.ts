@@ -1,5 +1,7 @@
-import { useApi } from "../../hooks/useApi";
-import type { DashboardSummary, Obra, Period } from "./types";
+import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "../../services/api";
+import { dashboardSummarySchema, obraSchema } from "../../schemas/dashboard.schema";
+import type { Period } from "./types";
 
 const REFETCH_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -11,17 +13,23 @@ function toParams(period: Period): string {
 }
 
 export function useDashboardSummary(period: Period) {
-  return useApi<DashboardSummary>(
-    `/api/v1/dashboard?${toParams(period)}`,
-    { refetchInterval: REFETCH_MS }
-  );
+  const url = `/api/v1/dashboard?${toParams(period)}`;
+  return useQuery({
+    queryKey: [url],
+    queryFn: async () => dashboardSummarySchema.parse((await apiClient.get(url)).data),
+    refetchInterval: REFETCH_MS,
+    staleTime: REFETCH_MS,
+  });
 }
 
 export function useTopAlerts(period: Period) {
-  return useApi<Obra[]>(
-    `/api/v1/obras?${toParams(period)}&sort=-prob_atraso&limit=5`,
-    { refetchInterval: REFETCH_MS }
-  );
+  const url = `/api/v1/obras?${toParams(period)}&sort=-prob_atraso&limit=5`;
+  return useQuery({
+    queryKey: [url],
+    queryFn: async () => obraSchema.array().parse((await apiClient.get(url)).data),
+    refetchInterval: REFETCH_MS,
+    staleTime: REFETCH_MS,
+  });
 }
 
 export function defaultPeriod(): Period {

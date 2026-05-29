@@ -1,20 +1,9 @@
 import type { RiscoNivel } from "../mapa/types";
+import type { FornecedorRanking } from "../../schemas/fornecedores.schema";
 
 export type { RiscoNivel };
-
-export interface FornecedorRanking {
-  id: string;
-  nome: string;
-  cnpj: string;
-  total_contratos: number;
-  total_obras: number;
-  valor_total: number;         // BRL
-  taxa_aditivo: number;        // 0–1
-  avg_prob_atraso: number;     // 0–1
-  obras_em_andamento: number;
-  obras_concluidas: number;
-  [key: string]: unknown;
-}
+// FornecedorRanking inferido do schema Zod (validado em runtime no serviço).
+export type { FornecedorRanking };
 
 export interface FornecedoresFilter {
   search: string;

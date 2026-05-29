@@ -1,6 +1,11 @@
-import { useApi } from "../../../hooks/useApi";
-import type { FornecedorPerfil } from "./types";
+import { useQuery } from "@tanstack/react-query";
+import { getFornecedorById } from "../../../services/fornecedores";
 
 export function useFornecedorPerfil(id: string) {
-  return useApi<FornecedorPerfil>(`/api/v1/fornecedores/${id}`, { enabled: Boolean(id) });
+  return useQuery({
+    queryKey: ["/api/v1/fornecedores", id],
+    queryFn: () => getFornecedorById(id),
+    enabled: Boolean(id),
+    staleTime: 5 * 60_000,
+  });
 }

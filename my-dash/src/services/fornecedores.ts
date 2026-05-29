@@ -1,22 +1,26 @@
 import { apiClient } from "./api";
-import type { FornecedorRanking } from "../features/fornecedores/types";
-import type { FornecedorPerfil } from "../features/fornecedores/perfil/types";
+import {
+  fornecedorRankingSchema,
+  fornecedorPerfilSchema,
+  type FornecedorRanking,
+  type FornecedorPerfil,
+} from "../schemas/fornecedores.schema";
 
 export async function getFornecedores(): Promise<FornecedorRanking[]> {
-  const { data } = await apiClient.get<FornecedorRanking[]>("/api/v1/fornecedores");
-  return data;
+  const { data } = await apiClient.get("/api/v1/fornecedores");
+  return fornecedorRankingSchema.array().parse(data);
 }
 
 export async function getFornecedorById(id: string): Promise<FornecedorPerfil> {
-  const { data } = await apiClient.get<FornecedorPerfil>(`/api/v1/fornecedores/${id}`);
-  return data;
+  const { data } = await apiClient.get(`/api/v1/fornecedores/${id}`);
+  return fornecedorPerfilSchema.parse(data);
 }
 
 export async function getFornecedorByCnpj(cnpj: string): Promise<FornecedorRanking | null> {
   const clean = cnpj.replace(/\D/g, "");
   try {
-    const { data } = await apiClient.get<FornecedorRanking>(`/api/v1/fornecedores/cnpj/${clean}`);
-    return data;
+    const { data } = await apiClient.get(`/api/v1/fornecedores/cnpj/${clean}`);
+    return fornecedorRankingSchema.parse(data);
   } catch {
     return null;
   }

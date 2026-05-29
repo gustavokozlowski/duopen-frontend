@@ -1,20 +1,10 @@
 import type { ObraStatus } from "../dashboard/types";
 import type { RiscoNivel } from "../../schemas/obras.schema";
+import type { ObraMapPoint } from "../../schemas/mapa.schema";
 
 export type { RiscoNivel };
-
-export interface ObraMapPoint {
-  id: string;
-  nome: string;
-  secretaria: string;
-  status: ObraStatus;
-  prob_atraso: number;         // 0–1
-  execucao_percentual: number; // 0–100
-  fornecedor: string;
-  lat: number;
-  lng: number;
-  valor_contratado: number;
-}
+// ObraMapPoint inferido do schema Zod (validado em runtime no hook).
+export type { ObraMapPoint };
 
 export interface MapFilter {
   risco: RiscoNivel | "todos";

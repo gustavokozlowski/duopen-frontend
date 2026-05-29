@@ -1,6 +1,11 @@
-import { useApi } from "../../../hooks/useApi";
-import type { ObraDetalhe } from "./types";
+import { useQuery } from "@tanstack/react-query";
+import { getObraById } from "../../../services/obras";
 
 export function useObraDetalhe(id: string) {
-  return useApi<ObraDetalhe>(`/api/v1/obras/${id}`, { enabled: Boolean(id) });
+  return useQuery({
+    queryKey: ["/api/v1/obras", id],
+    queryFn: () => getObraById(id),
+    enabled: Boolean(id),
+    staleTime: 5 * 60_000,
+  });
 }
