@@ -4,6 +4,7 @@ import { LoginPage } from "./auth/LoginPage";
 import { PrivateRoute } from "./auth/PrivateRoute";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Dashboard } from "./pages/Dashboard";
+import { MapaPage } from "./pages/MapaPage";
 
 export function App() {
   return (
@@ -11,8 +12,9 @@ export function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
-        {/* All routes below require authentication */}
         <Route element={<PrivateRoute />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/mapa" element={<MapaPage />} />
           <Route path="/*" element={<Dashboard />} />
         </Route>
       </Routes>
