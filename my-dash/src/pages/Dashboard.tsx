@@ -8,6 +8,7 @@ import { DonutChart } from "../features/dashboard/DonutChart";
 import { HBarChart } from "../features/dashboard/HBarChart";
 import { LineChart } from "../features/dashboard/LineChart";
 import { defaultPeriod, useDashboardSummary, useTopAlerts } from "../features/dashboard/useDashboard";
+import styles from "./Dashboard.module.css";
 
 const NAV = [
   {
@@ -25,24 +26,6 @@ const NAV = [
     ] satisfies NavItem[],
   },
 ];
-
-const GRID_4 = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
-  gap: "var(--space-6)",
-} as const;
-
-const GRID_2 = {
-  display: "grid",
-  gridTemplateColumns: "minmax(280px, 1fr) minmax(0, 1.6fr)",
-  gap: "var(--space-6)",
-  alignItems: "start",
-} as const;
-
-const GRID_FULL = {
-  display: "grid",
-  gap: "var(--space-6)",
-} as const;
 
 export function Dashboard() {
   const { user, logout } = useAuthContext();
@@ -81,18 +64,18 @@ export function Dashboard() {
       <PeriodFilter value={period} onChange={setPeriod} />
 
       {/* ── Métricas globais ── */}
-      <section style={{ ...GRID_4, marginBottom: "var(--space-6)" }} aria-label="Métricas globais">
+      <section className={styles.gridMetrics} aria-label="Métricas globais">
         <MetricCards data={summary.data} isLoading={summary.isLoading} />
       </section>
 
       {/* ── Alertas + Rosca ── */}
-      <section style={{ ...GRID_2, marginBottom: "var(--space-6)" }} aria-label="Alertas e distribuição">
+      <section className={styles.gridTwo} aria-label="Alertas e distribuição">
         <AlertCard data={alerts.data} isLoading={alerts.isLoading} />
         <DonutChart data={summary.data?.por_status} isLoading={summary.isLoading} />
       </section>
 
       {/* ── Barras + Linha ── */}
-      <section style={{ ...GRID_FULL, gridTemplateColumns: "1fr 1fr" }} aria-label="Análises">
+      <section className={styles.gridCharts} aria-label="Análises">
         <HBarChart data={summary.data?.por_secretaria} isLoading={summary.isLoading} />
         <LineChart data={summary.data?.evolucao_mensal} isLoading={summary.isLoading} />
       </section>

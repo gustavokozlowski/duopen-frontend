@@ -10,6 +10,7 @@ import { ContratoSection } from "../features/obras/detalhe/ContratoSection";
 import { MiniMapa } from "../features/obras/detalhe/MiniMapa";
 import { CardFornecedor } from "../features/obras/detalhe/CardFornecedor";
 import { DetailSkeleton } from "../features/obras/detalhe/DetailSkeleton";
+import styles from "./ObraDetalhePage.module.css";
 
 const NAV = [
   {
@@ -27,25 +28,6 @@ const NAV = [
     ] satisfies NavItem[],
   },
 ];
-
-const GRID3: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gap: "var(--space-6)",
-  marginBottom: "var(--space-6)",
-};
-
-const GRID_BOTTOM: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "2fr 1fr",
-  gap: "var(--space-6)",
-};
-
-const SIDEBAR: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "var(--space-6)",
-};
 
 export function ObraDetalhePage() {
   const { id = "" } = useParams<{ id: string }>();
@@ -68,16 +50,16 @@ export function ObraDetalhePage() {
           <>
             <HeaderObra obra={obra} />
 
-            <div style={GRID3}>
+            <div className={styles.grid3}>
               <CardExecucao obra={obra} />
               <CardDatas obra={obra} />
               <CardPredicaoML predicao={obra.predicao} />
             </div>
 
-            <div style={GRID_BOTTOM}>
+            <div className={styles.gridBottom}>
               <ContratoSection contratos={obra.contratos} />
 
-              <div style={SIDEBAR}>
+              <div className={styles.sidebar}>
                 <MiniMapa
                   lat={obra.lat}
                   lng={obra.lng}

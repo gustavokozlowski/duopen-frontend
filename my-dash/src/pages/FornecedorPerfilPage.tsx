@@ -7,6 +7,7 @@ import { ValorAnualChart } from "../features/fornecedores/perfil/ValorAnualChart
 import { RiscoEvolutionChart } from "../features/fornecedores/perfil/RiscoEvolutionChart";
 import { ObraHistoricoTable } from "../features/fornecedores/perfil/ObraHistoricoTable";
 import { PerfilSkeleton } from "../features/fornecedores/perfil/PerfilSkeleton";
+import styles from "./FornecedorPerfilPage.module.css";
 
 const NAV = [
   {
@@ -24,13 +25,6 @@ const NAV = [
     ] satisfies NavItem[],
   },
 ];
-
-const GRID2: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: "var(--space-6)",
-  marginBottom: "var(--space-6)",
-};
 
 export function FornecedorPerfilPage() {
   const { id = "" } = useParams<{ id: string }>();
@@ -53,7 +47,7 @@ export function FornecedorPerfilPage() {
           <>
             <PerfilHeader perfil={perfil} />
 
-            <div style={GRID2}>
+            <div className={styles.grid2}>
               <ValorAnualChart data={perfil.valor_por_ano} />
               <RiscoEvolutionChart data={perfil.evolucao_risco} />
             </div>

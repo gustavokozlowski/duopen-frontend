@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState, type ReactNode } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import styles from "./PageLayout.module.css";
 
 export interface NavItem {
@@ -21,9 +21,27 @@ interface PageLayoutProps {
 }
 
 export function PageLayout({ children, nav = [], pageTitle, headerRight }: PageLayoutProps) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const location = useLocation();
+
+  // Fecha o drawer ao navegar (mobile)
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [location.pathname]);
+
   return (
     <div className={styles.root}>
-      <aside className={styles.sidebar} aria-label="Navegação principal">
+      {/* Overlay — só visível no mobile com drawer aberto */}
+      <div
+        className={`${styles.overlay} ${drawerOpen ? styles.overlayVisible : ""}`}
+        onClick={() => setDrawerOpen(false)}
+        aria-hidden
+      />
+
+      <aside
+        className={`${styles.sidebar} ${drawerOpen ? styles.sidebarOpen : ""}`}
+        aria-label="Navegação principal"
+      >
         <div className={styles.logo}>
           Duo<span>Open</span>
         </div>
@@ -31,9 +49,7 @@ export function PageLayout({ children, nav = [], pageTitle, headerRight }: PageL
         <nav className={styles.nav}>
           {nav.map((group, gi) => (
             <div key={gi}>
-              {group.label && (
-                <p className={styles.navLabel}>{group.label}</p>
-              )}
+              {group.label && <p className={styles.navLabel}>{group.label}</p>}
               {group.items.map((item) => (
                 <NavLink
                   key={item.path}
@@ -58,7 +74,17 @@ export function PageLayout({ children, nav = [], pageTitle, headerRight }: PageL
 
       <div className={styles.main}>
         <header className={styles.header}>
-          <span className={styles.pageTitle}>{pageTitle}</span>
+          <div className={styles.headerLeft}>
+            <button
+              className={styles.hamburger}
+              onClick={() => setDrawerOpen((o) => !o)}
+              aria-label={drawerOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={drawerOpen}
+            >
+              {drawerOpen ? "✕" : "☰"}
+            </button>
+            <span className={styles.pageTitle}>{pageTitle}</span>
+          </div>
           <div className={styles.headerRight}>{headerRight}</div>
         </header>
 

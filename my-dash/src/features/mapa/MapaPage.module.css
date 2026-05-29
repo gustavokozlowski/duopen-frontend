@@ -55,3 +55,26 @@
   color: var(--color-success);
   border-color: var(--color-success-border);
 }
+
+/* ── Tablet/mobile (< 1024): empilha filtros sobre o mapa ── */
+@media (max-width: 1024px) {
+  .wrapper {
+    height: auto;
+    min-height: calc(100vh - var(--header-height) - var(--space-5) * 2);
+  }
+  .body {
+    flex-direction: column;
+  }
+}
+
+/* ── Mobile (< 768) ── */
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  .exportBtn {
+    justify-content: center;
+  }
+}

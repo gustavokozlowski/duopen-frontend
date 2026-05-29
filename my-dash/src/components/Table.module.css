@@ -33,12 +33,20 @@
 /* ── Table ── */
 .tableContainer {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* momentum scroll no iOS */
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
+}
+
+/* Em telas estreitas a tabela rola horizontalmente em vez de espremer colunas */
+@media (max-width: 768px) {
+  .table {
+    min-width: 720px;
+  }
 }
 
 .table th {

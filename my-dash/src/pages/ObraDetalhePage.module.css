@@ -1,0 +1,41 @@
+/* Execução + Datas + Predição ML */
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+/* Contratos (largo) + sidebar (mapa + fornecedor) */
+.gridBottom {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-6);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ── Tablet (768–1024) ── */
+@media (max-width: 1024px) {
+  .grid3 {
+    grid-template-columns: 1fr 1fr; /* 2 colunas; ML quebra para baixo */
+  }
+  .gridBottom {
+    grid-template-columns: 1fr; /* empilha contratos e sidebar */
+  }
+}
+
+/* ── Mobile (< 768) ── */
+@media (max-width: 768px) {
+  .grid3 {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  .gridBottom {
+    gap: var(--space-4);
+  }
+}

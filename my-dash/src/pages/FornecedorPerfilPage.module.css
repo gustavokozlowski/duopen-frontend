@@ -1,0 +1,20 @@
+/* Valor anual + evolução de risco */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+/* ── Tablet e mobile: empilha os gráficos ── */
+@media (max-width: 1024px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid2 {
+    gap: var(--space-4);
+  }
+}

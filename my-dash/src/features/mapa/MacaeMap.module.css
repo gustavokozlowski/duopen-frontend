@@ -12,6 +12,13 @@
   height: 100%;
 }
 
+/* No mobile/tablet o mapa precisa de altura mínima fixa (container empilhado) */
+@media (max-width: 1024px) {
+  .mapWrapper {
+    min-height: 60vh;
+  }
+}
+
 /* Override leaflet popup to match dark theme */
 :global(.leaflet-popup-content-wrapper) {
   background: #161b27 !important;
@@ -55,4 +62,14 @@
 :global(.leaflet-control-zoom a:hover) {
   background: #1e2436 !important;
   color: #e8eaf0 !important;
+}
+
+/* Alvos de toque maiores nos controles de zoom em telas pequenas */
+@media (max-width: 1024px) {
+  :global(.leaflet-control-zoom a) {
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    font-size: 20px !important;
+  }
 }
