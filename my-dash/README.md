@@ -1,21 +1,75 @@
-# bun-react-template
+# duopen-frontend
 
-To install dependencies:
+Duas interfaces para o projeto DuoOpen no mesmo workspace:
+
+| Pasta | Stack | Porta padrão |
+|-------|-------|--------------|
+| `src/` | React 19 + Bun | 3000 |
+| `streamlit/` | Python + Streamlit | 8501 |
+
+---
+
+## Configuração de ambiente
+
+```bash
+cp .env.example .env
+# edite .env com seus valores reais
+```
+
+| Variável | Descrição |
+|----------|-----------|
+| `BUN_PUBLIC_API_URL` | URL do backend (exposta ao React no browser) |
+| `API_URL` | URL do backend (usada pelo Streamlit no servidor) |
+| `SUPABASE_URL` | URL do projeto Supabase |
+| `SUPABASE_ANON_KEY` | Chave anônima do Supabase |
+
+---
+
+## React + Bun
+
+### Pré-requisitos
+
+- [Bun](https://bun.sh) >= 1.3
+
+### Instalação e dev
 
 ```bash
 bun install
-```
-
-To start a development server:
-
-```bash
 bun dev
 ```
 
-To run for production:
+Acesse [http://localhost:3000](http://localhost:3000). Hot-reload ativado.
+
+O servidor Bun também atua como **proxy reverso**: requisições para `/proxy/*` são encaminhadas para `BUN_PUBLIC_API_URL`, evitando CORS em desenvolvimento.
+
+### Build de produção
 
 ```bash
+bun run build
 bun start
 ```
 
-This project was created using `bun init` in bun v1.3.8. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+---
+
+## Streamlit
+
+### Pré-requisitos
+
+- Python >= 3.10
+
+### Instalação e dev
+
+```bash
+cd streamlit
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+Acesse [http://localhost:8501](http://localhost:8501).
+
+### Páginas disponíveis
+
+- **Métricas** — gráficos de desempenho semanal
+- **Mapa** — distribuição geográfica de usuários
