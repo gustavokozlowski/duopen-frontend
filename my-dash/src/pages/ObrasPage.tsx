@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../components/PageLayout";
 import { Badge } from "../components/Badge";
+import { IEOPBadge } from "../components/IEOPBadge";
+import { getIEOPColor } from "../features/dashboard/ieop";
 import { Table, type Column } from "../components/Table";
 import { ObrasFilters } from "../features/obras/ObrasFilters";
 import { ExecutionBar } from "../features/obras/ExecutionBar";
@@ -72,6 +74,31 @@ const COLUMNS: Column<ObraListItem>[] = [
     header: "Risco",
     sortable: true,
     render: (v) => <RiskBadge prob={Number(v)} />,
+  },
+  {
+    key: "ieop_score",
+    header: "IEOP",
+    sortable: true,
+    render: (v, row) => {
+      const score = v as number | null | undefined;
+      const classe = (row.ieop_classe as string | null | undefined) ?? null;
+      return (
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+          <span
+            style={{
+              fontWeight: 700,
+              fontSize: "var(--text-base)",
+              width: 36,
+              textAlign: "right",
+              color: getIEOPColor(score),
+            }}
+          >
+            {score != null ? score.toFixed(1) : "—"}
+          </span>
+          <IEOPBadge classe={classe} size="sm" />
+        </div>
+      );
+    },
   },
   {
     key: "previsao_termino",

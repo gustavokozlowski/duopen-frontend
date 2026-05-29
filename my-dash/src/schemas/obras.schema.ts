@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ieopFieldsSchema } from "./ieop.schema";
 
 // ── Enums espelham exatamente os valores que a API retorna ────────
 // Fonte única de verdade: reutilizados tanto na validação dos
@@ -31,6 +32,7 @@ export const obraListItemSchema = z
     valor_contratado: z.number(),
     prob_atraso: z.number(),
     previsao_termino: z.string(),
+    ...ieopFieldsSchema.shape, // campos IEOP (defensivos: nullable/optional)
   })
   .catchall(z.unknown());
 
