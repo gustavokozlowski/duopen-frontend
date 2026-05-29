@@ -2,30 +2,68 @@
 
 ## Scope
 
-This workspace is a Bun + React 19 app with a Bun server and a React SPA.
+Bun + React 19 SPA com servidor Bun (SSR-lite + proxy reverso) e Streamlit em `streamlit/`.
 
 ## Commands
 
-- Install deps: `bun install` (see [README.md](README.md))
-- Dev server with HMR: `bun dev` (see [package.json](package.json))
-- Build: `bun build ./src/index.html --outdir=dist ...` (see [package.json](package.json))
-- Prod start: `bun start` (see [package.json](package.json))
+- Instalar deps: `bun install`
+- Dev (HMR): `bun dev` → http://localhost:3000
+- Build: `bun run build`
+- Prod: `bun start`
+- Streamlit: `cd streamlit && streamlit run app.py` → http://localhost:8501
 
 ## Entry Points
 
-- Bun server routes: [src/index.ts](src/index.ts)
-- HTML shell: [src/index.html](src/index.html)
-- React app entry: [src/frontend.tsx](src/frontend.tsx)
-- Root component: [src/App.tsx](src/App.tsx)
+| Arquivo | Papel |
+|---------|-------|
+| [src/index.ts](src/index.ts) | Servidor Bun — rotas + proxy `/proxy/*` → `BUN_PUBLIC_API_URL` |
+| [src/index.html](src/index.html) | Shell HTML |
+| [src/frontend.tsx](src/frontend.tsx) | Entrada React — monta providers (QueryClient, BrowserRouter, AuthProvider) |
+| [src/App.tsx](src/App.tsx) | Roteamento — `/login` publico, `/*` protegido por `PrivateRoute` |
 
-## Conventions And Notes
+## Estrutura atual
 
-- Client env vars must be prefixed with `BUN_PUBLIC_` (see [bunfig.toml](bunfig.toml)).
-- TypeScript path alias `@/*` maps to `./src/*` (see [tsconfig.json](tsconfig.json)).
-- HMR uses `import.meta.hot` in the React entry; preserve this when editing [src/frontend.tsx](src/frontend.tsx).
-- API routes are declared in the Bun `serve` `routes` map in [src/index.ts](src/index.ts).
-- Styling is global in [src/index.css](src/index.css); no CSS modules are used yet.
+```
+src/
+├── auth/                   # autenticacao JWT
+│   ├── tokenStore.ts       # access_token em memoria (NUNCA localStorage)
+│   ├── AuthContext.tsx      # estado global + Provider + useAuthContext()
+│   ├── PrivateRoute.tsx     # guarda de rota (verifica sessao no mount)
+│   └── LoginPage.tsx
+├── components/             # design system reutilizavel
+│   ├── Badge / Card / Table / LoadingSpinner / ErrorBoundary / PageLayout
+│   └── index.ts            # barrel export
+├── features/<feature>/     # logica + UI isoladas por feature
+│   ├── types.ts            # interfaces TypeScript puras
+│   ├── formatters.ts       # funcoes puras (sem efeito colateral)
+│   ├── use<Feature>.ts     # hooks de dados (TanStack Query)
+│   ├── Skeleton.tsx        # placeholders de carregamento
+│   └── <SubComponent>.tsx  # componentes presentacionais
+├── hooks/
+│   ├── useApi.ts           # apiClient axios + useApi<T> + useApiMutation
+│   └── useAuth.ts          # re-export de useAuthContext
+├── pages/
+│   └── <Page>.tsx          # orquestrador: state + hooks + layout
+└── styles/
+    └── tokens.css          # design tokens (cores, tipografia, espacamento)
+```
+
+## Conventions
+
+- **Variaveis de ambiente React**: prefixo `BUN_PUBLIC_` (ex: `BUN_PUBLIC_API_URL`)
+- **TypeScript path alias**: `@/*` → `./src/*`
+- **HMR**: preservar bloco `import.meta.hot` em [src/frontend.tsx](src/frontend.tsx)
+- **CSS**: CSS Modules por componente (`.module.css`); tokens globais em `tokens.css`
+- **Estilo de componente**: cada componente tem seu `.module.css` proprio — sem inline style para layout, sem CSS global para componentes
+- **Autenticacao**: `access_token` em memoria; `refresh_token` em httpOnly cookie; interceptor axios renova silenciosamente em 401
+- **Dados**: TanStack Query via `useApi<T>(endpoint, options)` — queryKey inclui query params para cache por filtro
+- **Recharts**: usar hex hardcoded que corresponde aos tokens (ver SKILL.md); sempre envolver em `<div style={{ height: N }}><ResponsiveContainer>`
+- **Feature folders**: criar `src/features/<feature>/` quando ha types + formatters + hooks + 2+ componentes relacionados
+
+## Seguranca
+- Nunca armazenar `access_token` em localStorage ou sessionStorage
+- Nunca commitar `.env` (ja no `.gitignore`)
 
 ## Tests
 
-- No tests configured. Ask before adding a new test framework or scripts.
+Nenhum framework configurado. Alinhar antes de adicionar Vitest ou outro.
