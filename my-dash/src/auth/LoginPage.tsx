@@ -47,9 +47,9 @@ export function LoginPage() {
       <div className={styles.card}>
         <div className={styles.brand}>
           <p className={styles.logo}>
-            Duo<span>Open</span>
+            IE<span>OP</span>
           </p>
-          <p className={styles.subtitle}>Acesse o painel de gestão</p>
+          <p className={styles.subtitle}>Índice de Eficiência de Obras Públicas · RJ</p>
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>

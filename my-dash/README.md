@@ -1,6 +1,11 @@
-# duopen-frontend
+# IEOP — Índice de Eficiência de Obras Públicas (RJ)
 
-Duas interfaces para o projeto DuoOpen no mesmo workspace:
+Dashboard analítico de eficiência de obras públicas no estado do Rio de Janeiro,
+com dados do Portal de Dados Abertos ([dados.gov.br](https://dados.gov.br)).
+O **IEOP** é um indicador quantitativo que avalia a eficiência de obras públicas
+considerando **custo por metro quadrado**, **percentual de atraso** e **recorrência de obras**.
+
+Duas interfaces no mesmo workspace:
 
 | Pasta | Stack | Porta padrão |
 |-------|-------|--------------|

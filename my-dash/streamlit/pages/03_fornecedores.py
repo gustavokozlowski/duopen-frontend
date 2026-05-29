@@ -12,7 +12,7 @@ import streamlit as st
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 import db  # noqa: E402
 
-st.set_page_config(page_title="Fornecedores — DuoOpen", layout="wide", page_icon="🏢")
+st.set_page_config(page_title="Fornecedores — IEOP", layout="wide", page_icon="🏢")
 st.title("🏢 Risco × Recorrência de Fornecedores")
 st.caption("Análise de fornecedores por probabilidade média de atraso e volume de obras.")
 

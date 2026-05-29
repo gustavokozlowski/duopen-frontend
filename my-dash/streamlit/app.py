@@ -7,12 +7,12 @@ sys.path.insert(0, os.path.dirname(__file__))
 import db  # noqa: E402
 
 st.set_page_config(
-    page_title="DuoOpen — ML Dashboard",
+    page_title="IEOP — Eficiência de Obras Públicas",
     page_icon="🏗️",
     layout="wide",
 )
 
-st.title("🏗️ DuoOpen — Análise de Obras Públicas")
+st.title("🏗️ IEOP — Índice de Eficiência de Obras Públicas (RJ)")
 st.markdown("Selecione uma página no menu lateral para explorar as visualizações de ML.")
 
 st.divider()

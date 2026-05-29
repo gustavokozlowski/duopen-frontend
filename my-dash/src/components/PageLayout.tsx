@@ -43,7 +43,7 @@ export function PageLayout({ children, nav = [], pageTitle, headerRight }: PageL
         aria-label="Navegação principal"
       >
         <div className={styles.logo}>
-          Duo<span>Open</span>
+          IE<span>OP</span>
         </div>
 
         <nav className={styles.nav}>

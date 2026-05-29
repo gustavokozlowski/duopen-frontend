@@ -13,7 +13,7 @@ import streamlit as st
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 import db  # noqa: E402
 
-st.set_page_config(page_title="Evolução — DuoOpen", layout="wide", page_icon="📈")
+st.set_page_config(page_title="Evolução — IEOP", layout="wide", page_icon="📈")
 st.title("📈 Evolução Temporal das Predições")
 st.caption("Tendência da probabilidade de atraso e volume de obras ao longo do tempo.")
 

@@ -13,7 +13,7 @@ import streamlit as st
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 import db  # noqa: E402
 
-st.set_page_config(page_title="Predições — DuoOpen", layout="wide", page_icon="🌡️")
+st.set_page_config(page_title="Predições — IEOP", layout="wide", page_icon="🌡️")
 st.title("🌡️ Mapa de Calor de Risco")
 st.caption("Probabilidade média de atraso por secretaria e status da obra.")
 

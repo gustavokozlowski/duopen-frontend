@@ -12,7 +12,7 @@ import streamlit as st
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 import db  # noqa: E402
 
-st.set_page_config(page_title="Features — DuoOpen", layout="wide", page_icon="📊")
+st.set_page_config(page_title="Features — IEOP", layout="wide", page_icon="📊")
 st.title("📊 Importância de Features — XGBoost")
 st.caption("Features mais relevantes do modelo de predição de atraso e estouro orçamentário.")
 
