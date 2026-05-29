@@ -1,16 +1,20 @@
+import { useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
-import { Badge } from "../components/Badge";
-import { Card } from "../components/Card";
-import { Table, type Column } from "../components/Table";
-import { LoadingSpinner } from "../components/LoadingSpinner";
 import { PageLayout, type NavItem } from "../components/PageLayout";
+import { PeriodFilter } from "../features/dashboard/PeriodFilter";
+import { MetricCards } from "../features/dashboard/MetricCards";
+import { AlertCard } from "../features/dashboard/AlertCard";
+import { DonutChart } from "../features/dashboard/DonutChart";
+import { HBarChart } from "../features/dashboard/HBarChart";
+import { LineChart } from "../features/dashboard/LineChart";
+import { defaultPeriod, useDashboardSummary, useTopAlerts } from "../features/dashboard/useDashboard";
 
 const NAV = [
   {
     items: [
       { path: "/", label: "Dashboard", icon: "◈" },
-      { path: "/usuarios", label: "Usuários", icon: "◉" },
-      { path: "/cursos", label: "Cursos", icon: "◎" },
+      { path: "/obras", label: "Obras", icon: "◉" },
+      { path: "/secretarias", label: "Secretarias", icon: "◎" },
     ] satisfies NavItem[],
   },
   {
@@ -22,34 +26,30 @@ const NAV = [
   },
 ];
 
-interface SampleRow extends Record<string, unknown> {
-  nome: string;
-  curso: string;
-  progresso: number;
-  status: string;
-}
+const GRID_4 = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+  gap: "var(--space-6)",
+} as const;
 
-const SAMPLE_DATA: SampleRow[] = [
-  { nome: "Ana Lima", curso: "Inglês A1", progresso: 87, status: "success" },
-  { nome: "Bruno Costa", curso: "Espanhol B1", progresso: 45, status: "warning" },
-  { nome: "Carla Dias", curso: "Inglês B2", progresso: 12, status: "danger" },
-  { nome: "Diego Melo", curso: "Francês A2", progresso: 100, status: "success" },
-  { nome: "Eduarda Faria", curso: "Inglês A1", progresso: 60, status: "warning" },
-];
+const GRID_2 = {
+  display: "grid",
+  gridTemplateColumns: "minmax(280px, 1fr) minmax(0, 1.6fr)",
+  gap: "var(--space-6)",
+  alignItems: "start",
+} as const;
 
-const COLUMNS: Column<SampleRow>[] = [
-  { key: "nome", header: "Nome", sortable: true },
-  { key: "curso", header: "Curso", sortable: true },
-  { key: "progresso", header: "Progresso", sortable: true, render: (v) => `${String(v)}%` },
-  {
-    key: "status",
-    header: "Status",
-    render: (v) => <Badge variant={v as "success" | "warning" | "danger"} />,
-  },
-];
+const GRID_FULL = {
+  display: "grid",
+  gap: "var(--space-6)",
+} as const;
 
 export function Dashboard() {
   const { user, logout } = useAuthContext();
+  const [period, setPeriod] = useState(defaultPeriod);
+
+  const summary = useDashboardSummary(period);
+  const alerts = useTopAlerts(period);
 
   return (
     <PageLayout
@@ -77,21 +77,25 @@ export function Dashboard() {
         </div>
       }
     >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "var(--space-6)",
-          marginBottom: "var(--space-8)",
-        }}
-      >
-        <Card title="Alunos ativos" value="1.284" icon="◉" variant="success" trend={12} trendLabel="vs. mês anterior" />
-        <Card title="Cursos em andamento" value="342" icon="◎" trend={-4} trendLabel="vs. mês anterior" />
-        <Card title="Taxa de conclusão" value="68%" icon="▦" variant="warning" trend={3} trendLabel="vs. mês anterior" />
-        <Card title="Alertas de risco" value="27" icon="⚠" variant="danger" trend={-15} trendLabel="vs. mês anterior" />
-      </div>
+      {/* ── Filtro de período ── */}
+      <PeriodFilter value={period} onChange={setPeriod} />
 
-      <Table columns={COLUMNS} data={SAMPLE_DATA} pageSize={5} searchable />
+      {/* ── Métricas globais ── */}
+      <section style={{ ...GRID_4, marginBottom: "var(--space-6)" }} aria-label="Métricas globais">
+        <MetricCards data={summary.data} isLoading={summary.isLoading} />
+      </section>
+
+      {/* ── Alertas + Rosca ── */}
+      <section style={{ ...GRID_2, marginBottom: "var(--space-6)" }} aria-label="Alertas e distribuição">
+        <AlertCard data={alerts.data} isLoading={alerts.isLoading} />
+        <DonutChart data={summary.data?.por_status} isLoading={summary.isLoading} />
+      </section>
+
+      {/* ── Barras + Linha ── */}
+      <section style={{ ...GRID_FULL, gridTemplateColumns: "1fr 1fr" }} aria-label="Análises">
+        <HBarChart data={summary.data?.por_secretaria} isLoading={summary.isLoading} />
+        <LineChart data={summary.data?.evolucao_mensal} isLoading={summary.isLoading} />
+      </section>
     </PageLayout>
   );
 }
