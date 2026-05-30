@@ -125,6 +125,10 @@ bun start        # NODE_ENV=production
 
 ## Streamlit
 
+Interface analítica complementar focada nas **visualizações de ML** do IEOP.
+É **independente** do app React — ambos só consomem o mesmo backend/dados.
+Documentação detalhada em [streamlit/README.md](streamlit/README.md).
+
 ### Pré-requisitos
 
 - Python >= 3.10
@@ -138,6 +142,25 @@ source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 streamlit run app.py         # http://localhost:8501
 ```
+
+Lê o `.env` da raiz (`my-dash/.env`). Com `SUPABASE_URL`/`SUPABASE_ANON_KEY`
+preenchidos, usa dados reais; senão, **cai para dados de exemplo** gerados
+localmente (não quebra).
+
+### Páginas
+
+Conjunto IEOP / ML (destacado na home):
+
+| Página | Conteúdo |
+|--------|----------|
+| 🌡️ Predições | mapa de calor de risco por secretaria × status |
+| 📊 Features | importância das features do modelo XGBoost |
+| 🏢 Fornecedores | scatter risco × recorrência por fornecedor |
+| 📈 Evolução | evolução temporal das predições de risco |
+| ⚖️ Comparativo | execução real vs. prevista (desvio) |
+
+Páginas de demonstração herdadas do template (não relacionadas ao IEOP):
+**Métricas** e **Mapa de Usuários**.
 
 ---
 
