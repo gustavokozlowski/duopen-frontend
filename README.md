@@ -329,4 +329,4 @@ bun test
 - **Feature folders**: criar `src/features/<feature>/` quando houver
   types + formatters + hooks + 2+ componentes relacionados.
 - **Segurança**: nunca persistir `access_token`; nunca commitar `.env`.
-```
+
