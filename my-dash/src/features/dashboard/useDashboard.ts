@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../services/api";
 import { dashboardSummarySchema, obraSchema } from "../../schemas/dashboard.schema";
+import { getIEOPStats } from "../../services/dashboard";
 import type { Period } from "./types";
 
 const REFETCH_MS = 5 * 60 * 1000; // 5 minutes
@@ -29,6 +30,18 @@ export function useTopAlerts(period: Period) {
     queryFn: async () => obraSchema.array().parse((await apiClient.get(url)).data),
     refetchInterval: REFETCH_MS,
     staleTime: REFETCH_MS,
+  });
+}
+
+// Resumo IEOP do município. Defensivo: o endpoint pode ainda não existir;
+// a query falha de forma isolada e o Dashboard só renderiza quando há dados.
+export function useIEOPStats() {
+  return useQuery({
+    queryKey: ["/api/v1/dashboard/ieop"],
+    queryFn: getIEOPStats,
+    refetchInterval: REFETCH_MS,
+    staleTime: REFETCH_MS,
+    retry: false,
   });
 }
 

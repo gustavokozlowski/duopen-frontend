@@ -1,6 +1,7 @@
 import L from "leaflet";
 import type { ObraMapPoint, MapFilter, RiscoNivel } from "./types";
 import { RISCO_COLORS } from "./types";
+import { getIEOPColor } from "../dashboard/ieop";
 
 export function getRiscoNivel(prob: number): RiscoNivel {
   if (prob >= 0.7) return "alto";
@@ -8,8 +9,7 @@ export function getRiscoNivel(prob: number): RiscoNivel {
   return "baixo";
 }
 
-export function createMarkerIcon(risco: RiscoNivel): L.DivIcon {
-  const color = RISCO_COLORS[risco];
+function dotIcon(color: string): L.DivIcon {
   return L.divIcon({
     className: "",
     html: `<div style="
@@ -21,6 +21,19 @@ export function createMarkerIcon(risco: RiscoNivel): L.DivIcon {
     iconAnchor: [7, 7],
     popupAnchor: [0, -10],
   });
+}
+
+export function createMarkerIcon(risco: RiscoNivel): L.DivIcon {
+  return dotIcon(RISCO_COLORS[risco]);
+}
+
+// Marcador colorido por IEOP. Defensivo: sem score, cai para a cor de risco.
+export function createMarkerIconByIEOP(
+  score: number | null | undefined,
+  risco: RiscoNivel
+): L.DivIcon {
+  if (score == null) return dotIcon(RISCO_COLORS[risco]);
+  return dotIcon(getIEOPColor(score));
 }
 
 export function createClusterIcon(cluster: L.MarkerCluster): L.DivIcon {

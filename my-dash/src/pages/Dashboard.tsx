@@ -3,11 +3,13 @@ import { useAuthContext } from "../auth/AuthContext";
 import { PageLayout } from "../components/PageLayout";
 import { PeriodFilter } from "../features/dashboard/PeriodFilter";
 import { MetricCards } from "../features/dashboard/MetricCards";
+import { IEOPCard } from "../features/dashboard/IEOPCard";
+import { IEOPDistribuicao } from "../features/dashboard/IEOPDistribuicao";
 import { AlertCard } from "../features/dashboard/AlertCard";
 import { DonutChart } from "../features/dashboard/DonutChart";
 import { HBarChart } from "../features/dashboard/HBarChart";
 import { LineChart } from "../features/dashboard/LineChart";
-import { defaultPeriod, useDashboardSummary, useTopAlerts } from "../features/dashboard/useDashboard";
+import { defaultPeriod, useDashboardSummary, useTopAlerts, useIEOPStats } from "../features/dashboard/useDashboard";
 import styles from "./Dashboard.module.css";
 
 
@@ -17,6 +19,7 @@ export function Dashboard() {
 
   const summary = useDashboardSummary(period);
   const alerts = useTopAlerts(period);
+  const ieop = useIEOPStats();
 
   return (
     <PageLayout
@@ -50,6 +53,14 @@ export function Dashboard() {
       <section className={styles.gridMetrics} aria-label="Métricas globais">
         <MetricCards data={summary.data} isLoading={summary.isLoading} />
       </section>
+
+      {/* ── IEOP: indicador principal (renderiza só quando o backend responde) ── */}
+      {ieop.data && (
+        <section className={styles.gridTwo} aria-label="Índice de Eficiência da Obra Pública">
+          <IEOPCard stats={ieop.data} />
+          <IEOPDistribuicao distribuicao={ieop.data.distribuicao} />
+        </section>
+      )}
 
       {/* ── Alertas + Rosca ── */}
       <section className={styles.gridTwo} aria-label="Alertas e distribuição">

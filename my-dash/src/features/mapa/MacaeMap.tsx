@@ -4,7 +4,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { MarkerPopup } from "./MarkerPopup";
 import { MapLegend } from "./MapLegend";
-import { createMarkerIcon, createClusterIcon, getRiscoNivel } from "./mapaUtils";
+import { createMarkerIconByIEOP, createClusterIcon, getRiscoNivel } from "./mapaUtils";
 import type { ObraMapPoint } from "./types";
 import macaeBoundary from "./macae.geojson.json";
 import styles from "./MacaeMap.module.css";
@@ -66,7 +66,7 @@ export function MacaeMap({ obras, isLoading }: MacaeMapProps) {
             <Marker
               key={obra.id}
               position={[obra.lat, obra.lng]}
-              icon={createMarkerIcon(getRiscoNivel(obra.prob_atraso))}
+              icon={createMarkerIconByIEOP(obra.ieop_score, getRiscoNivel(obra.prob_atraso))}
             >
               <Popup minWidth={240} maxWidth={300}>
                 <MarkerPopup obra={obra} />

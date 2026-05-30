@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { obraStatusSchema } from "./obras.schema";
+import { ieopFieldsSchema } from "./ieop.schema";
 
 // Ponto georreferenciado de obra retornado por /api/v1/mapa
 export const obraMapPointSchema = z.object({
@@ -13,6 +14,7 @@ export const obraMapPointSchema = z.object({
   lat: z.number(),
   lng: z.number(),
   valor_contratado: z.number(),
+  ...ieopFieldsSchema.shape, // campos IEOP (defensivos: nullable/optional)
 });
 
 export type ObraMapPoint = z.infer<typeof obraMapPointSchema>;

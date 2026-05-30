@@ -1,4 +1,5 @@
 import { getRiscoNivel } from "./mapaUtils";
+import { getIEOPColor } from "../dashboard/ieop";
 import { STATUS_LABELS } from "./types";
 import type { ObraMapPoint } from "./types";
 import styles from "./MarkerPopup.module.css";
@@ -39,6 +40,14 @@ export function MarkerPopup({ obra }: MarkerPopupProps) {
       <div className={styles.row}>
         <span className={styles.rowLabel}>Prob. atraso</span>
         <span className={`${styles.rowValue} ${probClass}`}>{probPct}%</span>
+      </div>
+
+      <div className={styles.row}>
+        <span className={styles.rowLabel}>IEOP</span>
+        <span className={styles.rowValue} style={{ color: getIEOPColor(obra.ieop_score) }}>
+          {obra.ieop_score != null ? obra.ieop_score.toFixed(1) : "—"}
+          {obra.ieop_classe ? ` (${obra.ieop_classe})` : ""}
+        </span>
       </div>
 
       <hr className={styles.divider} />
