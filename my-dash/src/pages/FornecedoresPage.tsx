@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Footer } from "../components/Footer";
+import { DownloadIcon } from "../components/icons";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { PageLayout } from "../components/PageLayout";
 import { type Column, Table } from "../components/Table";
@@ -102,8 +104,10 @@ export function FornecedoresPage() {
   return (
     <PageLayout
       pageTitle="Fornecedores"
+      breadcrumb="Macaé / Fornecedores"
       headerRight={
         <button
+          type="button"
           onClick={() => exportFornecedoresCsv(filtrados)}
           disabled={filtrados.length === 0}
           style={{
@@ -120,7 +124,7 @@ export function FornecedoresPage() {
             cursor: "pointer",
           }}
         >
-          ↓ Exportar CSV ({filtrados.length})
+          <DownloadIcon width={16} height={16} /> Exportar CSV ({filtrados.length})
         </button>
       }
     >
@@ -145,6 +149,8 @@ export function FornecedoresPage() {
           onRowClick={(row) => navigate(`/fornecedores/${String(row.id)}`)}
         />
       )}
+
+      <Footer />
     </PageLayout>
   );
 }

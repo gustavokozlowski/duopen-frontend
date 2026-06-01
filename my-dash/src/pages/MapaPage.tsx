@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { DownloadIcon } from "../components/icons";
 import { PageLayout } from "../components/PageLayout";
 import { MacaeMap } from "../features/mapa/MacaeMap";
 import styles from "../features/mapa/MapaPage.module.css";
@@ -21,7 +22,7 @@ export function MapaPage() {
   const obrasFiltradas = useMemo(() => filterObras(obras, filter), [obras, filter]);
 
   return (
-    <PageLayout pageTitle="Mapa de obras">
+    <PageLayout pageTitle="Mapa de obras" breadcrumb="Macaé / Relatórios / Mapa">
       <div className={styles.wrapper}>
         <div className={styles.toolbar}>
           <div className={styles.toolbarLeft}>
@@ -34,12 +35,14 @@ export function MapaPage() {
           </div>
 
           <button
+            type="button"
             className={styles.exportBtn}
             onClick={() => exportToCsv(obrasFiltradas)}
             disabled={obrasFiltradas.length === 0}
             aria-label="Exportar obras filtradas como CSV"
+            style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}
           >
-            ↓ Exportar CSV
+            <DownloadIcon width={16} height={16} /> Exportar CSV
           </button>
         </div>
 

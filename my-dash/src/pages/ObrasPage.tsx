@@ -2,7 +2,9 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { BadgeVariant } from "../components/Badge";
 import { Badge } from "../components/Badge";
+import { Footer } from "../components/Footer";
 import { IEOPBadge } from "../components/IEOPBadge";
+import { DownloadIcon } from "../components/icons";
 import { PageLayout } from "../components/PageLayout";
 import { type Column, Table } from "../components/Table";
 import { getIEOPColor } from "../features/dashboard/ieop";
@@ -129,8 +131,10 @@ export function ObrasPage() {
   return (
     <PageLayout
       pageTitle="Obras"
+      breadcrumb="Macaé / Obras públicas"
       headerRight={
         <button
+          type="button"
           onClick={() => exportObrasCsv(filtradas)}
           disabled={filtradas.length === 0}
           style={{
@@ -148,7 +152,7 @@ export function ObrasPage() {
           }}
           aria-label="Exportar obras filtradas como CSV"
         >
-          ↓ Exportar CSV
+          <DownloadIcon width={16} height={16} /> Exportar CSV
           <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>
             ({filtradas.length})
           </span>
@@ -172,6 +176,8 @@ export function ObrasPage() {
         }
         onRowClick={(row) => navigate(`/obras/${String(row.id)}`)}
       />
+
+      <Footer />
     </PageLayout>
   );
 }

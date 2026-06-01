@@ -2,54 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { LogoIcon } from "../components/icons";
 import { type LoginForm, loginSchema } from "../schemas/auth.schema";
 import { useAuthContext } from "./AuthContext";
 import styles from "./authForm.module.css";
-
-// Ícones inline (stroke = currentColor), consistentes com o tema escuro.
-const svgBase = {
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 2,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
-};
-
-function ChartIcon() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 24 24" {...svgBase} aria-hidden>
-      <path d="M3 3v18h18" />
-      <path d="m7 14 3-3 3 3 5-5" />
-    </svg>
-  );
-}
-
-function MailIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" {...svgBase} aria-hidden>
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="m3 7 9 6 9-6" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" {...svgBase} aria-hidden>
-      <rect x="4" y="11" width="16" height="10" rx="2" />
-      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-    </svg>
-  );
-}
-
-function ArrowIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" {...svgBase} aria-hidden>
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
-  );
-}
+import { ArrowIcon, EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "./authIcons";
+import { LivingStage } from "./LivingStage";
 
 function resolveErrorMessage(err: unknown): string {
   if (err instanceof Error && "response" in err) {
@@ -69,6 +27,7 @@ export function LoginPage() {
   const from = (location.state as { from?: string } | null)?.from ?? "/";
 
   const [serverError, setServerError] = useState<string | null>(null);
+  const [showPw, setShowPw] = useState(false);
 
   const {
     register,
@@ -91,94 +50,128 @@ export function LoginPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
-        <div className={styles.brand}>
-          <div className={styles.brandIcon}>
-            <ChartIcon />
-          </div>
-          <p className={styles.logo}>
-            IE<span>OP</span>
-          </p>
-          <p className={styles.subtitle}>Índice de Eficiência de Obras Públicas · RJ</p>
-        </div>
+      <LivingStage
+        headline={
+          <>
+            Cada obra pública, <em>medida</em> e classificada.
+          </>
+        }
+      />
 
-        <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
-          {serverError && (
-            <div className={styles.errorBanner} role="alert">
-              <span aria-hidden>⚠</span>
-              {serverError}
+      <div className={styles.panel}>
+        <div className={styles.panelInner}>
+          <div className={styles.lock}>
+            <LogoIcon size={38} />
+            <div className={styles.lockText}>
+              <div className={styles.lockWord}>
+                IE<b>OP</b>
+              </div>
+              <div className={styles.lockSub}>Eficiência de Obras Públicas · RJ</div>
             </div>
-          )}
-
-          <div className={styles.field}>
-            <label htmlFor="email" className={styles.label}>
-              E-mail
-            </label>
-            <div className={`${styles.inputWrap} ${errors.email ? styles.errorWrap : ""}`}>
-              <span className={styles.inputIcon}>
-                <MailIcon />
-              </span>
-              <input
-                id="email"
-                type="email"
-                className={`${styles.input} ${errors.email ? styles.error : ""}`}
-                placeholder="seu@email.com"
-                autoComplete="email"
-                aria-invalid={Boolean(errors.email)}
-                disabled={isSubmitting}
-                {...register("email")}
-              />
-            </div>
-            {errors.email && <span className={styles.fieldError}>{errors.email.message}</span>}
           </div>
 
-          <div className={styles.field}>
-            <label htmlFor="password" className={styles.label}>
-              Senha
-            </label>
-            <div className={`${styles.inputWrap} ${errors.password ? styles.errorWrap : ""}`}>
-              <span className={styles.inputIcon}>
-                <LockIcon />
-              </span>
-              <input
-                id="password"
-                type="password"
-                className={`${styles.input} ${errors.password ? styles.error : ""}`}
-                placeholder="••••••••"
-                autoComplete="current-password"
-                aria-invalid={Boolean(errors.password)}
-                disabled={isSubmitting}
-                {...register("password")}
-              />
-            </div>
-            {errors.password && (
-              <span className={styles.fieldError}>{errors.password.message}</span>
+          <div className={styles.formHead}>
+            <div className={styles.formTitle}>Acesse o painel</div>
+            <div className={styles.formSub}>Entre com suas credenciais institucionais.</div>
+          </div>
+
+          <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+            {serverError && (
+              <div className={styles.errorBanner} role="alert">
+                <span aria-hidden>⚠</span>
+                {serverError}
+              </div>
             )}
-          </div>
 
-          <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <span className={styles.spinner} aria-hidden />
-                Entrando…
-              </>
-            ) : (
-              <>
-                Entrar
-                <span className={styles.btnArrow}>
-                  <ArrowIcon />
+            <div className={styles.field2}>
+              <label htmlFor="email" className={styles.label}>
+                E-mail
+              </label>
+              <div className={`${styles.inputWrap} ${errors.email ? styles.errorWrap : ""}`}>
+                <span className={styles.inputIcon}>
+                  <MailIcon />
                 </span>
-              </>
-            )}
-          </button>
-        </form>
+                <input
+                  id="email"
+                  type="email"
+                  className={`${styles.input} ${errors.email ? styles.error : ""}`}
+                  placeholder="seu@email.gov.br"
+                  autoComplete="email"
+                  aria-invalid={Boolean(errors.email)}
+                  disabled={isSubmitting}
+                  {...register("email")}
+                />
+              </div>
+              {errors.email && <span className={styles.fieldError}>{errors.email.message}</span>}
+            </div>
 
-        <p className={styles.footer}>
-          Não tem conta?{" "}
-          <Link to="/register" className={styles.footerLink}>
-            Cadastre-se
-          </Link>
-        </p>
+            <div className={styles.field2}>
+              <div className={styles.rowBetween}>
+                <label htmlFor="password" className={styles.label}>
+                  Senha
+                </label>
+                <Link to="/login" className={styles.link}>
+                  Esqueci a senha
+                </Link>
+              </div>
+              <div className={`${styles.inputWrap} ${errors.password ? styles.errorWrap : ""}`}>
+                <span className={styles.inputIcon}>
+                  <LockIcon />
+                </span>
+                <input
+                  id="password"
+                  type={showPw ? "text" : "password"}
+                  className={`${styles.input} ${styles.hasToggle} ${errors.password ? styles.error : ""}`}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  aria-invalid={Boolean(errors.password)}
+                  disabled={isSubmitting}
+                  {...register("password")}
+                />
+                <button
+                  type="button"
+                  className={styles.pwToggle}
+                  onClick={() => setShowPw((v) => !v)}
+                  aria-label={showPw ? "Ocultar senha" : "Mostrar senha"}
+                  aria-pressed={showPw}
+                  title={showPw ? "Ocultar senha" : "Mostrar senha"}
+                >
+                  {showPw ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
+              {errors.password && (
+                <span className={styles.fieldError}>{errors.password.message}</span>
+              )}
+            </div>
+
+            <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <span className={styles.spinner} aria-hidden />
+                  Entrando…
+                </>
+              ) : (
+                <>
+                  Entrar
+                  <span className={styles.btnArrow}>
+                    <ArrowIcon />
+                  </span>
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className={styles.secure}>
+            <span className={styles.pulse} /> conexão segura · dados.gov.br
+          </div>
+
+          <p className={styles.foot}>
+            Não tem conta?{" "}
+            <Link to="/register" className={styles.footLink}>
+              Solicite acesso
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

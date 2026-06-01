@@ -16,6 +16,13 @@
   --color-info-bg:        #0d1b2e;
   --color-info-border:    #1e4b8a;
 
+  /* IEOP — paleta de 5 classes (espelha features/dashboard/ieop.ts) */
+  --ieop-otimo:   #1D9E75;
+  --ieop-bom:     #3FB984;
+  --ieop-regular: #BA7517;
+  --ieop-ruim:    #D2691E;
+  --ieop-critico: #A32D2D;
+
   /* Surface */
   --color-bg:       #0f1117;
   --color-surface:  #161b27;
@@ -67,8 +74,8 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
 
   /* Sidebar */
-  --sidebar-width: 240px;
-  --header-height: 56px;
+  --sidebar-width: 250px;
+  --header-height: 64px;
 
   /* Transitions */
   --transition-fast: 120ms ease;
