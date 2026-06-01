@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { obraStatusSchema } from "./obras.schema";
+import { obraStatusSchema, situacaoToStatus } from "./obras.schema";
 import { ieopFieldsSchema } from "./ieop.schema";
 
-// Ponto georreferenciado de obra retornado por /api/v1/mapa
+// Ponto georreferenciado de obra (shape consumido pela UI do mapa).
 export const obraMapPointSchema = z.object({
   id: z.string(),
   nome: z.string(),
@@ -18,3 +18,56 @@ export const obraMapPointSchema = z.object({
 });
 
 export type ObraMapPoint = z.infer<typeof obraMapPointSchema>;
+
+// ── Contrato REAL do backend: GeoJSON FeatureCollection ───────────
+// GET /api/v1/mapa/ devolve um FeatureCollection com coordinates [lng, lat].
+// As properties NÃO trazem prob_atraso/fornecedor/ieop — derivamos o que dá.
+
+export const geoJSONFeatureSchema = z
+  .object({
+    geometry: z.object({ coordinates: z.number().array() }).catchall(z.unknown()),
+    properties: z
+      .object({
+        id: z.string(),
+        nome: z.string(),
+        status: z.string().nullable().optional(),
+        nivel_risco: z.string().nullable().optional(),
+        secretaria: z.string().nullable().optional(),
+        bairro: z.string().nullable().optional(),
+        valor_contrato: z.number().nullable().optional(),
+      })
+      .catchall(z.unknown()),
+  })
+  .catchall(z.unknown());
+
+export const geoJSONFeatureCollectionSchema = z
+  .object({ features: geoJSONFeatureSchema.array() })
+  .catchall(z.unknown());
+
+// O mapa precisa de prob_atraso para o nível de risco; o backend só manda
+// nivel_risco. Reconstituímos um prob_atraso representativo por faixa.
+const RISCO_TO_PROB: Record<string, number> = { alto: 0.85, medio: 0.5, baixo: 0.15 };
+
+export function adaptGeoJSON(data: unknown): ObraMapPoint[] {
+  const fc = geoJSONFeatureCollectionSchema.parse(data);
+  return fc.features
+    .filter((f) => f.geometry.coordinates.length >= 2)
+    .map((f) => {
+      const p = f.properties;
+      const [lng, lat] = f.geometry.coordinates as [number, number];
+      return {
+        id: p.id,
+        nome: p.nome,
+        secretaria: p.secretaria ?? "Não informado",
+        status: situacaoToStatus(p.status),
+        prob_atraso: p.nivel_risco ? (RISCO_TO_PROB[p.nivel_risco] ?? 0) : 0,
+        execucao_percentual: 0, // não fornecido pelo GeoJSON
+        fornecedor: "", // não fornecido pelo GeoJSON
+        lat,
+        lng,
+        valor_contratado: p.valor_contrato ?? 0,
+        ieop_score: null,
+        ieop_classe: null,
+      };
+    });
+}

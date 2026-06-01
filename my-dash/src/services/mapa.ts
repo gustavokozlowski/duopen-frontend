@@ -1,5 +1,5 @@
 import { apiClient } from "./api";
-import type { ObraMapPoint } from "../features/mapa/types";
+import { adaptGeoJSON, type ObraMapPoint } from "../schemas/mapa.schema";
 import type { ObraStatus } from "../features/dashboard/types";
 import type { RiscoNivel } from "../features/mapa/types";
 
@@ -9,13 +9,13 @@ export interface GeoJSONFilter {
   risco?: RiscoNivel;
 }
 
+// GET /api/v1/mapa/ → GeoJSON FeatureCollection, normalizado para ObraMapPoint[].
 export async function getGeoJSON(filter?: GeoJSONFilter): Promise<ObraMapPoint[]> {
-  const params = new URLSearchParams();
-  if (filter?.secretaria) params.set("secretaria", filter.secretaria);
-  if (filter?.status) params.set("status", filter.status);
-  if (filter?.risco) params.set("risco", filter.risco);
+  const params: Record<string, string> = {};
+  if (filter?.secretaria) params.secretaria = filter.secretaria;
+  if (filter?.status) params.status = filter.status;
+  if (filter?.risco) params.nivel_risco = filter.risco;
 
-  const qs = params.size > 0 ? `?${params}` : "";
-  const { data } = await apiClient.get<ObraMapPoint[]>(`/api/v1/mapa${qs}`);
-  return data;
+  const { data } = await apiClient.get("/api/v1/mapa/", { params });
+  return adaptGeoJSON(data);
 }

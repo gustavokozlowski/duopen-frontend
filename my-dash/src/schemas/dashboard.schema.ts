@@ -43,3 +43,34 @@ export type SecretariaCount = z.infer<typeof secretariaCountSchema>;
 export type EvolucaoMes = z.infer<typeof evolucaoMesSchema>;
 export type DashboardSummary = z.infer<typeof dashboardSummarySchema>;
 export type Obra = z.infer<typeof obraSchema>;
+
+// ── Contrato REAL do backend (DUOPEN 2026) ────────────────────────
+// O resumo da UI é montado a partir de VÁRIOS endpoints:
+//   /dashboard/                   → métricas globais (nomes diferentes)
+//   /dashboard/distribuicao-status      → por_status
+//   /dashboard/distribuicao-secretaria  → por_secretaria
+//   /dashboard/evolucao           → evolucao_mensal
+// Os schemas raw validam cada um; os adapters convertem para o shape da UI.
+
+export const dashboardMetricsRawSchema = z
+  .object({
+    total_obras: z.number(),
+    valor_total: z.number(),
+    media_execucao_pct: z.number(),
+    obras_em_andamento: z.number(),
+    obras_concluidas: z.number(),
+    obras_atrasadas: z.number(),
+  })
+  .catchall(z.unknown());
+
+// Itens de distribuição vêm como { label, quantidade, valor_total }.
+export const distribuicaoItemSchema = z
+  .object({
+    label: z.string(),
+    quantidade: z.number(),
+    valor_total: z.number().nullable().optional(),
+  })
+  .catchall(z.unknown());
+
+export type DashboardMetricsRaw = z.infer<typeof dashboardMetricsRawSchema>;
+export type DistribuicaoItem = z.infer<typeof distribuicaoItemSchema>;

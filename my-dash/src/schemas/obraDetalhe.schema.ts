@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { obraStatusSchema } from "./obras.schema";
+import { obraStatusSchema, situacaoToStatus } from "./obras.schema";
+import { ieopFieldsSchema } from "./ieop.schema";
 
 export const aditivoTipoSchema = z.enum(["prazo", "valor", "ambos"]);
 
@@ -66,3 +67,74 @@ export type ContratoVinculado = z.infer<typeof contratoVinculadoSchema>;
 export type Fornecedor = z.infer<typeof fornecedorSchema>;
 export type PredicaoML = z.infer<typeof predicaoMLSchema>;
 export type ObraDetalhe = z.infer<typeof obraDetalheSchema>;
+
+// ── Contrato REAL do backend (DUOPEN 2026) ────────────────────────
+// GET /api/v1/obras/{id} devolve um objeto PLANO (sem predicao/contratos/
+// fornecedor aninhados). Predição ML, contratos e dados do fornecedor moram
+// em endpoints separados; aqui preenchemos o que existe e deixamos o resto
+// com defaults seguros para a página não quebrar.
+//
+// ⚠️ Hoje este endpoint retorna 500 no backend para toda obra — o adapter
+// já está pronto para quando isso for corrigido.
+
+export const obraDetalheRawSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+    descricao: z.string().nullable().optional(),
+    num_contrato: z.string().nullable().optional(),
+    secretaria: z.string().nullable().optional(),
+    bairro: z.string().nullable().optional(),
+    municipio: z.string().nullable().optional(),
+    status: z.string().nullable().optional(),
+    nivel_risco: z.string().nullable().optional(),
+    valor_contrato: z.number().nullable().optional(),
+    data_inicio: z.string().nullable().optional(),
+    data_prevista_fim: z.string().nullable().optional(),
+    percentual_executado: z.number().nullable().optional(),
+    percentual_executado_financeiro: z.number().nullable().optional(),
+    prob_atraso: z.number().nullable().optional(),
+    prob_estouro: z.number().nullable().optional(),
+    dias_atraso: z.number().nullable().optional(),
+    latitude: z.number().nullable().optional(),
+    longitude: z.number().nullable().optional(),
+    cnpj_executora: z.string().nullable().optional(),
+    ...ieopFieldsSchema.shape,
+  })
+  .catchall(z.unknown());
+
+export type ObraDetalheRaw = z.infer<typeof obraDetalheRawSchema>;
+
+export function adaptObraDetalhe(data: unknown): ObraDetalhe {
+  const r = obraDetalheRawSchema.parse(data);
+  const endereco = [r.bairro, r.municipio].filter(Boolean).join(", ") || "—";
+  return {
+    id: r.id,
+    nome: r.nome,
+    numero_contrato: r.num_contrato ?? "—",
+    secretaria: r.secretaria ?? "Não informado",
+    bairro: r.bairro ?? "—",
+    endereco,
+    status: situacaoToStatus(r.status),
+    execucao_percentual: r.percentual_executado ?? r.percentual_executado_financeiro ?? 0,
+    valor_contratado: r.valor_contrato ?? 0,
+    valor_aditivos: 0,
+    data_inicio: r.data_inicio ?? "",
+    previsao_termino: r.data_prevista_fim ?? "",
+    atraso_dias: r.dias_atraso ?? 0,
+    lat: r.latitude ?? 0,
+    lng: r.longitude ?? 0,
+    predicao: {
+      prob_atraso: r.prob_atraso ?? 0,
+      prob_estouro: r.prob_estouro ?? 0,
+      ultima_atualizacao: r.ieop_calculado_em ?? "",
+      fatores_risco: [],
+    },
+    contratos: [],
+    fornecedor: {
+      id: r.cnpj_executora ?? "",
+      nome: "—",
+      cnpj: r.cnpj_executora ?? "",
+    },
+  };
+}
