@@ -40,6 +40,7 @@ function ToastEntry({ toast, onDismiss }: { toast: ToastItem; onDismiss: (id: st
       </div>
       <button
         className={styles.closeBtn}
+        type="button"
         onClick={() => onDismiss(toast.id)}
         aria-label="Fechar notificação"
       >
