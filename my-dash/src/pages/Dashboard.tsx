@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Footer } from "../components/Footer";
+import { BellIcon, SearchIcon } from "../components/icons";
 import { PageLayout } from "../components/PageLayout";
 import { AlertCard } from "../features/dashboard/AlertCard";
 import { DonutChart } from "../features/dashboard/DonutChart";
@@ -8,7 +9,7 @@ import { IEOPCard, type IEOPComponente } from "../features/dashboard/IEOPCard";
 import { IEOPDistribuicao } from "../features/dashboard/IEOPDistribuicao";
 import { LineChart } from "../features/dashboard/LineChart";
 import { MetricCards } from "../features/dashboard/MetricCards";
-import { PeriodFilter } from "../features/dashboard/PeriodFilter";
+import { PeriodToggle } from "../features/dashboard/PeriodToggle";
 import { ChartSkeleton } from "../features/dashboard/Skeleton";
 import {
   defaultPeriod,
@@ -66,7 +67,13 @@ export function Dashboard() {
           <span className={styles.live}>
             <span className={styles.liveDot} /> ao vivo
           </span>
-          <PeriodFilter value={period} onChange={setPeriod} />
+          <PeriodToggle onChange={setPeriod} />
+          <button type="button" className={styles.iconBtn} aria-label="Buscar">
+            <SearchIcon />
+          </button>
+          <button type="button" className={styles.iconBtn} aria-label="Notificações">
+            <BellIcon />
+          </button>
         </>
       }
     >
@@ -80,7 +87,10 @@ export function Dashboard() {
         ) : ieop.data ? (
           <>
             <IEOPCard stats={ieop.data} subtitle={ieopSubtitle} componentes={componentes} />
-            <IEOPDistribuicao distribuicao={ieop.data.distribuicao} />
+            <IEOPDistribuicao
+              distribuicao={ieop.data.distribuicao}
+              totalObras={summary.data?.total_obras}
+            />
           </>
         ) : (
           <div

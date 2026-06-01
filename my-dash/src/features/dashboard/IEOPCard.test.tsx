@@ -22,10 +22,12 @@ describe("IEOPCard", () => {
 });
 
 describe("IEOPDistribuicao", () => {
-  it("renderiza sem quebrar com as 5 classes", () => {
-    const { container } = render(<IEOPDistribuicao distribuicao={STATS.distribuicao} />);
+  it("renderiza as 5 classes com as contagens (barras CSS)", () => {
+    render(<IEOPDistribuicao distribuicao={STATS.distribuicao} totalObras={22} />);
     expect(screen.getByText("Distribuição por classe IEOP")).toBeInTheDocument();
-    // Recharts monta um SVG dentro do container responsivo.
-    expect(container.querySelector(".recharts-responsive-container")).toBeInTheDocument();
+    // Contagens das classes (Bom=8, Regular=5) e rodapé de classificadas.
+    expect(screen.getByText("8")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
+    expect(screen.getByText("Obras classificadas")).toBeInTheDocument();
   });
 });

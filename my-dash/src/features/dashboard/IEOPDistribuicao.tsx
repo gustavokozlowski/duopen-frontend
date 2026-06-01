@@ -1,85 +1,52 @@
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import type { IEOPStats } from "../../schemas/ieop.schema";
+import styles from "./IEOPDistribuicao.module.css";
 import { IEOP_COLORS } from "./ieop";
 
+// Classes da pior para a melhor (espelha o protótipo).
 const CLASSES = ["Crítico", "Ruim", "Regular", "Bom", "Ótimo"] as const;
-
-const TOOLTIP_STYLE = {
-  contentStyle: {
-    background: "#161b27",
-    border: "1px solid #2a2f42",
-    borderRadius: "8px",
-    color: "#e8eaf0",
-    fontSize: 13,
-  },
-  itemStyle: { color: "#8b90a8" },
-  labelStyle: { color: "#e8eaf0", fontWeight: 600 },
-};
 
 interface Props {
   distribuicao: IEOPStats["distribuicao"];
+  /** Total de obras do município (para o rodapé "N de TOTAL"). */
+  totalObras?: number;
 }
 
-export function IEOPDistribuicao({ distribuicao }: Props) {
-  const data = CLASSES.map((classe) => ({
+export function IEOPDistribuicao({ distribuicao, totalObras }: Props) {
+  const entries = CLASSES.map((classe) => ({
     classe,
-    quantidade: distribuicao[classe] ?? 0,
+    count: distribuicao[classe] ?? 0,
     cor: (IEOP_COLORS[classe] ?? IEOP_COLORS["—"]!).hex,
   }));
+  const max = Math.max(1, ...entries.map((e) => e.count));
+  const classificadas = entries.reduce((s, e) => s + e.count, 0);
+  const total = totalObras ?? classificadas;
 
   return (
-    <div
-      style={{
-        background: "var(--color-surface)",
-        border: "1px solid var(--color-border)",
-        borderRadius: "var(--radius-lg)",
-        padding: "var(--space-6)",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <p
-        style={{
-          fontSize: "var(--text-sm)",
-          fontWeight: 600,
-          color: "var(--color-text-secondary)",
-          marginBottom: "var(--space-4)",
-        }}
-      >
-        Distribuição por classe IEOP
-      </p>
-      <div style={{ flex: 1, minHeight: 220 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#2a2f42" />
-            <XAxis dataKey="classe" tick={{ fontSize: 11, fill: "#8b90a8" }} stroke="#2a2f42" />
-            <YAxis
-              tick={{ fontSize: 11, fill: "#8b90a8" }}
-              stroke="#2a2f42"
-              allowDecimals={false}
-            />
-            <Tooltip
-              {...TOOLTIP_STYLE}
-              cursor={{ fill: "rgba(255,255,255,0.04)" }}
-              formatter={(value: number) => [`${value} obras`, "Quantidade"]}
-            />
-            <Bar dataKey="quantidade" radius={[4, 4, 0, 0]}>
-              {data.map((entry, i) => (
-                <Cell key={i} fill={entry.cor} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+    <div className={styles.card}>
+      <p className={styles.title}>Distribuição por classe IEOP</p>
+
+      <div className={styles.chart}>
+        {entries.map((e) => (
+          <div key={e.classe} className={styles.col}>
+            <span className={styles.count} style={{ color: e.cor }}>
+              {e.count}
+            </span>
+            <div className={styles.barWrap}>
+              <div
+                className={styles.bar}
+                style={{ height: `${(e.count / max) * 100}%`, background: e.cor }}
+              />
+            </div>
+            <span className={styles.lbl}>{e.classe}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className={styles.foot}>
+        <span>Obras classificadas</span>
+        <span>
+          <b>{classificadas}</b> de {total}
+        </span>
       </div>
     </div>
   );
