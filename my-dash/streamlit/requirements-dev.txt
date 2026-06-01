@@ -1,0 +1,3 @@
+# Ferramentas de desenvolvimento (não necessárias em runtime).
+# Uso: pip install -r requirements-dev.txt && ruff check . && ruff format .
+ruff>=0.15
