@@ -1,9 +1,11 @@
 import "./index.css";
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { LoginPage } from "./auth/LoginPage";
 import { RegisterPage } from "./auth/RegisterPage";
 import { PrivateRoute } from "./auth/PrivateRoute";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { LoadingSpinner } from "./components/LoadingSpinner";
 import { Dashboard } from "./pages/Dashboard";
 import { MapaPage } from "./pages/MapaPage";
 import { ObrasPage } from "./pages/ObrasPage";
@@ -11,6 +13,12 @@ import { ObraDetalhePage } from "./pages/ObraDetalhePage";
 import { FornecedoresPage } from "./pages/FornecedoresPage";
 import { FornecedorPerfilPage } from "./pages/FornecedorPerfilPage";
 import { RagRoute } from "./auth/RagRoute";
+
+// deck.gl é pesado (~2 MB); carregamos a página 3D sob demanda para não
+// inflar o bundle inicial de quem nunca abre o mapa 3D.
+const Mapa3DPage = lazy(() =>
+  import("./pages/Mapa3DPage").then((m) => ({ default: m.Mapa3DPage }))
+);
 
 export function App() {
   return (
@@ -27,6 +35,14 @@ export function App() {
           <Route path="/fornecedores/:id" element={<FornecedorPerfilPage />} />
           <Route path="/ia" element={<RagRoute />} />
           <Route path="/mapa" element={<MapaPage />} />
+          <Route
+            path="/mapa-3d"
+            element={
+              <Suspense fallback={<LoadingSpinner size="lg" label="Carregando mapa 3D…" />}>
+                <Mapa3DPage />
+              </Suspense>
+            }
+          />
           <Route path="/*" element={<Dashboard />} />
         </Route>
       </Routes>
