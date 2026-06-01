@@ -7,7 +7,7 @@ export function PrivateRoute() {
 
   if (isLoading) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
         <LoadingSpinner size="lg" label="Verificando sessão…" />
       </div>
     );
