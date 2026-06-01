@@ -18,13 +18,13 @@
 .wrap {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
   flex: 1;
 }
 
 .donut {
-  width: 158px;
-  height: 158px;
+  width: 200px;
+  height: 200px;
   position: relative;
   flex-shrink: 0;
 }
@@ -41,7 +41,7 @@
 
 .total {
   font-family: var(--font-mono);
-  font-size: 1.5rem;
+  font-size: 1.85rem;
   font-weight: var(--font-bold);
   line-height: 1;
   color: var(--color-text-primary);
@@ -56,18 +56,17 @@
 }
 
 .legend {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 11px;
   min-width: 0;
 }
 
 .legItem {
   display: flex;
   align-items: center;
-  gap: 9px;
-  font-size: 0.78rem;
+  gap: 10px;
+  font-size: 0.8rem;
   color: var(--color-text-secondary);
 }
 
@@ -78,11 +77,10 @@
   flex-shrink: 0;
 }
 
+/* min-width alinha os números numa coluna logo após os rótulos (sem jogá-los na ponta) */
 .name {
-  flex: 1;
+  min-width: 92px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .val {
