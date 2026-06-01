@@ -7,6 +7,13 @@ import { z } from "zod";
 export const perfilSchema = z.enum(["admin", "gestor", "readonly"]);
 export type Perfil = z.infer<typeof perfilSchema>;
 
+// Rótulos legíveis para exibição (ex.: select do cadastro).
+export const PERFIL_LABELS: Record<Perfil, string> = {
+  admin: "Administrador",
+  gestor: "Gestor",
+  readonly: "Somente leitura",
+};
+
 // Usuário retornado por /me, /login e /register.
 // perfil tem default "gestor" (espelha o DEFAULT da coluna no backend),
 // então respostas sem o campo continuam válidas.
@@ -26,13 +33,14 @@ export const loginSchema = z.object({
 
 export type LoginForm = z.infer<typeof loginSchema>;
 
-// Cadastro — nome, e-mail, senha (mín. 6) e confirmação.
+// Cadastro — nome, e-mail, senha (mín. 6), confirmação e perfil de acesso.
 export const registerSchema = z
   .object({
     nome: z.string().trim().min(2, "Informe seu nome"),
     email: z.string().min(1, "Informe seu e-mail").email("E-mail inválido"),
     password: z.string().min(6, "A senha deve ter ao menos 6 caracteres"),
     confirm: z.string(),
+    perfil: perfilSchema,
   })
   .refine((data) => data.password === data.confirm, {
     message: "As senhas não coincidem",

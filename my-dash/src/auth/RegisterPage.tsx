@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthContext } from "./AuthContext";
-import { registerSchema, type RegisterForm } from "../schemas/auth.schema";
+import { registerSchema, perfilSchema, PERFIL_LABELS, type RegisterForm } from "../schemas/auth.schema";
 import styles from "./authForm.module.css";
 
 // Ícones inline (stroke = currentColor)
@@ -52,6 +52,22 @@ function LockIcon() {
   );
 }
 
+function ShieldIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" {...svgBase} aria-hidden>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" {...svgBase} aria-hidden>
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
 function ArrowIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" {...svgBase} aria-hidden>
@@ -84,13 +100,13 @@ export function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { nome: "", email: "", password: "", confirm: "" },
+    defaultValues: { nome: "", email: "", password: "", confirm: "", perfil: "gestor" },
   });
 
   async function onSubmit(values: RegisterForm) {
     setServerError(null);
     try {
-      await registerUser(values.nome.trim(), values.email.trim(), values.password);
+      await registerUser(values.nome.trim(), values.email.trim(), values.password, values.perfil);
       navigate("/", { replace: true });
     } catch (err) {
       setServerError(resolveErrorMessage(err));
@@ -160,6 +176,45 @@ export function RegisterPage() {
               />
             </div>
             {errors.email && <span className={styles.fieldError}>{errors.email.message}</span>}
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="perfil" className={styles.label}>
+              Perfil de acesso
+            </label>
+            <div className={`${styles.inputWrap} ${errors.perfil ? styles.errorWrap : ""}`}>
+              <span className={styles.inputIcon}>
+                <ShieldIcon />
+              </span>
+              <select
+                id="perfil"
+                className={`${styles.input} ${errors.perfil ? styles.error : ""}`}
+                style={{ appearance: "none", cursor: "pointer", paddingRight: 36 }}
+                aria-invalid={Boolean(errors.perfil)}
+                disabled={isSubmitting}
+                {...register("perfil")}
+              >
+                {perfilSchema.options.map((p) => (
+                  <option key={p} value={p}>
+                    {PERFIL_LABELS[p]}
+                  </option>
+                ))}
+              </select>
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  right: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  color: "var(--color-text-muted)",
+                  pointerEvents: "none",
+                }}
+              >
+                <ChevronDownIcon />
+              </span>
+            </div>
+            {errors.perfil && <span className={styles.fieldError}>{errors.perfil.message}</span>}
           </div>
 
           <div className={styles.field}>
