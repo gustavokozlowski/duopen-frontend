@@ -9,16 +9,36 @@ import {
   Cell,
 } from "recharts";
 import { ChartSkeleton } from "./Skeleton";
+import { normalizeSecretaria, truncate } from "./formatters";
 import type { SecretariaCount } from "./types";
 
 const TOOLTIP_STYLE = {
   contentStyle: { background: "#161b27", border: "1px solid #2a2f42", borderRadius: "8px", color: "#e8eaf0", fontSize: 13 },
   itemStyle: { color: "#8b90a8" },
+  labelStyle: { color: "#e8eaf0", fontWeight: 600 },
   cursor: { fill: "rgba(255,255,255,0.04)" },
 };
 
 const AXIS = { fill: "#8b90a8", fontSize: 12 };
 const GRID = { stroke: "#2a2f42", strokeDasharray: "4 4" };
+
+// Tick do eixo Y: rótulo normalizado + truncado, com o nome completo
+// disponível no hover nativo (<title>) e no tooltip do gráfico.
+interface TickProps {
+  x?: number;
+  y?: number;
+  payload?: { value: string };
+}
+
+function SecretariaTick({ x = 0, y = 0, payload }: TickProps) {
+  const full = payload?.value ?? "";
+  return (
+    <text x={x} y={y} dy={4} textAnchor="end" fill={AXIS.fill} fontSize={AXIS.fontSize}>
+      <title>{full}</title>
+      {truncate(normalizeSecretaria(full))}
+    </text>
+  );
+}
 
 interface HBarChartProps {
   data: SecretariaCount[] | undefined;
@@ -44,8 +64,9 @@ export function HBarChart({ data, isLoading }: HBarChartProps) {
             <YAxis
               type="category"
               dataKey="secretaria"
-              width={130}
-              tick={AXIS}
+              width={140}
+              tick={<SecretariaTick />}
+              interval={0}
               axisLine={false}
               tickLine={false}
             />
