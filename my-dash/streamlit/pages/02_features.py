@@ -112,5 +112,7 @@ st.subheader("Detalhes das features")
 display = df.head(n).copy()
 display["importance"] = display["importance"].map("{:.4f}".format)
 display["rank"] = range(1, len(display) + 1)
-cols_show = ["rank", "feature_name", "importance"] + (["descricao"] if "descricao" in display.columns else [])
+cols_show = ["rank", "feature_name", "importance"] + (
+    ["descricao"] if "descricao" in display.columns else []
+)
 st.dataframe(display[cols_show], use_container_width=True, hide_index=True)

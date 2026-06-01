@@ -29,9 +29,7 @@ if df.empty:
 REQUIRED = {"valor_contrato", "dias_atraso", "ieop_score"}
 faltando = REQUIRED - set(df.columns)
 if faltando:
-    st.warning(
-        f"Tabela `obras` sem as colunas {sorted(faltando)} — usando dados de amostra."
-    )
+    st.warning(f"Tabela `obras` sem as colunas {sorted(faltando)} — usando dados de amostra.")
     df = db.sample_obras()
 
 # Garante numérico e remove obras sem as 3 dimensões.
@@ -66,7 +64,10 @@ with st.sidebar:
     eixo_x = st.radio(
         "Eixo X (custo)",
         ["valor_contrato"] + (["custo_m2"] if has_custo_m2 else []),
-        format_func=lambda c: {"valor_contrato": "Valor do contrato (R$)", "custo_m2": "Custo por m² (R$)"}[c],
+        format_func=lambda c: {
+            "valor_contrato": "Valor do contrato (R$)",
+            "custo_m2": "Custo por m² (R$)",
+        }[c],
     )
 
     ieop_lo, ieop_hi = st.slider("Faixa de IEOP", 0.0, 100.0, (0.0, 100.0), step=1.0)
@@ -116,7 +117,9 @@ fig = px.scatter_3d(
 )
 fig.update_traces(marker=dict(size=4, opacity=0.85, line=dict(width=0)))
 
-AXIS = dict(backgroundcolor="#161b27", gridcolor="#2a2f42", color="#8b90a8", zerolinecolor="#2a2f42")
+AXIS = dict(
+    backgroundcolor="#161b27", gridcolor="#2a2f42", color="#8b90a8", zerolinecolor="#2a2f42"
+)
 fig.update_layout(
     template="plotly_dark",
     paper_bgcolor="#1e2436",

@@ -77,6 +77,7 @@ def ieop_classe(score: float) -> str:
         return "Ruim"
     return "Crítico"
 
+
 # ── Supabase client ───────────────────────────────────────────────────────────
 
 
@@ -138,7 +139,16 @@ def sample_predicoes(n: int = 300, seed: int = 42) -> pd.DataFrame:
             "nome": [f"Obra #{i:04d} — {rng.choice(_SECRETARIAS)}" for i in range(n)],
             "secretaria": rng.choice(_SECRETARIAS, n),
             "bairro": rng.choice(
-                ["Centro", "Imbetiba", "Lagoa", "Glória", "Novo Horizonte", "Cabiúnas", "Imboassica"], n
+                [
+                    "Centro",
+                    "Imbetiba",
+                    "Lagoa",
+                    "Glória",
+                    "Novo Horizonte",
+                    "Cabiúnas",
+                    "Imboassica",
+                ],
+                n,
             ),
             "status": rng.choice(_STATUS, n, p=[0.40, 0.22, 0.10, 0.20, 0.08]),
             "prob_atraso": prob_atraso,
@@ -174,7 +184,7 @@ def sample_features(seed: int = 42) -> pd.DataFrame:
         ("equipe_fiscalizacao", "Tamanho da equipe de fiscalização"),
     ]
     rng = np.random.default_rng(seed)
-    names, descs = zip(*features)
+    names, descs = zip(*features, strict=False)
     imp = rng.dirichlet(np.array([6, 5, 4, 4, 3, 2, 3, 2, 1.5, 1.5, 1, 1, 2, 1, 1]))
     return (
         pd.DataFrame({"feature_name": names, "descricao": descs, "importance": imp.round(5)})

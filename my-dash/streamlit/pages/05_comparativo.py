@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 import sys
 
-import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
@@ -40,7 +39,9 @@ with st.sidebar:
     sel_sec = st.multiselect("Secretaria", secretarias, default=secretarias)
     status_opts = sorted(df["status"].unique().tolist())
     sel_status = st.multiselect(
-        "Status", status_opts, default=status_opts,
+        "Status",
+        status_opts,
+        default=status_opts,
         format_func=lambda s: db.STATUS_LABELS.get(s, s),
     )
     desvio_min = st.slider("Desvio mínimo (|real − previsto|)", 0.0, 50.0, 0.0, step=1.0)
@@ -58,9 +59,13 @@ m1.metric("Obras analisadas", len(df_f))
 mae = df_f["desvio_abs"].mean()
 m2.metric("Erro médio absoluto", f"{mae:.1f} p.p.")
 acima = (df_f["desvio"] > 0).sum()
-m3.metric("Acima do previsto", f"{acima}", f"{acima / len(df_f):.0%} do total" if len(df_f) else "—")
+m3.metric(
+    "Acima do previsto", f"{acima}", f"{acima / len(df_f):.0%} do total" if len(df_f) else "—"
+)
 abaixo = (df_f["desvio"] < 0).sum()
-m4.metric("Abaixo do previsto", f"{abaixo}", f"{abaixo / len(df_f):.0%} do total" if len(df_f) else "—")
+m4.metric(
+    "Abaixo do previsto", f"{abaixo}", f"{abaixo / len(df_f):.0%} do total" if len(df_f) else "—"
+)
 
 st.divider()
 
@@ -101,11 +106,15 @@ with col_scatter:
     # Linha de previsão perfeita
     fig.add_shape(
         type="line",
-        x0=0, y0=0, x1=100, y1=100,
+        x0=0,
+        y0=0,
+        x1=100,
+        y1=100,
         line=dict(color="#2a2f42", dash="dash", width=1.5),
     )
-    fig.add_annotation(x=95, y=93, text="Perfeito", showarrow=False,
-                        font=dict(color="#555b72", size=11))
+    fig.add_annotation(
+        x=95, y=93, text="Perfeito", showarrow=False, font=dict(color="#555b72", size=11)
+    )
 
     fig.update_layout(
         **db.PLOTLY_LAYOUT,
@@ -130,8 +139,12 @@ with col_dist:
         hovertemplate="Desvio: %{x:.1f} p.p.<br>Obras: %{y}<extra></extra>",
     )
     fig2.add_vline(x=0, line_dash="dash", line_color="#e8eaf0", annotation_text="zero")
-    fig2.add_vline(x=df_f["desvio"].mean(), line_dash="dot", line_color="#BA7517",
-                   annotation_text=f"média {df_f['desvio'].mean():+.1f}")
+    fig2.add_vline(
+        x=df_f["desvio"].mean(),
+        line_dash="dot",
+        line_color="#BA7517",
+        annotation_text=f"média {df_f['desvio'].mean():+.1f}",
+    )
 
     fig2.update_layout(
         **db.PLOTLY_LAYOUT,
@@ -148,7 +161,17 @@ with col_dist:
 st.subheader("Obras com maior desvio")
 top_dev = (
     df_f.sort_values("desvio_abs", ascending=False)
-    .head(15)[["nome", "secretaria", "status", "execucao_prevista", "execucao_real", "desvio", "prob_atraso"]]
+    .head(15)[
+        [
+            "nome",
+            "secretaria",
+            "status",
+            "execucao_prevista",
+            "execucao_real",
+            "desvio",
+            "prob_atraso",
+        ]
+    ]
     .copy()
 )
 top_dev["status"] = top_dev["status"].map(db.STATUS_LABELS)

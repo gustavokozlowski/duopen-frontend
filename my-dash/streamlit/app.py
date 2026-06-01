@@ -26,7 +26,7 @@ pages = [
     ("⚖️", "Comparativo", "Real vs previsto — desvio de execução"),
 ]
 
-for col, (icon, title, desc) in zip(cols, pages):
+for col, (icon, title, desc) in zip(cols, pages, strict=False):
     col.metric(icon, title)
     col.caption(desc)
 
