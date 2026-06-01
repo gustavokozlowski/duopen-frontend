@@ -62,3 +62,83 @@ export const DEFAULT_OBRAS_FILTER: ObrasFilterValues = {
   periodoInicio: "",
   periodoFim: "",
 };
+
+// ── Contrato REAL do backend (DUOPEN 2026) ────────────────────────
+// O backend usa nomes de campo diferentes dos da UI e envelopa a lista
+// em { items, total, page, size, pages }. Estes schemas validam o payload
+// cru; os adapters abaixo convertem para os tipos que a UI já consome.
+
+// `situacao` vem como texto legível; mapeamos para o enum interno.
+const SITUACAO_TO_STATUS: Record<string, ObraStatus> = {
+  "Em andamento": "em_andamento",
+  "Concluída": "concluida",
+  "Concluida": "concluida",
+  "Paralisada": "paralisada",
+  "Em fase de planejamento": "nao_iniciada",
+  "Cancelada": "paralisada",
+  "Indefinido": "nao_iniciada",
+};
+
+export function situacaoToStatus(situacao: string | null | undefined): ObraStatus {
+  if (!situacao) return "nao_iniciada";
+  return SITUACAO_TO_STATUS[situacao] ?? "nao_iniciada";
+}
+
+export const obraRawSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+    num_contrato: z.string().nullable().optional(),
+    secretaria: z.string().nullable().optional(),
+    bairro: z.string().nullable().optional(),
+    situacao: z.string().nullable().optional(),
+    nivel_risco: z.string().nullable().optional(),
+    valor_contrato: z.number().nullable().optional(),
+    data_prevista_fim: z.string().nullable().optional(),
+    percentual_executado: z.number().nullable().optional(),
+    prob_atraso: z.number().nullable().optional(),
+    dias_atraso: z.number().nullable().optional(),
+    latitude: z.number().nullable().optional(),
+    longitude: z.number().nullable().optional(),
+    ...ieopFieldsSchema.shape,
+  })
+  .catchall(z.unknown());
+
+export type ObraRaw = z.infer<typeof obraRawSchema>;
+
+// Envelope paginado padrão do backend.
+export function pageSchema<T extends z.ZodTypeAny>(item: T) {
+  return z
+    .object({
+      items: item.array(),
+      total: z.number(),
+      page: z.number(),
+      size: z.number(),
+      pages: z.number(),
+    })
+    .catchall(z.unknown());
+}
+
+export const obrasPageSchema = pageSchema(obraRawSchema);
+
+export function adaptObra(r: ObraRaw): ObraListItem {
+  return {
+    id: r.id,
+    nome: r.nome,
+    numero_contrato: r.num_contrato ?? "—",
+    secretaria: r.secretaria ?? "Não informado",
+    bairro: r.bairro ?? "—",
+    status: situacaoToStatus(r.situacao),
+    execucao_percentual: r.percentual_executado ?? 0,
+    valor_contratado: r.valor_contrato ?? 0,
+    prob_atraso: r.prob_atraso ?? 0,
+    previsao_termino: r.data_prevista_fim ?? "",
+    ieop_score: r.ieop_score ?? null,
+    ieop_classe: r.ieop_classe ?? null,
+    ieop_custo: r.ieop_custo ?? null,
+    ieop_atraso: r.ieop_atraso ?? null,
+    ieop_recorrencia: r.ieop_recorrencia ?? null,
+    ieop_execucao: r.ieop_execucao ?? null,
+    ieop_calculado_em: r.ieop_calculado_em ?? null,
+  };
+}

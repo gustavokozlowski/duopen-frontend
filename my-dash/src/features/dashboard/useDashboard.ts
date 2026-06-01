@@ -1,33 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "../../services/api";
-import { dashboardSummarySchema, obraSchema } from "../../schemas/dashboard.schema";
-import { getIEOPStats } from "../../services/dashboard";
+import { getDashboard, getTopAlerts, getIEOPStats } from "../../services/dashboard";
 import type { Period } from "./types";
 
 const REFETCH_MS = 5 * 60 * 1000; // 5 minutes
 
-function toParams(period: Period): string {
-  return new URLSearchParams({
-    data_inicio: period.dataInicio,
-    data_fim: period.dataFim,
-  }).toString();
-}
-
 export function useDashboardSummary(period: Period) {
-  const url = `/api/v1/dashboard?${toParams(period)}`;
   return useQuery({
-    queryKey: [url],
-    queryFn: async () => dashboardSummarySchema.parse((await apiClient.get(url)).data),
+    queryKey: ["dashboard-summary", period.dataInicio, period.dataFim],
+    queryFn: () => getDashboard(period),
     refetchInterval: REFETCH_MS,
     staleTime: REFETCH_MS,
   });
 }
 
 export function useTopAlerts(period: Period) {
-  const url = `/api/v1/obras?${toParams(period)}&sort=-prob_atraso&limit=5`;
   return useQuery({
-    queryKey: [url],
-    queryFn: async () => obraSchema.array().parse((await apiClient.get(url)).data),
+    queryKey: ["dashboard-alertas", period.dataInicio, period.dataFim],
+    queryFn: () => getTopAlerts(period),
     refetchInterval: REFETCH_MS,
     staleTime: REFETCH_MS,
   });
