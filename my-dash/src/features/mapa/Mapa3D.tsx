@@ -4,7 +4,7 @@ import type { ObraMapPoint } from "../../schemas/mapa.schema";
 import { formatBRL } from "../dashboard/formatters";
 import { getIEOPColor, IEOP_COLORS } from "../dashboard/ieop";
 import type { RiscoNivel } from "./types";
-import { RISCO_COLORS, RISCO_LABELS } from "./types";
+import { RISCO_COLORS, RISCO_LABELS, STATUS_LABELS } from "./types";
 
 // Macaé / RJ. Pitch alto para destacar as colunas extrudadas.
 const INITIAL_VIEW_STATE = {
@@ -127,9 +127,9 @@ export function Mapa3D({ obras }: Mapa3DProps) {
               ? `<br/>IEOP ${o.ieop_score.toFixed(1)} (${o.ieop_classe ?? "—"})`
               : "";
           return {
-            html: `<strong>${o.nome}</strong><br/>${o.secretaria}<br/>${formatBRL(
-              o.valor_contratado,
-            )} · ${RISCO_LABELS[riscoNivel(o.prob_atraso)]}${ieop}`,
+            html: `<strong>${o.nome}</strong><br/>${o.secretaria}<br/>${
+              STATUS_LABELS[o.status]
+            } · ${formatBRL(o.valor_contratado)} · ${RISCO_LABELS[riscoNivel(o.prob_atraso)]}${ieop}`,
             style: {
               background: "#161b27",
               border: "1px solid #2a2f42",
