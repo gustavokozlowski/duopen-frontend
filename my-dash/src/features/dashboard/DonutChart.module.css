@@ -65,7 +65,7 @@
 .legItem {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-size: 0.8rem;
   color: var(--color-text-secondary);
 }
@@ -77,13 +77,13 @@
   flex-shrink: 0;
 }
 
-/* min-width alinha os números numa coluna logo após os rótulos (sem jogá-los na ponta) */
 .name {
-  min-width: 92px;
   white-space: nowrap;
 }
 
+/* número colado ao rótulo (gap pequeno e uniforme) */
 .val {
+  margin-left: 6px;
   font-family: var(--font-mono);
   font-weight: var(--font-semibold);
   color: var(--color-text-primary);
