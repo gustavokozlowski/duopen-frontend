@@ -1,6 +1,15 @@
 /**
- * Serviço de IA: streaming SSE via fetch (suporta POST).
- * Usa async generator — cada chunk é um SSEEvent tipado.
+ * Serviço de IA: consulta RAG.
+ *
+ * Usa o endpoint NÃO-streaming (POST /api/v1/ia/consulta), que devolve a
+ * resposta completa em JSON ({ resposta, modelo }). O endpoint de streaming
+ * (/consulta/stream) emite tokens de texto cru cujo conteúdo contém `\n\n`
+ * (markdown) — o mesmo separador usado entre eventos SSE —, o que torna o
+ * stream ambíguo/impossível de parsear sem perder conteúdo. Por isso optamos
+ * pela resposta completa, que é íntegra.
+ *
+ * A interface continua sendo um async generator (1 chunk) para manter o
+ * contrato com useChat (que renderiza eventos SSEEvent).
  */
 
 import { getAccessToken } from "../auth/tokenStore";
@@ -8,6 +17,11 @@ import type { SSEEvent } from "../features/chat/types";
 import { BASE_URL } from "./api";
 
 export type { SSEEvent };
+
+interface ConsultaResponse {
+  resposta: string;
+  modelo: string | null;
+}
 
 export async function* postConsulta(
   pergunta: string,
@@ -17,7 +31,6 @@ export async function* postConsulta(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Accept: "text/event-stream",
       Authorization: `Bearer ${getAccessToken() ?? ""}`,
     },
     body: JSON.stringify({ pergunta }),
@@ -27,34 +40,9 @@ export async function* postConsulta(
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} — ${res.statusText}`);
   }
-  if (!res.body) throw new Error("Resposta sem corpo.");
 
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? "";
-
-      for (const line of lines) {
-        if (!line.startsWith("data:")) continue;
-        const raw = line.replace(/^data:\s*/, "").trim();
-        if (!raw || raw === "[DONE]") continue;
-
-        try {
-          yield JSON.parse(raw) as SSEEvent;
-        } catch {
-          // skip malformed chunk
-        }
-      }
-    }
-  } finally {
-    reader.releaseLock();
+  const data = (await res.json()) as ConsultaResponse;
+  if (data.resposta) {
+    yield { type: "content", text: data.resposta };
   }
 }
