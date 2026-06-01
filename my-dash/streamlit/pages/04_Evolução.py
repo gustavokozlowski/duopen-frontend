@@ -19,10 +19,9 @@ st.caption("Tendência da probabilidade de atraso e volume de obras ao longo do 
 
 # ── Dados ─────────────────────────────────────────────────────────────────────
 
-df = db.fetch("predicoes")
-if df.empty:
+df = db.load_predicoes()
+if not db.is_configured():
     db.notice_sample()
-    df = db.sample_predicoes()
 
 df["mes"] = pd.to_datetime(df["data_predicao"], format="%Y-%m", errors="coerce")
 df = df.dropna(subset=["mes"])

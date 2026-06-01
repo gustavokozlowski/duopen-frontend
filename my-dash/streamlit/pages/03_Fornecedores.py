@@ -17,10 +17,9 @@ st.caption("Análise de fornecedores por probabilidade média de atraso e volume
 
 # ── Dados ─────────────────────────────────────────────────────────────────────
 
-df = db.fetch("predicoes")
-if df.empty:
+df = db.load_predicoes()
+if not db.is_configured():
     db.notice_sample()
-    df = db.sample_predicoes()
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
