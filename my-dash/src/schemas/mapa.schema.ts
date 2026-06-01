@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { ieopClasseSchema, ieopFieldsSchema } from "./ieop.schema";
 import { obraStatusSchema, situacaoToStatus } from "./obras.schema";
-import { ieopFieldsSchema, ieopClasseSchema } from "./ieop.schema";
 
 // Ponto georreferenciado de obra (shape consumido pela UI do mapa).
 export const obraMapPointSchema = z.object({

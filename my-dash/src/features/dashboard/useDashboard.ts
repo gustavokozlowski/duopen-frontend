@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getDashboard, getTopAlerts, getIEOPStats } from "../../services/dashboard";
+import { getDashboard, getIEOPStats, getTopAlerts } from "../../services/dashboard";
 import type { Period } from "./types";
 
 const REFETCH_MS = 5 * 60 * 1000; // 5 minutes

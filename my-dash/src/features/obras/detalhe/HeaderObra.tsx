@@ -1,20 +1,20 @@
 import { useNavigate } from "react-router-dom";
+import type { BadgeVariant } from "../../../components/Badge";
 import { Badge } from "../../../components/Badge";
 import { IEOPBadge } from "../../../components/IEOPBadge";
-import { RiskBadge } from "../RiskBadge";
 import { getIEOPColor } from "../../dashboard/ieop";
 import { STATUS_LABELS } from "../../mapa/types";
-import type { BadgeVariant } from "../../../components/Badge";
-import type { ObraDetalhe, ObraStatus } from "./types";
+import { RiskBadge } from "../RiskBadge";
 import styles from "./HeaderObra.module.css";
+import type { ObraDetalhe, ObraStatus } from "./types";
 
 const STATUS_VARIANT: Record<ObraStatus, BadgeVariant> = {
   em_andamento: "info",
-  concluida:    "success",
-  paralisada:   "warning",
-  atrasada:     "danger",
+  concluida: "success",
+  paralisada: "warning",
+  atrasada: "danger",
   nao_iniciada: "neutral",
-  cancelada:    "danger",
+  cancelada: "danger",
 };
 
 interface HeaderObraProps {
@@ -41,7 +41,13 @@ export function HeaderObra({ obra }: HeaderObraProps) {
         <RiskBadge prob={obra.predicao.prob_atraso} />
         {obra.ieop_score != null && (
           <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}>
-            <span style={{ fontWeight: 700, fontSize: "var(--text-sm)", color: getIEOPColor(obra.ieop_score) }}>
+            <span
+              style={{
+                fontWeight: 700,
+                fontSize: "var(--text-sm)",
+                color: getIEOPColor(obra.ieop_score),
+              }}
+            >
               {obra.ieop_score.toFixed(2)}
             </span>
             <IEOPBadge classe={obra.ieop_classe ?? null} size="sm" />

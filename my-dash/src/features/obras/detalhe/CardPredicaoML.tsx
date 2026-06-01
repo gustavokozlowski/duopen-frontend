@@ -1,5 +1,5 @@
-import type { PredicaoML } from "./types";
 import styles from "./CardPredicaoML.module.css";
+import type { PredicaoML } from "./types";
 
 function gaugeColor(prob: number): string {
   if (prob >= 0.7) return "#A32D2D";
@@ -10,8 +10,11 @@ function gaugeColor(prob: number): string {
 function formatDateTime(iso: string): string {
   try {
     return new Date(iso).toLocaleString("pt-BR", {
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
     return iso;
@@ -26,7 +29,12 @@ function GaugeChart({ value, label }: { value: number; label: string }) {
 
   return (
     <div className={styles.gaugeWrapper}>
-      <svg viewBox="0 0 120 76" width="100%" role="img" aria-label={`${label}: ${Math.round(pct * 100)}%`}>
+      <svg
+        viewBox="0 0 120 76"
+        width="100%"
+        role="img"
+        aria-label={`${label}: ${Math.round(pct * 100)}%`}
+      >
         <path d={path} fill="none" stroke="#2a2f42" strokeWidth="10" strokeLinecap="round" />
         <path
           d={path}
@@ -39,7 +47,8 @@ function GaugeChart({ value, label }: { value: number; label: string }) {
           strokeDashoffset={1 - pct}
         />
         <text
-          x="60" y="56"
+          x="60"
+          y="56"
           textAnchor="middle"
           fill="#e8eaf0"
           fontSize="20"
@@ -68,9 +77,7 @@ export function CardPredicaoML({ predicao }: CardPredicaoMLProps) {
         <GaugeChart value={predicao.prob_estouro} label="Prob. estouro" />
       </div>
 
-      <p className={styles.updated}>
-        Atualizado em {formatDateTime(predicao.ultima_atualizacao)}
-      </p>
+      <p className={styles.updated}>Atualizado em {formatDateTime(predicao.ultima_atualizacao)}</p>
 
       {predicao.fatores_risco.length > 0 && (
         <>

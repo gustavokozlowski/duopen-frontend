@@ -1,15 +1,15 @@
-import { apiClient } from "./api";
-import { ieopStatsSchema, type IEOPStats } from "../schemas/ieop.schema";
+import type { Period } from "../features/dashboard/types";
+import type { DistribuicaoItem, StatusCount } from "../schemas/dashboard.schema";
 import {
+  type DashboardSummary,
   dashboardMetricsRawSchema,
   distribuicaoItemSchema,
   evolucaoMesSchema,
-  type DashboardSummary,
   type Obra,
 } from "../schemas/dashboard.schema";
+import { type IEOPStats, ieopStatsSchema } from "../schemas/ieop.schema";
 import { obrasPageSchema, situacaoToStatus } from "../schemas/obras.schema";
-import type { DistribuicaoItem, StatusCount } from "../schemas/dashboard.schema";
-import type { Period } from "../features/dashboard/types";
+import { apiClient } from "./api";
 
 // Mapeia o label textual do backend para o enum de status e soma as
 // quantidades por status (evita fatias cinza/duplicadas na rosca).
@@ -49,19 +49,19 @@ export async function getDashboard(period?: Period): Promise<DashboardSummary> {
       apiClient
         .get("/api/v1/dashboard/distribuicao-status")
         .then((r) => distribuicaoItemSchema.array().parse(r.data)),
-      []
+      [],
     ),
     safe(
       apiClient
         .get("/api/v1/dashboard/distribuicao-secretaria")
         .then((r) => distribuicaoItemSchema.array().parse(r.data)),
-      []
+      [],
     ),
     safe(
       apiClient
         .get("/api/v1/dashboard/evolucao")
         .then((r) => evolucaoMesSchema.array().parse(r.data)),
-      []
+      [],
     ),
   ]);
 
@@ -86,7 +86,7 @@ export async function getTopAlerts(period?: Period, limit = 5): Promise<Obra[]> 
       await apiClient.get("/api/v1/obras/", {
         params: { ...periodParams(period), sort: "-prob_atraso", limit },
       })
-    ).data
+    ).data,
   );
 
   return page.items.map((r) => ({

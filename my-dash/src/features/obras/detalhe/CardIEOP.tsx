@@ -1,7 +1,7 @@
 import { IEOPBadge } from "../../../components/IEOPBadge";
 import { getIEOPColor } from "../../dashboard/ieop";
-import type { ObraDetalhe } from "./types";
 import styles from "./CardIEOP.module.css";
+import type { ObraDetalhe } from "./types";
 
 // Componentes do IEOP (escala 0–100). Espelha os campos do duopen-ml:
 // C = custo, P = prazo/atraso, R = recorrência, E = execução.
@@ -15,8 +15,11 @@ const COMPONENTES = [
 function formatDateTime(iso: string): string {
   try {
     return new Date(iso).toLocaleString("pt-BR", {
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
     return iso;
@@ -65,9 +68,7 @@ export function CardIEOP({ obra }: CardIEOPProps) {
           </div>
 
           {obra.ieop_calculado_em && (
-            <p className={styles.updated}>
-              Calculado em {formatDateTime(obra.ieop_calculado_em)}
-            </p>
+            <p className={styles.updated}>Calculado em {formatDateTime(obra.ieop_calculado_em)}</p>
           )}
         </>
       )}

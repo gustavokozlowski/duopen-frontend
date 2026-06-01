@@ -1,11 +1,11 @@
 import { getRiscoNivel } from "../mapa/mapaUtils";
-import type { FornecedorRanking, FornecedoresFilter } from "./types";
-import { ALERTA_THRESHOLD } from "./types";
 import { formatCnpj } from "./formatters";
+import type { FornecedoresFilter, FornecedorRanking } from "./types";
+import { ALERTA_THRESHOLD } from "./types";
 
 export function filterFornecedores(
   lista: FornecedorRanking[],
-  filter: FornecedoresFilter
+  filter: FornecedoresFilter,
 ): FornecedorRanking[] {
   return lista.filter((f) => {
     if (filter.search) {
@@ -24,24 +24,31 @@ export function hasAlerta(f: FornecedorRanking): boolean {
 
 function escapeField(v: string | number): string {
   const s = String(v);
-  return s.includes(",") || s.includes('"') || s.includes("\n")
-    ? `"${s.replace(/"/g, '""')}"`
-    : s;
+  return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
 export function exportFornecedoresCsv(lista: FornecedorRanking[]): void {
   const headers = [
-    "CNPJ", "Razão Social", "Total Contratos", "Total Obras",
-    "Valor Total (R$)", "Taxa Aditivo %", "Risco Médio %",
-    "Em Andamento", "Concluídas",
+    "CNPJ",
+    "Razão Social",
+    "Total Contratos",
+    "Total Obras",
+    "Valor Total (R$)",
+    "Taxa Aditivo %",
+    "Risco Médio %",
+    "Em Andamento",
+    "Concluídas",
   ];
   const rows = lista.map((f) => [
-    formatCnpj(f.cnpj), f.nome,
-    f.total_contratos, f.total_obras,
+    formatCnpj(f.cnpj),
+    f.nome,
+    f.total_contratos,
+    f.total_obras,
     f.valor_total.toFixed(2),
     (f.taxa_aditivo * 100).toFixed(1),
     (f.avg_prob_atraso * 100).toFixed(1),
-    f.obras_em_andamento, f.obras_concluidas,
+    f.obras_em_andamento,
+    f.obras_concluidas,
   ]);
   const csv = [headers, ...rows].map((r) => r.map(escapeField).join(",")).join("\n");
   const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });

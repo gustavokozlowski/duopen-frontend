@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { obraStatusSchema, situacaoToStatus } from "./obras.schema";
 import { ieopFieldsSchema } from "./ieop.schema";
+import { obraStatusSchema, situacaoToStatus } from "./obras.schema";
 
 export const aditivoTipoSchema = z.enum(["prazo", "valor", "ambos"]);
 

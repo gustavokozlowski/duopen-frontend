@@ -1,5 +1,5 @@
-import type { Fornecedor } from "./types";
 import styles from "./CardFornecedor.module.css";
+import type { Fornecedor } from "./types";
 
 interface CardFornecedorProps {
   fornecedor: Fornecedor;

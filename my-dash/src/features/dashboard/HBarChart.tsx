@@ -1,19 +1,25 @@
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
 } from "recharts";
-import { ChartSkeleton } from "./Skeleton";
 import { normalizeSecretaria, truncate } from "./formatters";
+import { ChartSkeleton } from "./Skeleton";
 import type { SecretariaCount } from "./types";
 
 const TOOLTIP_STYLE = {
-  contentStyle: { background: "#161b27", border: "1px solid #2a2f42", borderRadius: "8px", color: "#e8eaf0", fontSize: 13 },
+  contentStyle: {
+    background: "#161b27",
+    border: "1px solid #2a2f42",
+    borderRadius: "8px",
+    color: "#e8eaf0",
+    fontSize: 13,
+  },
   itemStyle: { color: "#8b90a8" },
   labelStyle: { color: "#e8eaf0", fontWeight: 600 },
   cursor: { fill: "rgba(255,255,255,0.04)" },
@@ -52,13 +58,31 @@ export function HBarChart({ data, isLoading }: HBarChartProps) {
   const max = sorted[0]?.total ?? 1;
 
   return (
-    <div style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg)", padding: "var(--space-6)" }}>
-      <p style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: "var(--space-4)" }}>
+    <div
+      style={{
+        background: "var(--color-surface)",
+        border: "1px solid var(--color-border)",
+        borderRadius: "var(--radius-lg)",
+        padding: "var(--space-6)",
+      }}
+    >
+      <p
+        style={{
+          fontSize: "var(--text-sm)",
+          fontWeight: 600,
+          color: "var(--color-text-secondary)",
+          marginBottom: "var(--space-4)",
+        }}
+      >
         Obras por secretaria
       </p>
       <div style={{ height: sorted.length * 36 + 40 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={sorted} layout="vertical" margin={{ left: 8, right: 24, top: 4, bottom: 4 }}>
+          <BarChart
+            data={sorted}
+            layout="vertical"
+            margin={{ left: 8, right: 24, top: 4, bottom: 4 }}
+          >
             <CartesianGrid horizontal={false} {...GRID} />
             <XAxis type="number" tick={AXIS} axisLine={false} tickLine={false} />
             <YAxis
@@ -73,10 +97,7 @@ export function HBarChart({ data, isLoading }: HBarChartProps) {
             <Tooltip {...TOOLTIP_STYLE} />
             <Bar dataKey="total" name="Obras" radius={[0, 4, 4, 0]} maxBarSize={20}>
               {sorted.map((entry, i) => (
-                <Cell
-                  key={i}
-                  fill={entry.total === max ? "#1D9E75" : "#1a5c46"}
-                />
+                <Cell key={i} fill={entry.total === max ? "#1D9E75" : "#1a5c46"} />
               ))}
             </Bar>
           </BarChart>

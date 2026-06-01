@@ -1,9 +1,9 @@
+import { BitmapLayer, ColumnLayer, DeckGL, TileLayer } from "deck.gl";
 import { useMemo, useState } from "react";
-import { DeckGL, ColumnLayer, TileLayer, BitmapLayer } from "deck.gl";
-import { RISCO_COLORS, RISCO_LABELS } from "./types";
-import type { RiscoNivel } from "./types";
 import type { ObraMapPoint } from "../../schemas/mapa.schema";
 import { formatBRL } from "../dashboard/formatters";
+import type { RiscoNivel } from "./types";
+import { RISCO_COLORS, RISCO_LABELS } from "./types";
 
 // Macaé / RJ. Pitch alto para destacar as colunas extrudadas.
 const INITIAL_VIEW_STATE = {
@@ -36,10 +36,7 @@ interface Mapa3DProps {
 export function Mapa3D({ obras }: Mapa3DProps) {
   const [elevateBy, setElevateBy] = useState<ElevateBy>("valor");
 
-  const maxValor = useMemo(
-    () => Math.max(1, ...obras.map((o) => o.valor_contratado)),
-    [obras]
-  );
+  const maxValor = useMemo(() => Math.max(1, ...obras.map((o) => o.valor_contratado)), [obras]);
 
   const elevation = (o: ObraMapPoint): number =>
     elevateBy === "valor"
@@ -84,7 +81,15 @@ export function Mapa3D({ obras }: Mapa3DProps) {
   });
 
   return (
-    <div style={{ position: "relative", height: "72vh", borderRadius: "var(--radius-lg)", overflow: "hidden", border: "1px solid var(--color-border)" }}>
+    <div
+      style={{
+        position: "relative",
+        height: "72vh",
+        borderRadius: "var(--radius-lg)",
+        overflow: "hidden",
+        border: "1px solid var(--color-border)",
+      }}
+    >
       <DeckGL
         initialViewState={INITIAL_VIEW_STATE}
         controller
@@ -94,7 +99,7 @@ export function Mapa3D({ obras }: Mapa3DProps) {
           if (!o) return null;
           return {
             html: `<strong>${o.nome}</strong><br/>${o.secretaria}<br/>${formatBRL(
-              o.valor_contratado
+              o.valor_contratado,
             )} · ${RISCO_LABELS[riscoNivel(o.prob_atraso)]}`,
             style: {
               background: "#161b27",
@@ -110,9 +115,25 @@ export function Mapa3D({ obras }: Mapa3DProps) {
       />
 
       {/* Controles + legenda sobre o mapa */}
-      <div style={{ position: "absolute", top: 12, left: 12, background: "rgba(22,27,39,0.92)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-md)", padding: "var(--space-3) var(--space-4)", display: "flex", flexDirection: "column", gap: "var(--space-3)", backdropFilter: "blur(4px)" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 12,
+          left: 12,
+          background: "rgba(22,27,39,0.92)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-md)",
+          padding: "var(--space-3) var(--space-4)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--space-3)",
+          backdropFilter: "blur(4px)",
+        }}
+      >
         <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}>
-          <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)" }}>Altura por:</span>
+          <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)" }}>
+            Altura por:
+          </span>
           {(["valor", "risco"] as ElevateBy[]).map((m) => (
             <button
               key={m}
@@ -133,7 +154,16 @@ export function Mapa3D({ obras }: Mapa3DProps) {
         </div>
         <div style={{ display: "flex", gap: "var(--space-3)" }}>
           {(["alto", "medio", "baixo"] as RiscoNivel[]).map((r) => (
-            <span key={r} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: "var(--text-xs)", color: "var(--color-text-secondary)" }}>
+            <span
+              key={r}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                fontSize: "var(--text-xs)",
+                color: "var(--color-text-secondary)",
+              }}
+            >
               <span style={{ width: 9, height: 9, borderRadius: 2, background: RISCO_COLORS[r] }} />
               {RISCO_LABELS[r]}
             </span>

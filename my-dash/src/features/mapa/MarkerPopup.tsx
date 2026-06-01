@@ -1,8 +1,8 @@
-import { getRiscoNivel } from "./mapaUtils";
 import { getIEOPColor } from "../dashboard/ieop";
-import { STATUS_LABELS } from "./types";
-import type { ObraMapPoint } from "./types";
 import styles from "./MarkerPopup.module.css";
+import { getRiscoNivel } from "./mapaUtils";
+import type { ObraMapPoint } from "./types";
+import { STATUS_LABELS } from "./types";
 
 interface MarkerPopupProps {
   obra: ObraMapPoint;
@@ -12,13 +12,14 @@ export function MarkerPopup({ obra }: MarkerPopupProps) {
   const risco = getRiscoNivel(obra.prob_atraso);
   const probPct = Math.round(obra.prob_atraso * 100);
 
-  const probClass =
-    risco === "alto" ? styles.high : risco === "medio" ? styles.medium : styles.low;
+  const probClass = risco === "alto" ? styles.high : risco === "medio" ? styles.medium : styles.low;
 
   const barColor =
-    obra.execucao_percentual >= 70 ? "#1D9E75"
-    : obra.execucao_percentual >= 40 ? "#BA7517"
-    : "#A32D2D";
+    obra.execucao_percentual >= 70
+      ? "#1D9E75"
+      : obra.execucao_percentual >= 40
+        ? "#BA7517"
+        : "#A32D2D";
 
   return (
     <div className={styles.popup}>
@@ -33,8 +34,15 @@ export function MarkerPopup({ obra }: MarkerPopupProps) {
         <span className={styles.rowLabel}>Execução</span>
         <span className={styles.rowValue}>{obra.execucao_percentual.toFixed(1)}%</span>
       </div>
-      <div className={styles.progressBar} role="progressbar" aria-valuenow={obra.execucao_percentual}>
-        <div className={styles.progressFill} style={{ width: `${obra.execucao_percentual}%`, background: barColor }} />
+      <div
+        className={styles.progressBar}
+        role="progressbar"
+        aria-valuenow={obra.execucao_percentual}
+      >
+        <div
+          className={styles.progressFill}
+          style={{ width: `${obra.execucao_percentual}%`, background: barColor }}
+        />
       </div>
 
       <div className={styles.row}>

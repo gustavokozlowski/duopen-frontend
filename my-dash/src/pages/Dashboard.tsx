@@ -1,18 +1,22 @@
 import { useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 import { PageLayout } from "../components/PageLayout";
-import { PeriodFilter } from "../features/dashboard/PeriodFilter";
-import { MetricCards } from "../features/dashboard/MetricCards";
-import { IEOPCard } from "../features/dashboard/IEOPCard";
-import { IEOPDistribuicao } from "../features/dashboard/IEOPDistribuicao";
 import { AlertCard } from "../features/dashboard/AlertCard";
 import { DonutChart } from "../features/dashboard/DonutChart";
 import { HBarChart } from "../features/dashboard/HBarChart";
+import { IEOPCard } from "../features/dashboard/IEOPCard";
+import { IEOPDistribuicao } from "../features/dashboard/IEOPDistribuicao";
 import { LineChart } from "../features/dashboard/LineChart";
+import { MetricCards } from "../features/dashboard/MetricCards";
+import { PeriodFilter } from "../features/dashboard/PeriodFilter";
 import { ChartSkeleton } from "../features/dashboard/Skeleton";
-import { defaultPeriod, useDashboardSummary, useTopAlerts, useIEOPStats } from "../features/dashboard/useDashboard";
+import {
+  defaultPeriod,
+  useDashboardSummary,
+  useIEOPStats,
+  useTopAlerts,
+} from "../features/dashboard/useDashboard";
 import styles from "./Dashboard.module.css";
-
 
 export function Dashboard() {
   const { user, logout } = useAuthContext();

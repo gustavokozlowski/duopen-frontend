@@ -1,7 +1,7 @@
-import { apiClient } from "./api";
-import { adaptGeoJSON, type ObraMapPoint } from "../schemas/mapa.schema";
 import type { ObraStatus } from "../features/dashboard/types";
 import type { RiscoNivel } from "../features/mapa/types";
+import { adaptGeoJSON, type ObraMapPoint } from "../schemas/mapa.schema";
+import { apiClient } from "./api";
 
 export interface GeoJSONFilter {
   secretaria?: string;

@@ -1,24 +1,33 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PageLayout } from "../components/PageLayout";
-import { Table, type Column } from "../components/Table";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { PageLayout } from "../components/PageLayout";
+import { type Column, Table } from "../components/Table";
 import { AlertaBadge } from "../features/fornecedores/AlertaBadge";
 import { FornecedoresFilters } from "../features/fornecedores/FornecedoresFilters";
-import { RiskBadge } from "../features/obras/RiskBadge";
-import { useFornecedores } from "../features/fornecedores/useFornecedores";
-import { filterFornecedores, hasAlerta, exportFornecedoresCsv } from "../features/fornecedores/fornecedoresUtils";
 import { formatBRL, formatCnpj } from "../features/fornecedores/formatters";
-import { DEFAULT_FILTER } from "../features/fornecedores/types";
+import {
+  exportFornecedoresCsv,
+  filterFornecedores,
+  hasAlerta,
+} from "../features/fornecedores/fornecedoresUtils";
 import type { FornecedoresFilter, FornecedorRanking } from "../features/fornecedores/types";
-
+import { DEFAULT_FILTER } from "../features/fornecedores/types";
+import { useFornecedores } from "../features/fornecedores/useFornecedores";
+import { RiskBadge } from "../features/obras/RiskBadge";
 
 const COLUMNS: Column<FornecedorRanking>[] = [
   {
     key: "cnpj",
     header: "CNPJ",
     render: (v) => (
-      <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--text-xs)", color: "var(--color-text-muted)" }}>
+      <span
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: "var(--text-xs)",
+          color: "var(--color-text-muted)",
+        }}
+      >
         {formatCnpj(String(v))}
       </span>
     ),
@@ -28,7 +37,9 @@ const COLUMNS: Column<FornecedorRanking>[] = [
     header: "Razão Social",
     sortable: true,
     render: (v, row) => (
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexWrap: "wrap" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", flexWrap: "wrap" }}
+      >
         <span style={{ fontWeight: 500 }}>{String(v)}</span>
         {hasAlerta(row as FornecedorRanking) && <AlertaBadge taxa={Number(row.taxa_aditivo)} />}
       </div>
@@ -38,7 +49,9 @@ const COLUMNS: Column<FornecedorRanking>[] = [
     key: "total_contratos",
     header: "Contratos",
     sortable: true,
-    render: (v) => <span style={{ fontFamily: "var(--font-mono)" }}>{Number(v).toLocaleString("pt-BR")}</span>,
+    render: (v) => (
+      <span style={{ fontFamily: "var(--font-mono)" }}>{Number(v).toLocaleString("pt-BR")}</span>
+    ),
   },
   {
     key: "valor_total",
@@ -56,7 +69,12 @@ const COLUMNS: Column<FornecedorRanking>[] = [
     sortable: true,
     render: (v) => {
       const pct = Number(v) * 100;
-      const color = pct > 30 ? "var(--color-danger)" : pct > 15 ? "var(--color-warning)" : "var(--color-success)";
+      const color =
+        pct > 30
+          ? "var(--color-danger)"
+          : pct > 15
+            ? "var(--color-warning)"
+            : "var(--color-success)";
       return <span style={{ fontWeight: 600, color }}>{pct.toFixed(1)}%</span>;
     },
   },
@@ -89,11 +107,17 @@ export function FornecedoresPage() {
           onClick={() => exportFornecedoresCsv(filtrados)}
           disabled={filtrados.length === 0}
           style={{
-            display: "flex", alignItems: "center", gap: "var(--space-2)",
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--space-2)",
             padding: "var(--space-2) var(--space-4)",
-            background: "var(--color-surface)", border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-md)", color: "var(--color-text-secondary)",
-            fontSize: "var(--text-sm)", fontWeight: 500, cursor: "pointer",
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "var(--radius-md)",
+            color: "var(--color-text-secondary)",
+            fontSize: "var(--text-sm)",
+            fontWeight: 500,
+            cursor: "pointer",
           }}
         >
           ↓ Exportar CSV ({filtrados.length})

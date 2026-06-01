@@ -1,7 +1,7 @@
 import { useState } from "react";
+import styles from "./ChatMessage.module.css";
 import { SourceCard } from "./SourceCard";
 import type { Message } from "./types";
-import styles from "./ChatMessage.module.css";
 
 function formatTime(d: Date): string {
   return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
@@ -27,10 +27,7 @@ export function ChatMessage({ message, anchorRef }: ChatMessageProps) {
   }
 
   return (
-    <div
-      ref={anchorRef}
-      className={`${styles.message} ${isUser ? styles.user : styles.assistant}`}
-    >
+    <div ref={anchorRef} className={`${styles.message} ${isUser ? styles.user : styles.assistant}`}>
       <div className={styles.avatar} aria-hidden>
         {isUser ? "Você" : "IA"}
       </div>

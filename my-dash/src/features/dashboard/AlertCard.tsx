@@ -1,7 +1,7 @@
-import { AlertSkeleton } from "./Skeleton";
-import { formatProb } from "./formatters";
-import type { Obra } from "./types";
 import styles from "./AlertCard.module.css";
+import { formatProb } from "./formatters";
+import { AlertSkeleton } from "./Skeleton";
+import type { Obra } from "./types";
 
 function probClass(prob: number): string {
   if (prob >= 0.7) return styles.high;
@@ -32,7 +32,9 @@ export function AlertCard({ data, isLoading }: AlertCardProps) {
             <li key={obra.id} className={styles.item}>
               <span className={styles.rank}>{i + 1}</span>
               <div className={styles.info}>
-                <p className={styles.name} title={obra.nome}>{obra.nome}</p>
+                <p className={styles.name} title={obra.nome}>
+                  {obra.nome}
+                </p>
                 <p className={styles.secretaria}>{obra.secretaria}</p>
               </div>
               <span className={`${styles.prob} ${probClass(obra.prob_atraso)}`}>

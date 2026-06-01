@@ -1,6 +1,6 @@
 import { Card } from "../../components/Card";
-import { CardSkeleton } from "./Skeleton";
 import { formatBRL, formatPct } from "./formatters";
+import { CardSkeleton } from "./Skeleton";
 import type { DashboardSummary } from "./types";
 
 interface MetricCardsProps {
@@ -22,11 +22,7 @@ export function MetricCards({ data, isLoading }: MetricCardsProps) {
 
   return (
     <>
-      <Card
-        title="Total de obras"
-        value={data.total_obras.toLocaleString("pt-BR")}
-        icon="◈"
-      />
+      <Card title="Total de obras" value={data.total_obras.toLocaleString("pt-BR")} icon="◈" />
       <Card
         title="Em andamento"
         value={data.obras_em_andamento.toLocaleString("pt-BR")}
@@ -43,7 +39,9 @@ export function MetricCards({ data, isLoading }: MetricCardsProps) {
         title="Média de execução"
         value={formatPct(data.media_execucao)}
         icon="▦"
-        variant={data.media_execucao >= 70 ? "success" : data.media_execucao >= 40 ? "warning" : "danger"}
+        variant={
+          data.media_execucao >= 70 ? "success" : data.media_execucao >= 40 ? "warning" : "danger"
+        }
       />
     </>
   );

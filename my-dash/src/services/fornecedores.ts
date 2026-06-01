@@ -1,26 +1,26 @@
-import { apiClient } from "./api";
 import {
-  fornecedoresPageSchema,
-  adaptFornecedorRanking,
   adaptFornecedorPerfil,
-  type FornecedorRanking,
+  adaptFornecedorRanking,
   type FornecedorPerfil,
+  type FornecedorRanking,
+  fornecedoresPageSchema,
 } from "../schemas/fornecedores.schema";
+import { apiClient } from "./api";
 
 const PAGE_SIZE = 100; // máximo aceito pelo backend
 
 // Ranking de fornecedores — backend pagina (size ≤ 100); buscamos tudo.
 export async function getFornecedores(): Promise<FornecedorRanking[]> {
   const first = fornecedoresPageSchema.parse(
-    (await apiClient.get("/api/v1/fornecedores/", { params: { size: PAGE_SIZE, page: 1 } })).data
+    (await apiClient.get("/api/v1/fornecedores/", { params: { size: PAGE_SIZE, page: 1 } })).data,
   );
 
   const rest = await Promise.all(
     Array.from({ length: Math.max(0, first.pages - 1) }, (_, i) =>
       apiClient
         .get("/api/v1/fornecedores/", { params: { size: PAGE_SIZE, page: i + 2 } })
-        .then((res) => fornecedoresPageSchema.parse(res.data).items)
-    )
+        .then((res) => fornecedoresPageSchema.parse(res.data).items),
+    ),
   );
 
   return [first.items, ...rest].flat().map(adaptFornecedorRanking);

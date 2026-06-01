@@ -1,5 +1,5 @@
-import { describe, it, expect } from "bun:test";
-import { getIEOPColor, getIEOPClasse, IEOP_COLORS } from "./ieop";
+import { describe, expect, it } from "bun:test";
+import { getIEOPClasse, getIEOPColor, IEOP_COLORS } from "./ieop";
 
 describe("getIEOPClasse", () => {
   it("classifica por faixa", () => {

@@ -1,5 +1,5 @@
-import type { Period } from "./types";
 import styles from "./PeriodFilter.module.css";
+import type { Period } from "./types";
 
 interface PeriodFilterProps {
   value: Period;

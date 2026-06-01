@@ -1,13 +1,6 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import type { Perfil, UserResponse } from "../schemas/auth.schema";
 import { getMe, loginUser, refreshTokens, registerUser } from "../services/auth";
-import type { UserResponse, Perfil } from "../schemas/auth.schema";
 import { clearTokens, getRefreshToken, setTokens } from "./tokenStore";
 
 // ── Types ─────────────────────────────────────────────────────────
@@ -88,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const user = await getMe();
       setAuthenticated(user);
     },
-    [setAuthenticated]
+    [setAuthenticated],
   );
 
   const register = useCallback(
@@ -97,7 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await registerUser({ nome, email, password, perfil });
       await login(email, password);
     },
-    [login]
+    [login],
   );
 
   const logout = useCallback(() => {

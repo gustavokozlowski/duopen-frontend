@@ -14,7 +14,13 @@ export function ChartSkeleton({ title }: { title?: string }) {
   return (
     <div className={styles.chart} aria-busy="true" aria-label={`Carregando ${title ?? "gráfico"}`}>
       {title ? (
-        <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--color-text-secondary)" }}>
+        <span
+          style={{
+            fontSize: "var(--text-sm)",
+            fontWeight: 600,
+            color: "var(--color-text-secondary)",
+          }}
+        >
           {title}
         </span>
       ) : (

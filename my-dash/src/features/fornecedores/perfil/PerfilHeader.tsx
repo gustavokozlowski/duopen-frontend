@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { AlertaBadge } from "../AlertaBadge";
 import { RiskBadge } from "../../obras/RiskBadge";
+import { AlertaBadge } from "../AlertaBadge";
 import { formatBRL, formatCnpj } from "../formatters";
-import type { FornecedorPerfil } from "./types";
 import styles from "./PerfilHeader.module.css";
+import type { FornecedorPerfil } from "./types";
 
 interface PerfilHeaderProps {
   perfil: FornecedorPerfil;

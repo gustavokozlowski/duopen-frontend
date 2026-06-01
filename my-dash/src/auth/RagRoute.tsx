@@ -1,7 +1,7 @@
-import { useAuthContext } from "./AuthContext";
-import { canUseRAG } from "./permissions";
 import { PageLayout } from "../components/PageLayout";
 import { ChatPage } from "../pages/ChatPage";
+import { useAuthContext } from "./AuthContext";
+import { canUseRAG } from "./permissions";
 
 // Guarda a rota /ia: só perfis com permissão (admin/gestor) acessam o RAG.
 // readonly recebe uma mensagem de acesso restrito (não a tela do chat).
@@ -36,9 +36,15 @@ export function RagRoute() {
           >
             Acesso restrito
           </h2>
-          <p style={{ fontSize: "var(--text-sm)", color: "var(--color-text-muted)", lineHeight: 1.6 }}>
-            Seu perfil não tem permissão para usar o assistente de IA (RAG).
-            Fale com um administrador para solicitar acesso.
+          <p
+            style={{
+              fontSize: "var(--text-sm)",
+              color: "var(--color-text-muted)",
+              lineHeight: 1.6,
+            }}
+          >
+            Seu perfil não tem permissão para usar o assistente de IA (RAG). Fale com um
+            administrador para solicitar acesso.
           </p>
         </div>
       </PageLayout>

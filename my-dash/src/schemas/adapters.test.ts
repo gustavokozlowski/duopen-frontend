@@ -1,7 +1,7 @@
-import { describe, it, expect } from "bun:test";
-import { obrasPageSchema, adaptObra, situacaoToStatus } from "./obras.schema";
+import { describe, expect, it } from "bun:test";
+import { adaptFornecedorRanking, fornecedoresPageSchema } from "./fornecedores.schema";
 import { adaptGeoJSON } from "./mapa.schema";
-import { fornecedoresPageSchema, adaptFornecedorRanking } from "./fornecedores.schema";
+import { adaptObra, obrasPageSchema, situacaoToStatus } from "./obras.schema";
 
 // Payloads espelham o contrato REAL do backend (DUOPEN 2026).
 

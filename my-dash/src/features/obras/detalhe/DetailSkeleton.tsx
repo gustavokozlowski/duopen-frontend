@@ -22,7 +22,14 @@ export function DetailSkeleton() {
       </div>
 
       {/* 3 cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--space-6)", marginBottom: "var(--space-6)" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "var(--space-6)",
+          marginBottom: "var(--space-6)",
+        }}
+      >
         <SkeletonCard rows={4} />
         <SkeletonCard rows={3} />
         <SkeletonCard rows={4} />

@@ -1,13 +1,12 @@
-import type { RiscoNivel } from "../mapa/types";
 import type { FornecedorRanking } from "../../schemas/fornecedores.schema";
+import type { RiscoNivel } from "../mapa/types";
 
-export type { RiscoNivel };
 // FornecedorRanking inferido do schema Zod (validado em runtime no serviço).
-export type { FornecedorRanking };
+export type { FornecedorRanking, RiscoNivel };
 
 export interface FornecedoresFilter {
   search: string;
-  somenteAlerta: boolean;      // taxa_aditivo > 0.30
+  somenteAlerta: boolean; // taxa_aditivo > 0.30
   risco: RiscoNivel | "todos";
 }
 
@@ -17,4 +16,4 @@ export const DEFAULT_FILTER: FornecedoresFilter = {
   risco: "todos",
 };
 
-export const ALERTA_THRESHOLD = 0.30;
+export const ALERTA_THRESHOLD = 0.3;

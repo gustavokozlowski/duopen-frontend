@@ -1,7 +1,7 @@
 import { PageLayout } from "../components/PageLayout";
 import { Mapa3D } from "../features/mapa/Mapa3D";
-import { useMapaObras } from "../features/mapa/useMapa";
 import styles from "../features/mapa/MapaPage.module.css";
+import { useMapaObras } from "../features/mapa/useMapa";
 
 export function Mapa3DPage() {
   const { data: obras = [], isLoading } = useMapaObras();

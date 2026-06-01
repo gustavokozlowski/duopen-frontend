@@ -1,23 +1,23 @@
 import "./index.css";
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { LoginPage } from "./auth/LoginPage";
-import { RegisterPage } from "./auth/RegisterPage";
 import { PrivateRoute } from "./auth/PrivateRoute";
+import { RagRoute } from "./auth/RagRoute";
+import { RegisterPage } from "./auth/RegisterPage";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { Dashboard } from "./pages/Dashboard";
-import { MapaPage } from "./pages/MapaPage";
-import { ObrasPage } from "./pages/ObrasPage";
-import { ObraDetalhePage } from "./pages/ObraDetalhePage";
 import { FornecedoresPage } from "./pages/FornecedoresPage";
 import { FornecedorPerfilPage } from "./pages/FornecedorPerfilPage";
-import { RagRoute } from "./auth/RagRoute";
+import { MapaPage } from "./pages/MapaPage";
+import { ObraDetalhePage } from "./pages/ObraDetalhePage";
+import { ObrasPage } from "./pages/ObrasPage";
 
 // deck.gl é pesado (~2 MB); carregamos a página 3D sob demanda para não
 // inflar o bundle inicial de quem nunca abre o mapa 3D.
 const Mapa3DPage = lazy(() =>
-  import("./pages/Mapa3DPage").then((m) => ({ default: m.Mapa3DPage }))
+  import("./pages/Mapa3DPage").then((m) => ({ default: m.Mapa3DPage })),
 );
 
 export function App() {

@@ -1,13 +1,13 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { render, screen } from "@testing-library/react";
+import type { IEOPStats } from "../../schemas/ieop.schema";
 import { IEOPCard } from "./IEOPCard";
 import { IEOPDistribuicao } from "./IEOPDistribuicao";
-import type { IEOPStats } from "../../schemas/ieop.schema";
 
 const STATS: IEOPStats = {
   media_geral: 63.4,
   classe_geral: "Bom",
-  distribuicao: { "Crítico": 2, Ruim: 3, Regular: 5, Bom: 8, "Ótimo": 4 },
+  distribuicao: { Crítico: 2, Ruim: 3, Regular: 5, Bom: 8, Ótimo: 4 },
   ranking_secretarias: [{ secretaria: "Obras", media_ieop: 70 }],
   piores_obras: [{ id: "1", nome: "Obra X", ieop_score: 12, ieop_classe: "Crítico" }],
 };

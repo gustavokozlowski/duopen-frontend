@@ -1,6 +1,6 @@
 import axios from "axios";
+import { type Perfil, type UserResponse, userResponseSchema } from "../schemas/auth.schema";
 import { apiClient, BASE_URL } from "./api";
-import { userResponseSchema, type UserResponse, type Perfil } from "../schemas/auth.schema";
 
 export type { UserResponse };
 

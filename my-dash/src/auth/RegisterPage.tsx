@@ -1,9 +1,14 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  PERFIL_LABELS,
+  perfilSchema,
+  type RegisterForm,
+  registerSchema,
+} from "../schemas/auth.schema";
 import { useAuthContext } from "./AuthContext";
-import { registerSchema, perfilSchema, PERFIL_LABELS, type RegisterForm } from "../schemas/auth.schema";
 import styles from "./authForm.module.css";
 
 // Ícones inline (stroke = currentColor)
@@ -260,9 +265,7 @@ export function RegisterPage() {
                 {...register("confirm")}
               />
             </div>
-            {errors.confirm && (
-              <span className={styles.fieldError}>{errors.confirm.message}</span>
-            )}
+            {errors.confirm && <span className={styles.fieldError}>{errors.confirm.message}</span>}
           </div>
 
           <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>

@@ -1,4 +1,4 @@
-import { describe, it, expect, mock, beforeEach } from "bun:test";
+import { beforeEach, describe, expect, it, mock } from "bun:test";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -33,9 +33,7 @@ function Harness() {
   const { isAuthenticated, isLoading, user, login, logout } = useAuthContext();
   return (
     <div>
-      <span data-testid="status">
-        {isLoading ? "loading" : isAuthenticated ? "in" : "out"}
-      </span>
+      <span data-testid="status">{isLoading ? "loading" : isAuthenticated ? "in" : "out"}</span>
       <span data-testid="user">{user?.nome ?? "-"}</span>
       <span data-testid="perfil">{user?.perfil ?? "-"}</span>
       <button onClick={() => login("gestor@ieop.dev", "senha123")}>login</button>
@@ -55,7 +53,7 @@ describe("fluxo de autenticação", () => {
     render(
       <AuthProvider>
         <Harness />
-      </AuthProvider>
+      </AuthProvider>,
     );
     await waitFor(() => expect(screen.getByTestId("status")).toHaveTextContent("out"));
   });
@@ -65,7 +63,7 @@ describe("fluxo de autenticação", () => {
     render(
       <AuthProvider>
         <Harness />
-      </AuthProvider>
+      </AuthProvider>,
     );
     await waitFor(() => expect(screen.getByTestId("status")).toHaveTextContent("out"));
 

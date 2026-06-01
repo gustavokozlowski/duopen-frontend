@@ -40,7 +40,11 @@ export function Table<T extends Record<string, unknown>>({
     if (!query.trim()) return data;
     const q = query.toLowerCase();
     return data.filter((row) =>
-      keys.some((k) => String(row[k] ?? "").toLowerCase().includes(q))
+      keys.some((k) =>
+        String(row[k] ?? "")
+          .toLowerCase()
+          .includes(q),
+      ),
     );
   }, [data, query, keys]);
 
@@ -114,9 +118,7 @@ export function Table<T extends Record<string, unknown>>({
                   {col.header}
                   {col.sortable && (
                     <span
-                      className={`${styles.sortIcon} ${
-                        sortKey === col.key ? styles[sortDir] : ""
-                      }`}
+                      className={`${styles.sortIcon} ${sortKey === col.key ? styles[sortDir] : ""}`}
                     >
                       {sortKey === col.key ? (sortDir === "asc" ? "↑" : "↓") : "↕"}
                     </span>
@@ -141,9 +143,7 @@ export function Table<T extends Record<string, unknown>>({
                 >
                   {columns.map((col) => (
                     <td key={col.key}>
-                      {col.render
-                        ? col.render(row[col.key], row)
-                        : String(row[col.key] ?? "—")}
+                      {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? "—")}
                     </td>
                   ))}
                 </tr>

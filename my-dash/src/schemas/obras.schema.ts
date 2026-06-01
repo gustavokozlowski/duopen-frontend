@@ -72,12 +72,12 @@ export const DEFAULT_OBRAS_FILTER: ObrasFilterValues = {
 // `situacao` vem como texto legível; mapeamos para o enum interno.
 const SITUACAO_TO_STATUS: Record<string, ObraStatus> = {
   "Em andamento": "em_andamento",
-  "Concluída": "concluida",
-  "Concluida": "concluida",
-  "Paralisada": "paralisada",
+  Concluída: "concluida",
+  Concluida: "concluida",
+  Paralisada: "paralisada",
   "Em fase de planejamento": "nao_iniciada",
-  "Cancelada": "cancelada",
-  "Indefinido": "nao_iniciada",
+  Cancelada: "cancelada",
+  Indefinido: "nao_iniciada",
 };
 
 export function situacaoToStatus(situacao: string | null | undefined): ObraStatus {
