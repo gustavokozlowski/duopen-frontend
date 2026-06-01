@@ -8,7 +8,19 @@ import {
   type Obra,
 } from "../schemas/dashboard.schema";
 import { obrasPageSchema, situacaoToStatus } from "../schemas/obras.schema";
+import type { DistribuicaoItem, StatusCount } from "../schemas/dashboard.schema";
 import type { Period } from "../features/dashboard/types";
+
+// Mapeia o label textual do backend para o enum de status e soma as
+// quantidades por status (evita fatias cinza/duplicadas na rosca).
+function aggregateStatus(items: DistribuicaoItem[]): StatusCount[] {
+  const totals = new Map<string, number>();
+  for (const d of items) {
+    const status = situacaoToStatus(d.label);
+    totals.set(status, (totals.get(status) ?? 0) + d.quantidade);
+  }
+  return [...totals].map(([status, total]) => ({ status, total }));
+}
 
 function periodParams(period?: Period): Record<string, string> {
   if (!period) return {};
@@ -58,7 +70,9 @@ export async function getDashboard(period?: Period): Promise<DashboardSummary> {
     obras_em_andamento: metrics.obras_em_andamento,
     valor_total_contratado: metrics.valor_total,
     media_execucao: metrics.media_execucao_pct,
-    por_status: porStatus.map((d) => ({ status: d.label, total: d.quantidade })),
+    // O backend rotula por texto ("Em andamento", "Indefinido"…); mapeamos para
+    // o enum e agregamos para a rosca colorir e não duplicar fatias.
+    por_status: aggregateStatus(porStatus),
     por_secretaria: porSecretaria.map((d) => ({ secretaria: d.label, total: d.quantidade })),
     evolucao_mensal: evolucao,
   };
