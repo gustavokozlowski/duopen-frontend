@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiClient, BASE_URL } from "./api";
-import { userResponseSchema, type UserResponse } from "../schemas/auth.schema";
+import { userResponseSchema, type UserResponse, type Perfil } from "../schemas/auth.schema";
 
 export type { UserResponse };
 
@@ -20,6 +20,7 @@ export interface RegisterPayload {
   nome: string;
   email: string;
   password: string;
+  perfil: Perfil;
 }
 
 // Cliente sem interceptors — usado no refresh para evitar recursão de 401.

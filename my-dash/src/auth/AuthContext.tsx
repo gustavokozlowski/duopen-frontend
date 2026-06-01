@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { getMe, loginUser, refreshTokens, registerUser } from "../services/auth";
-import type { UserResponse } from "../schemas/auth.schema";
+import type { UserResponse, Perfil } from "../schemas/auth.schema";
 import { clearTokens, getRefreshToken, setTokens } from "./tokenStore";
 
 // ── Types ─────────────────────────────────────────────────────────
@@ -23,7 +23,7 @@ interface AuthState {
 
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>;
-  register: (nome: string, email: string, password: string) => Promise<void>;
+  register: (nome: string, email: string, password: string, perfil: Perfil) => Promise<void>;
   logout: () => void;
 }
 
@@ -92,9 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const register = useCallback(
-    async (nome: string, email: string, password: string) => {
+    async (nome: string, email: string, password: string, perfil: Perfil) => {
       // O backend não retorna token no cadastro → cria e faz login em seguida.
-      await registerUser({ nome, email, password });
+      await registerUser({ nome, email, password, perfil });
       await login(email, password);
     },
     [login]
