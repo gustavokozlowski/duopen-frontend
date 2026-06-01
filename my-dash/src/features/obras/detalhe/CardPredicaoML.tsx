@@ -21,43 +21,41 @@ function formatDateTime(iso: string): string {
   }
 }
 
-// Semi-circle SVG gauge using pathLength trick
+// Anel radial (preferido ao semicírculo — ver DESIGN_SYSTEM §6).
 function GaugeChart({ value, label }: { value: number; label: string }) {
   const pct = Math.max(0, Math.min(1, value));
   const color = gaugeColor(pct);
-  const path = "M 8 68 A 52 52 0 0 1 112 68";
+  const r = 42;
+  const circ = 2 * Math.PI * r;
+  const off = circ * (1 - pct);
 
   return (
     <div className={styles.gaugeWrapper}>
-      <svg
-        viewBox="0 0 120 76"
-        width="100%"
-        role="img"
-        aria-label={`${label}: ${Math.round(pct * 100)}%`}
-      >
-        <path d={path} fill="none" stroke="#2a2f42" strokeWidth="10" strokeLinecap="round" />
-        <path
-          d={path}
-          fill="none"
-          stroke={color}
-          strokeWidth="10"
-          strokeLinecap="round"
-          pathLength="1"
-          strokeDasharray="1"
-          strokeDashoffset={1 - pct}
-        />
-        <text
-          x="60"
-          y="56"
-          textAnchor="middle"
-          fill="#e8eaf0"
-          fontSize="20"
-          fontWeight="700"
-          fontFamily="Inter, system-ui, sans-serif"
-        >
-          {Math.round(pct * 100)}%
-        </text>
-      </svg>
+      <div className={styles.ring}>
+        <svg viewBox="0 0 100 100" role="img" aria-label={`${label}: ${Math.round(pct * 100)}%`}>
+          <circle className={styles.ringTrack} cx="50" cy="50" r={r} fill="none" strokeWidth="8" />
+          <circle
+            cx="50"
+            cy="50"
+            r={r}
+            fill="none"
+            stroke={color}
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={circ}
+            strokeDashoffset={off}
+            style={{
+              filter: `drop-shadow(0 0 5px ${color}66)`,
+              transition: "stroke-dashoffset 600ms cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          />
+        </svg>
+        <div className={styles.ringCenter}>
+          <span className={styles.ringPct} style={{ color }}>
+            {Math.round(pct * 100)}%
+          </span>
+        </div>
+      </div>
       <p className={styles.gaugeLabel}>{label}</p>
     </div>
   );
