@@ -1,4 +1,5 @@
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import styles from "./DonutChart.module.css";
 import { ChartSkeleton } from "./Skeleton";
 import type { StatusCount } from "./types";
 
@@ -38,58 +39,59 @@ interface DonutChartProps {
 }
 
 export function DonutChart({ data, isLoading }: DonutChartProps) {
-  if (isLoading || !data) return <ChartSkeleton title="Distribuição por status" />;
+  if (isLoading || !data) return <ChartSkeleton title="Obras por status" />;
 
-  const formatted = data.map((d) => ({
-    name: STATUS_LABELS[d.status] ?? d.status,
-    value: d.total,
-    color: STATUS_COLORS[d.status] ?? "#555b72",
-  }));
+  // Maior contagem primeiro (espelha o protótipo).
+  const formatted = data
+    .map((d) => ({
+      name: STATUS_LABELS[d.status] ?? d.status,
+      value: d.total,
+      color: STATUS_COLORS[d.status] ?? "#555b72",
+    }))
+    .sort((a, b) => b.value - a.value);
+
+  const total = formatted.reduce((s, d) => s + d.value, 0);
 
   return (
-    <div
-      style={{
-        background: "var(--color-surface)",
-        border: "1px solid var(--color-border)",
-        borderRadius: "var(--radius-lg)",
-        padding: "var(--space-6)",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <p
-        style={{
-          fontSize: "var(--text-sm)",
-          fontWeight: 600,
-          color: "var(--color-text-secondary)",
-          marginBottom: "var(--space-4)",
-        }}
-      >
-        Distribuição por status
-      </p>
-      <div style={{ flex: 1, minHeight: 240 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={formatted}
-              cx="50%"
-              cy="50%"
-              innerRadius={65}
-              outerRadius={95}
-              paddingAngle={3}
-              dataKey="value"
-            >
-              {formatted.map((entry, i) => (
-                <Cell key={i} fill={entry.color} stroke="none" />
-              ))}
-            </Pie>
-            <Tooltip {...TOOLTIP_STYLE} />
-            <Legend
-              formatter={(value) => <span style={{ color: "#8b90a8", fontSize: 12 }}>{value}</span>}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+    <div className={styles.card}>
+      <p className={styles.title}>Obras por status</p>
+
+      <div className={styles.wrap}>
+        <div className={styles.donut}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={formatted}
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={76}
+                paddingAngle={3}
+                dataKey="value"
+                stroke="none"
+              >
+                {formatted.map((entry) => (
+                  <Cell key={entry.name} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip {...TOOLTIP_STYLE} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className={styles.center}>
+            <span className={styles.total}>{total.toLocaleString("pt-BR")}</span>
+            <span className={styles.totalLbl}>obras</span>
+          </div>
+        </div>
+
+        <div className={styles.legend}>
+          {formatted.map((d) => (
+            <div key={d.name} className={styles.legItem}>
+              <span className={styles.dot} style={{ background: d.color }} />
+              <span className={styles.name}>{d.name}</span>
+              <span className={styles.val}>{d.value.toLocaleString("pt-BR")}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
