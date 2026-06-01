@@ -13,7 +13,13 @@ interface ExecutionBarProps {
 export function ExecutionBar({ value }: ExecutionBarProps) {
   return (
     <div className={styles.wrapper}>
-      <div className={styles.bar} role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
+      <div
+        className={styles.bar}
+        role="progressbar"
+        aria-valuenow={value}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
         <div
           className={styles.fill}
           style={{ width: `${Math.min(value, 100)}%`, background: barColor(value) }}

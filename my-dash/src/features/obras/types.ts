@@ -1,12 +1,12 @@
-import type { ObraStatus } from "../dashboard/types";
-import type { RiscoNivel } from "../mapa/types";
 // O tipo do filtro e o default vêm do schema Zod (z.infer) — fonte única
 // compartilhada entre o formulário de filtro e a validação.
 import {
-  type ObrasFilterValues,
-  type ObraListItem,
   DEFAULT_OBRAS_FILTER,
+  type ObraListItem,
+  type ObrasFilterValues,
 } from "../../schemas/obras.schema";
+import type { ObraStatus } from "../dashboard/types";
+import type { RiscoNivel } from "../mapa/types";
 
 export type { ObraStatus, RiscoNivel };
 export type ObrasFilter = ObrasFilterValues;

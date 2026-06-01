@@ -47,12 +47,18 @@ m1, m2, m3 = st.columns(3)
 monthly_all = df_f.groupby("mes")["prob_atraso"].mean()
 if len(monthly_all) >= 2:
     delta = monthly_all.iloc[-1] - monthly_all.iloc[-2]
-    m1.metric("Prob. média (último mês)", f"{monthly_all.iloc[-1]:.1%}", f"{delta:+.1%} vs anterior")
+    m1.metric(
+        "Prob. média (último mês)", f"{monthly_all.iloc[-1]:.1%}", f"{delta:+.1%} vs anterior"
+    )
 else:
     m1.metric("Prob. média", f"{df_f['prob_atraso'].mean():.1%}")
 
 m2.metric("Meses analisados", df_f["mes"].nunique())
-trend = "📈 Crescente" if len(monthly_all) >= 2 and monthly_all.iloc[-1] > monthly_all.iloc[0] else "📉 Decrescente"
+trend = (
+    "📈 Crescente"
+    if len(monthly_all) >= 2 and monthly_all.iloc[-1] > monthly_all.iloc[0]
+    else "📉 Decrescente"
+)
 m3.metric("Tendência geral", trend)
 
 st.divider()
@@ -102,9 +108,7 @@ if view == "Geral":
 
 else:
     monthly_sec = (
-        df_f.groupby(["mes", "secretaria"])["prob_atraso"]
-        .mean()
-        .reset_index(name="avg_prob")
+        df_f.groupby(["mes", "secretaria"])["prob_atraso"].mean().reset_index(name="avg_prob")
     )
     fig = px.line(
         monthly_sec,

@@ -47,7 +47,8 @@ export function Card({
         <div className={styles.footer}>
           {trend !== undefined && (
             <span className={`${styles.trend} ${styles[trendDir]}`}>
-              {trendSign}{trend}%
+              {trendSign}
+              {trend}%
             </span>
           )}
           {trendLabel && <span>{trendLabel}</span>}

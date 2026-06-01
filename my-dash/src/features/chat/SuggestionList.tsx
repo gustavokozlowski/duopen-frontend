@@ -1,5 +1,5 @@
-import { SUGGESTIONS, CATEGORY_ICON } from "./suggestions";
 import styles from "./SuggestionList.module.css";
+import { CATEGORY_ICON, SUGGESTIONS } from "./suggestions";
 
 interface SuggestionListProps {
   onSelect: (text: string) => void;

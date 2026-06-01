@@ -1,18 +1,17 @@
 import { useMemo, useState } from "react";
 import { PageLayout } from "../components/PageLayout";
 import { MacaeMap } from "../features/mapa/MacaeMap";
-import { MapFilters } from "../features/mapa/MapFilters";
-import { useMapaObras } from "../features/mapa/useMapa";
-import { filterObras, exportToCsv, getUniqueSecretarias } from "../features/mapa/mapaUtils";
-import type { MapFilter } from "../features/mapa/types";
 import styles from "../features/mapa/MapaPage.module.css";
+import { MapFilters } from "../features/mapa/MapFilters";
+import { exportToCsv, filterObras, getUniqueSecretarias } from "../features/mapa/mapaUtils";
+import type { MapFilter } from "../features/mapa/types";
+import { useMapaObras } from "../features/mapa/useMapa";
 
 const DEFAULT_FILTER: MapFilter = {
   risco: "todos",
   secretaria: "todas",
   status: "todos",
 };
-
 
 export function MapaPage() {
   const { data: obras = [], isLoading } = useMapaObras();
@@ -28,7 +27,9 @@ export function MapaPage() {
           <div className={styles.toolbarLeft}>
             <span className={styles.pageTitle}>Mapa interativo — Macaé</span>
             <span className={styles.pageSubtitle}>
-              {isLoading ? "Carregando…" : `${obrasFiltradas.length} obra${obrasFiltradas.length !== 1 ? "s" : ""} exibida${obrasFiltradas.length !== 1 ? "s" : ""}`}
+              {isLoading
+                ? "Carregando…"
+                : `${obrasFiltradas.length} obra${obrasFiltradas.length !== 1 ? "s" : ""} exibida${obrasFiltradas.length !== 1 ? "s" : ""}`}
             </span>
           </div>
 

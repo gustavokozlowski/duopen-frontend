@@ -11,12 +11,12 @@ export interface IEOPColor {
 }
 
 export const IEOP_COLORS: Record<string, IEOPColor> = {
-  "Ótimo":   { hex: "#1D9E75", bg: "rgba(29,158,117,0.16)",  border: "#1a6b50" },
-  "Bom":     { hex: "#3FB984", bg: "rgba(63,185,132,0.16)",  border: "#2f8a63" },
-  "Regular": { hex: "#BA7517", bg: "rgba(186,117,23,0.16)",  border: "#7a4e0f" },
-  "Ruim":    { hex: "#D2691E", bg: "rgba(210,105,30,0.16)",  border: "#8a4513" },
-  "Crítico": { hex: "#A32D2D", bg: "rgba(163,45,45,0.18)",   border: "#6e1e1e" },
-  "—":       { hex: "#555b72", bg: "rgba(85,91,114,0.15)",   border: "#2a2f42" },
+  Ótimo: { hex: "#1D9E75", bg: "rgba(29,158,117,0.16)", border: "#1a6b50" },
+  Bom: { hex: "#3FB984", bg: "rgba(63,185,132,0.16)", border: "#2f8a63" },
+  Regular: { hex: "#BA7517", bg: "rgba(186,117,23,0.16)", border: "#7a4e0f" },
+  Ruim: { hex: "#D2691E", bg: "rgba(210,105,30,0.16)", border: "#8a4513" },
+  Crítico: { hex: "#A32D2D", bg: "rgba(163,45,45,0.18)", border: "#6e1e1e" },
+  "—": { hex: "#555b72", bg: "rgba(85,91,114,0.15)", border: "#2a2f42" },
 };
 
 // Fallback garantido (não-undefined) para a classe sem dados.

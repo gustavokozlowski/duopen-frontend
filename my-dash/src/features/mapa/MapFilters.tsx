@@ -1,7 +1,7 @@
-import type { MapFilter, RiscoNivel } from "./types";
-import { RISCO_LABELS, STATUS_LABELS } from "./types";
 import type { ObraStatus } from "../dashboard/types";
 import styles from "./MapFilters.module.css";
+import type { MapFilter, RiscoNivel } from "./types";
+import { RISCO_LABELS, STATUS_LABELS } from "./types";
 
 const DEFAULT_FILTER: MapFilter = {
   risco: "todos",
@@ -28,12 +28,16 @@ export function MapFilters({
     <aside className={styles.sidebar} aria-label="Filtros do mapa">
       <div className={styles.header}>
         <span>Filtros</span>
-        <span className={styles.count}>{totalFiltradas}/{totalGeral} obras</span>
+        <span className={styles.count}>
+          {totalFiltradas}/{totalGeral} obras
+        </span>
       </div>
 
       <div className={styles.body}>
         <div className={styles.group}>
-          <label className={styles.label} htmlFor="filter-risco">Nível de risco</label>
+          <label className={styles.label} htmlFor="filter-risco">
+            Nível de risco
+          </label>
           <select
             id="filter-risco"
             className={styles.select}
@@ -42,13 +46,17 @@ export function MapFilters({
           >
             <option value="todos">Todos</option>
             {(Object.entries(RISCO_LABELS) as [RiscoNivel, string][]).map(([k, v]) => (
-              <option key={k} value={k}>{v}</option>
+              <option key={k} value={k}>
+                {v}
+              </option>
             ))}
           </select>
         </div>
 
         <div className={styles.group}>
-          <label className={styles.label} htmlFor="filter-secretaria">Secretaria</label>
+          <label className={styles.label} htmlFor="filter-secretaria">
+            Secretaria
+          </label>
           <select
             id="filter-secretaria"
             className={styles.select}
@@ -57,22 +65,30 @@ export function MapFilters({
           >
             <option value="todas">Todas</option>
             {secretarias.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </div>
 
         <div className={styles.group}>
-          <label className={styles.label} htmlFor="filter-status">Status</label>
+          <label className={styles.label} htmlFor="filter-status">
+            Status
+          </label>
           <select
             id="filter-status"
             className={styles.select}
             value={filter.status}
-            onChange={(e) => onChange({ ...filter, status: e.target.value as ObraStatus | "todos" })}
+            onChange={(e) =>
+              onChange({ ...filter, status: e.target.value as ObraStatus | "todos" })
+            }
           >
             <option value="todos">Todos</option>
             {(Object.entries(STATUS_LABELS) as [ObraStatus, string][]).map(([k, v]) => (
-              <option key={k} value={k}>{v}</option>
+              <option key={k} value={k}>
+                {v}
+              </option>
             ))}
           </select>
         </div>

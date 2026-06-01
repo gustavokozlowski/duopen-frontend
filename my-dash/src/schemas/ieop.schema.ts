@@ -3,13 +3,7 @@ import { z } from "zod";
 // ── Classe IEOP ───────────────────────────────────────────────────
 // Fonte única dos rótulos de classe. Reutilizada nos campos das obras,
 // no resumo do dashboard e nos utilitários de cor.
-export const ieopClasseSchema = z.enum([
-  "Ótimo",
-  "Bom",
-  "Regular",
-  "Ruim",
-  "Crítico",
-]);
+export const ieopClasseSchema = z.enum(["Ótimo", "Bom", "Regular", "Ruim", "Crítico"]);
 export type IEOPClasse = z.infer<typeof ieopClasseSchema>;
 
 // ── Campos IEOP anexados a cada obra ──────────────────────────────

@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { type LoginForm, loginSchema } from "../schemas/auth.schema";
 import { useAuthContext } from "./AuthContext";
-import { loginSchema, type LoginForm } from "../schemas/auth.schema";
 import styles from "./authForm.module.css";
 
 // Ícones inline (stroke = currentColor), consistentes com o tema escuro.

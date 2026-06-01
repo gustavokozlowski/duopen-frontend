@@ -1,5 +1,5 @@
-import { describe, it, expect, mock, beforeEach } from "bun:test";
-import { render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 // Controla o perfil retornado por /me (via mock do serviço de auth, sem rede).
@@ -8,7 +8,11 @@ let currentPerfil: "admin" | "gestor" | "readonly" = "readonly";
 mock.module("../services/auth", () => ({
   loginUser: mock(async () => ({ access_token: "a", refresh_token: "r", token_type: "bearer" })),
   registerUser: mock(async () => ({ id: "1", email: "x", nome: "x", perfil: currentPerfil })),
-  refreshTokens: mock(async () => ({ access_token: "a", refresh_token: "r", token_type: "bearer" })),
+  refreshTokens: mock(async () => ({
+    access_token: "a",
+    refresh_token: "r",
+    token_type: "bearer",
+  })),
   getMe: mock(async () => ({ id: "1", email: "x@x.com", nome: "User", perfil: currentPerfil })),
 }));
 // ChatPage é pesado (mapa/recharts); stub para isolar o teste do guard.
@@ -23,7 +27,7 @@ function renderRag() {
       <MemoryRouter>
         <RagRoute />
       </MemoryRouter>
-    </AuthProvider>
+    </AuthProvider>,
   );
 }
 

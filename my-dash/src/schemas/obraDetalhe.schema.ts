@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { obraStatusSchema, situacaoToStatus } from "./obras.schema";
 import { ieopFieldsSchema } from "./ieop.schema";
+import { obraStatusSchema, situacaoToStatus } from "./obras.schema";
 
 export const aditivoTipoSchema = z.enum(["prazo", "valor", "ambos"]);
 
@@ -60,6 +60,8 @@ export const obraDetalheSchema = z.object({
   predicao: predicaoMLSchema,
   contratos: contratoVinculadoSchema.array(),
   fornecedor: fornecedorSchema,
+  // Índice de Eficiência da Obra Pública (score + classe + componentes C/P/R/E).
+  ...ieopFieldsSchema.shape,
 });
 
 export type Aditivo = z.infer<typeof aditivoSchema>;
@@ -86,6 +88,9 @@ export const obraDetalheRawSchema = z
     secretaria: z.string().nullable().optional(),
     bairro: z.string().nullable().optional(),
     municipio: z.string().nullable().optional(),
+    // O backend manda o status textual no campo `situacao` (igual à lista);
+    // `status` é mantido como fallback defensivo caso o contrato mude.
+    situacao: z.string().nullable().optional(),
     status: z.string().nullable().optional(),
     nivel_risco: z.string().nullable().optional(),
     valor_contrato: z.number().nullable().optional(),
@@ -115,7 +120,7 @@ export function adaptObraDetalhe(data: unknown): ObraDetalhe {
     secretaria: r.secretaria ?? "Não informado",
     bairro: r.bairro ?? "—",
     endereco,
-    status: situacaoToStatus(r.status),
+    status: situacaoToStatus(r.situacao ?? r.status),
     execucao_percentual: r.percentual_executado ?? r.percentual_executado_financeiro ?? 0,
     valor_contratado: r.valor_contrato ?? 0,
     valor_aditivos: 0,
@@ -136,5 +141,12 @@ export function adaptObraDetalhe(data: unknown): ObraDetalhe {
       nome: "—",
       cnpj: r.cnpj_executora ?? "",
     },
+    ieop_score: r.ieop_score ?? null,
+    ieop_classe: r.ieop_classe ?? null,
+    ieop_custo: r.ieop_custo ?? null,
+    ieop_atraso: r.ieop_atraso ?? null,
+    ieop_recorrencia: r.ieop_recorrencia ?? null,
+    ieop_execucao: r.ieop_execucao ?? null,
+    ieop_calculado_em: r.ieop_calculado_em ?? null,
   };
 }

@@ -3,13 +3,12 @@ import type {
   Aditivo,
   ContratoVinculado,
   Fornecedor,
-  PredicaoML,
   ObraDetalhe,
+  PredicaoML,
 } from "../../../schemas/obraDetalhe.schema";
 import type { ObraStatus } from "../../dashboard/types";
 
-export type { ObraStatus };
-export type { Aditivo, ContratoVinculado, Fornecedor, PredicaoML, ObraDetalhe };
+export type { Aditivo, ContratoVinculado, Fornecedor, ObraDetalhe, ObraStatus, PredicaoML };
 
 export const ADITIVO_TIPO_LABELS: Record<Aditivo["tipo"], string> = {
   prazo: "Prazo",

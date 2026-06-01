@@ -38,7 +38,11 @@ with st.sidebar:
         format_func=lambda s: db.STATUS_LABELS.get(s, s),
     )
 
-df_f = df[df["secretaria"].isin(sel_sec) & df["status"].isin(sel_status)] if sel_sec and sel_status else df
+df_f = (
+    df[df["secretaria"].isin(sel_sec) & df["status"].isin(sel_status)]
+    if sel_sec and sel_status
+    else df
+)
 
 # ── Métricas ──────────────────────────────────────────────────────────────────
 
@@ -54,11 +58,7 @@ st.divider()
 
 # ── Pivot heatmap ─────────────────────────────────────────────────────────────
 
-pivot = (
-    df_f.groupby(["secretaria", "status"])["prob_atraso"]
-    .mean()
-    .unstack(fill_value=0)
-)
+pivot = df_f.groupby(["secretaria", "status"])["prob_atraso"].mean().unstack(fill_value=0)
 
 x_labels = [db.STATUS_LABELS.get(c, c) for c in pivot.columns]
 z_text = (pivot.values * 100).round(1).astype(str)
@@ -83,7 +83,9 @@ fig = go.Figure(
         ),
     )
 )
-fig.update_layout(**db.PLOTLY_LAYOUT, height=420, title="Prob. média de atraso — secretaria × status")
+fig.update_layout(
+    **db.PLOTLY_LAYOUT, height=420, title="Prob. média de atraso — secretaria × status"
+)
 fig.update_xaxes(side="bottom")
 st.plotly_chart(fig, use_container_width=True)
 
@@ -98,11 +100,7 @@ risk_dist["nivel"] = pd.cut(
     labels=["Baixo", "Médio", "Alto"],
     include_lowest=True,
 )
-pivot_dist = (
-    risk_dist.groupby(["secretaria", "nivel"], observed=True)
-    .size()
-    .unstack(fill_value=0)
-)
+pivot_dist = risk_dist.groupby(["secretaria", "nivel"], observed=True).size().unstack(fill_value=0)
 
 fig2 = go.Figure()
 colors = {"Baixo": "#1D9E75", "Médio": "#BA7517", "Alto": "#A32D2D"}

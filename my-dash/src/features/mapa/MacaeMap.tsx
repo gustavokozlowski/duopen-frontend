@@ -1,13 +1,13 @@
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from "react-leaflet";
+import { GeoJSON, MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { MarkerPopup } from "./MarkerPopup";
-import { MapLegend } from "./MapLegend";
-import { createMarkerIconByIEOP, createClusterIcon, getRiscoNivel } from "./mapaUtils";
-import type { ObraMapPoint } from "./types";
-import macaeBoundary from "./macae.geojson.json";
 import styles from "./MacaeMap.module.css";
+import { MapLegend } from "./MapLegend";
+import { MarkerPopup } from "./MarkerPopup";
+import macaeBoundary from "./macae.geojson.json";
+import { createClusterIcon, createMarkerIconByIEOP, getRiscoNivel } from "./mapaUtils";
+import type { ObraMapPoint } from "./types";
 
 const MACAE_CENTER: [number, number] = [-22.37, -41.78];
 const MACAE_ZOOM = 11;
@@ -27,7 +27,10 @@ interface MacaeMapProps {
 export function MacaeMap({ obras, isLoading }: MacaeMapProps) {
   if (isLoading) {
     return (
-      <div className={styles.mapWrapper} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        className={styles.mapWrapper}
+        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
         <LoadingSpinner size="lg" label="Carregando mapa…" />
       </div>
     );

@@ -6,12 +6,7 @@
  */
 
 import axios from "axios";
-import {
-  clearTokens,
-  getAccessToken,
-  getRefreshToken,
-  setTokens,
-} from "../auth/tokenStore";
+import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "../auth/tokenStore";
 
 declare module "axios" {
   interface InternalAxiosRequestConfig {
@@ -80,7 +75,7 @@ apiClient.interceptors.response.use(
           (token) => {
             original.headers.Authorization = `Bearer ${token}`;
             return apiClient(original);
-          }
+          },
         );
       }
 
@@ -110,10 +105,10 @@ apiClient.interceptors.response.use(
       window.dispatchEvent(
         new CustomEvent("api:error", {
           detail: { status, url: original?.url ?? "", method: original?.method ?? "" },
-        })
+        }),
       );
     }
 
     return Promise.reject(err);
-  }
+  },
 );

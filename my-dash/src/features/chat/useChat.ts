@@ -14,21 +14,15 @@ export function useChat() {
   const abortRef = useRef(new AbortController());
 
   const appendContent = useCallback((id: string, text: string) => {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, content: m.content + text } : m))
-    );
+    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, content: m.content + text } : m)));
   }, []);
 
   const setSources = useCallback((id: string, sources: Source[]) => {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, sources } : m))
-    );
+    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, sources } : m)));
   }, []);
 
   const finishStreaming = useCallback((id: string) => {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, isStreaming: false } : m))
-    );
+    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, isStreaming: false } : m)));
   }, []);
 
   const sendMessage = useCallback(
@@ -41,7 +35,13 @@ export function useChat() {
       setMessages((prev) => [
         ...prev,
         { id: userMsgId, role: "user", content: pergunta, timestamp: new Date() },
-        { id: assistantMsgId, role: "assistant", content: "", isStreaming: true, timestamp: new Date() },
+        {
+          id: assistantMsgId,
+          role: "assistant",
+          content: "",
+          isStreaming: true,
+          timestamp: new Date(),
+        },
       ]);
       setIsLoading(true);
       setError(null);
@@ -68,15 +68,13 @@ export function useChat() {
         setIsLoading(false);
       }
     },
-    [isLoading, appendContent, setSources, finishStreaming]
+    [isLoading, appendContent, setSources, finishStreaming],
   );
 
   const abort = useCallback(() => {
     abortRef.current.abort();
     setIsLoading(false);
-    setMessages((prev) =>
-      prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m))
-    );
+    setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
   }, []);
 
   const clearHistory = useCallback(() => {

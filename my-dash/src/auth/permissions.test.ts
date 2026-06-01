@@ -1,5 +1,5 @@
-import { describe, it, expect } from "bun:test";
-import { canUseRAG, canRetrainML, canView } from "./permissions";
+import { describe, expect, it } from "bun:test";
+import { canRetrainML, canUseRAG, canView } from "./permissions";
 
 describe("permissions", () => {
   it("admin tem acesso total", () => {

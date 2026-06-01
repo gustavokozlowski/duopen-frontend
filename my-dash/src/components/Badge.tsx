@@ -1,12 +1,13 @@
 import styles from "./Badge.module.css";
 
-export type BadgeVariant = "success" | "warning" | "danger" | "neutral";
+export type BadgeVariant = "success" | "warning" | "danger" | "neutral" | "info";
 
 const LABELS: Record<BadgeVariant, string> = {
   success: "Concluída",
   warning: "Risco médio",
   danger: "Risco alto",
   neutral: "—",
+  info: "Em andamento",
 };
 
 interface BadgeProps {

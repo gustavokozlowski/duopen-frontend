@@ -1,7 +1,7 @@
-import { describe, it, expect, mock } from "bun:test";
+import { describe, expect, it, mock } from "bun:test";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Table, type Column } from "./Table";
+import { type Column, Table } from "./Table";
 
 interface Row extends Record<string, unknown> {
   nome: string;

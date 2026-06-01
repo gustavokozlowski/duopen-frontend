@@ -1,6 +1,6 @@
-import { RISCO_COLORS, RISCO_LABELS } from "./types";
-import type { RiscoNivel } from "./types";
 import styles from "./MapLegend.module.css";
+import type { RiscoNivel } from "./types";
+import { RISCO_COLORS, RISCO_LABELS } from "./types";
 
 const NIVEIS: RiscoNivel[] = ["baixo", "medio", "alto"];
 

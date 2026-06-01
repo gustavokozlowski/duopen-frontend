@@ -31,8 +31,8 @@ export function buildNav(perfil: Perfil | undefined): NavGroup[] {
     {
       label: "Relatórios",
       items: [
-        { path: "/metricas", label: "Métricas", icon: "▦" },
         { path: "/mapa", label: "Mapa", icon: "◌" },
+        { path: "/mapa-3d", label: "Mapa 3D", icon: "◍" },
       ],
     },
   ];

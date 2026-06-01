@@ -1,7 +1,6 @@
-import os
-import streamlit as st
-import plotly.express as px
 import pandas as pd
+import plotly.express as px
+import streamlit as st
 
 st.set_page_config(page_title="Métricas", layout="wide")
 st.title("Métricas de Aprendizado")
@@ -18,7 +17,9 @@ df = pd.DataFrame(
 col1, col2, col3 = st.columns(3)
 col1.metric("Total de acertos", df["acertos"].sum())
 col2.metric("Total de erros", df["erros"].sum())
-col3.metric("Taxa de acerto", f"{df['acertos'].sum() / (df['acertos'].sum() + df['erros'].sum()):.0%}")
+col3.metric(
+    "Taxa de acerto", f"{df['acertos'].sum() / (df['acertos'].sum() + df['erros'].sum()):.0%}"
+)
 
 fig = px.bar(df, x="dia", y=["acertos", "erros"], barmode="group", title="Desempenho semanal")
 st.plotly_chart(fig, use_container_width=True)

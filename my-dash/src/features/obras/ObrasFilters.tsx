@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import type { ObrasFilterValues } from "../../schemas/obras.schema";
+import { RISCO_LABELS, STATUS_LABELS } from "../mapa/types";
+import styles from "./ObrasFilters.module.css";
 import type { ObraStatus, RiscoNivel } from "./types";
 import { DEFAULT_FILTER } from "./types";
-import type { ObrasFilterValues } from "../../schemas/obras.schema";
-import { STATUS_LABELS, RISCO_LABELS } from "../mapa/types";
-import styles from "./ObrasFilters.module.css";
 
 interface ObrasFiltersProps {
   filter: ObrasFilterValues;
@@ -34,7 +34,9 @@ export function ObrasFilters({ filter, onChange, secretarias, bairros }: ObrasFi
       {/* Row 1: search */}
       <div className={styles.row}>
         <div className={styles.searchWrapper}>
-          <span className={styles.searchIcon} aria-hidden>⌕</span>
+          <span className={styles.searchIcon} aria-hidden>
+            ⌕
+          </span>
           <input
             type="search"
             className={styles.searchInput}
@@ -59,24 +61,44 @@ export function ObrasFilters({ filter, onChange, secretarias, bairros }: ObrasFi
         <select className={styles.select} aria-label="Filtrar por status" {...register("status")}>
           <option value="todos">Todos os status</option>
           {(Object.entries(STATUS_LABELS) as [ObraStatus, string][]).map(([k, v]) => (
-            <option key={k} value={k}>{v}</option>
+            <option key={k} value={k}>
+              {v}
+            </option>
           ))}
         </select>
 
-        <select className={styles.select} aria-label="Filtrar por secretaria" {...register("secretaria")}>
+        <select
+          className={styles.select}
+          aria-label="Filtrar por secretaria"
+          {...register("secretaria")}
+        >
           <option value="todas">Todas as secretarias</option>
-          {secretarias.map((s) => <option key={s} value={s}>{s}</option>)}
+          {secretarias.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </select>
 
         <select className={styles.select} aria-label="Filtrar por bairro" {...register("bairro")}>
           <option value="todos">Todos os bairros</option>
-          {bairros.map((b) => <option key={b} value={b}>{b}</option>)}
+          {bairros.map((b) => (
+            <option key={b} value={b}>
+              {b}
+            </option>
+          ))}
         </select>
 
-        <select className={styles.select} aria-label="Filtrar por nível de risco" {...register("risco")}>
+        <select
+          className={styles.select}
+          aria-label="Filtrar por nível de risco"
+          {...register("risco")}
+        >
           <option value="todos">Todos os riscos</option>
           {(Object.entries(RISCO_LABELS) as [RiscoNivel, string][]).map(([k, v]) => (
-            <option key={k} value={k}>{v}</option>
+            <option key={k} value={k}>
+              {v}
+            </option>
           ))}
         </select>
 

@@ -24,18 +24,27 @@ export function getDistinct(obras: ObraListItem[], field: keyof ObraListItem): s
 
 function escapeField(v: string | number): string {
   const s = String(v);
-  return s.includes(",") || s.includes('"') || s.includes("\n")
-    ? `"${s.replace(/"/g, '""')}"`
-    : s;
+  return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
 export function exportObrasCsv(obras: ObraListItem[]): void {
   const headers = [
-    "Nome", "Contrato", "Secretaria", "Bairro", "Status",
-    "Execução %", "Valor (R$)", "Risco", "Previsão Término",
+    "Nome",
+    "Contrato",
+    "Secretaria",
+    "Bairro",
+    "Status",
+    "Execução %",
+    "Valor (R$)",
+    "Risco",
+    "Previsão Término",
   ];
   const rows = obras.map((o) => [
-    o.nome, o.numero_contrato, o.secretaria, o.bairro, o.status,
+    o.nome,
+    o.numero_contrato,
+    o.secretaria,
+    o.bairro,
+    o.status,
     o.execucao_percentual.toFixed(1),
     o.valor_contratado.toFixed(2),
     getRiscoNivel(o.prob_atraso),

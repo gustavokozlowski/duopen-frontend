@@ -1,5 +1,5 @@
-import type { Message } from "./types";
 import styles from "./SessionHistory.module.css";
+import type { Message } from "./types";
 
 interface SessionHistoryProps {
   userMessages: Message[];

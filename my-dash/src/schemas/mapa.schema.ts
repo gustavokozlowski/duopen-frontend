@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { ieopClasseSchema, ieopFieldsSchema } from "./ieop.schema";
 import { obraStatusSchema, situacaoToStatus } from "./obras.schema";
-import { ieopFieldsSchema } from "./ieop.schema";
 
 // Ponto georreferenciado de obra (shape consumido pela UI do mapa).
 export const obraMapPointSchema = z.object({
@@ -35,6 +35,10 @@ export const geoJSONFeatureSchema = z
         secretaria: z.string().nullable().optional(),
         bairro: z.string().nullable().optional(),
         valor_contrato: z.number().nullable().optional(),
+        percentual_executado: z.number().nullable().optional(),
+        prob_atraso: z.number().nullable().optional(),
+        ieop_score: z.number().nullable().optional(),
+        ieop_classe: ieopClasseSchema.nullable().optional(),
       })
       .catchall(z.unknown()),
   })
@@ -60,14 +64,15 @@ export function adaptGeoJSON(data: unknown): ObraMapPoint[] {
         nome: p.nome,
         secretaria: p.secretaria ?? "Não informado",
         status: situacaoToStatus(p.status),
-        prob_atraso: p.nivel_risco ? (RISCO_TO_PROB[p.nivel_risco] ?? 0) : 0,
-        execucao_percentual: 0, // não fornecido pelo GeoJSON
+        // prob_atraso real quando disponível; senão reconstitui pela faixa de risco.
+        prob_atraso: p.prob_atraso ?? (p.nivel_risco ? (RISCO_TO_PROB[p.nivel_risco] ?? 0) : 0),
+        execucao_percentual: p.percentual_executado ?? 0,
         fornecedor: "", // não fornecido pelo GeoJSON
         lat,
         lng,
         valor_contratado: p.valor_contrato ?? 0,
-        ieop_score: null,
-        ieop_classe: null,
+        ieop_score: p.ieop_score ?? null,
+        ieop_classe: p.ieop_classe ?? null,
       };
     });
 }

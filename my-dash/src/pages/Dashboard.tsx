@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 import { PageLayout } from "../components/PageLayout";
-import { PeriodFilter } from "../features/dashboard/PeriodFilter";
-import { MetricCards } from "../features/dashboard/MetricCards";
-import { IEOPCard } from "../features/dashboard/IEOPCard";
-import { IEOPDistribuicao } from "../features/dashboard/IEOPDistribuicao";
 import { AlertCard } from "../features/dashboard/AlertCard";
 import { DonutChart } from "../features/dashboard/DonutChart";
 import { HBarChart } from "../features/dashboard/HBarChart";
+import { IEOPCard } from "../features/dashboard/IEOPCard";
+import { IEOPDistribuicao } from "../features/dashboard/IEOPDistribuicao";
 import { LineChart } from "../features/dashboard/LineChart";
-import { defaultPeriod, useDashboardSummary, useTopAlerts, useIEOPStats } from "../features/dashboard/useDashboard";
+import { MetricCards } from "../features/dashboard/MetricCards";
+import { PeriodFilter } from "../features/dashboard/PeriodFilter";
+import { ChartSkeleton } from "../features/dashboard/Skeleton";
+import {
+  defaultPeriod,
+  useDashboardSummary,
+  useIEOPStats,
+  useTopAlerts,
+} from "../features/dashboard/useDashboard";
 import styles from "./Dashboard.module.css";
-
 
 export function Dashboard() {
   const { user, logout } = useAuthContext();
@@ -54,13 +59,35 @@ export function Dashboard() {
         <MetricCards data={summary.data} isLoading={summary.isLoading} />
       </section>
 
-      {/* ── IEOP: indicador principal (renderiza só quando o backend responde) ── */}
-      {ieop.data && (
-        <section className={styles.gridTwo} aria-label="Índice de Eficiência da Obra Pública">
-          <IEOPCard stats={ieop.data} />
-          <IEOPDistribuicao distribuicao={ieop.data.distribuicao} />
-        </section>
-      )}
+      {/* ── IEOP: indicador principal ── */}
+      <section className={styles.gridTwo} aria-label="Índice de Eficiência da Obra Pública">
+        {ieop.isLoading ? (
+          <>
+            <ChartSkeleton title="IEOP Médio — Macaé" />
+            <ChartSkeleton title="Distribuição por classe IEOP" />
+          </>
+        ) : ieop.data ? (
+          <>
+            <IEOPCard stats={ieop.data} />
+            <IEOPDistribuicao distribuicao={ieop.data.distribuicao} />
+          </>
+        ) : (
+          <div
+            role="status"
+            style={{
+              gridColumn: "1 / -1",
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              padding: "var(--space-6)",
+              fontSize: "var(--text-sm)",
+              color: "var(--color-text-muted)",
+            }}
+          >
+            Índice IEOP indisponível no momento.
+          </div>
+        )}
+      </section>
 
       {/* ── Alertas + Rosca ── */}
       <section className={styles.gridTwo} aria-label="Alertas e distribuição">

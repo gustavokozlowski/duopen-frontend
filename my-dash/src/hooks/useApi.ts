@@ -3,8 +3,8 @@
  * staleTime padrão: 5 minutos (configurado também no QueryClient em frontend.tsx).
  */
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { UseQueryOptions, UseMutationOptions } from "@tanstack/react-query";
+import type { UseMutationOptions, UseQueryOptions } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../services/api";
 
 // Re-export so existing imports from hooks/useApi keep working
@@ -15,7 +15,7 @@ const STALE = 5 * 60_000; // 5 minutes
 // ── GET ──────────────────────────────────────────────────────────
 export function useApi<T>(
   endpoint: string,
-  options?: Omit<UseQueryOptions<T, Error>, "queryKey" | "queryFn">
+  options?: Omit<UseQueryOptions<T, Error>, "queryKey" | "queryFn">,
 ) {
   return useQuery<T, Error>({
     queryKey: [endpoint],
@@ -34,7 +34,7 @@ interface MutationArgs {
 
 export function useApiMutation<TData = unknown, TBody = unknown>(
   { method = "POST", endpoint, invalidates = [] }: MutationArgs,
-  options?: UseMutationOptions<TData, Error, TBody>
+  options?: UseMutationOptions<TData, Error, TBody>,
 ) {
   const qc = useQueryClient();
 

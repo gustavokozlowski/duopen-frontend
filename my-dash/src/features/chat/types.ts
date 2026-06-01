@@ -2,8 +2,8 @@ export type MessageRole = "user" | "assistant";
 
 export interface Source {
   id: string;
-  titulo: string;    // e.g. "Contrato nº 001/2024"
-  trecho: string;    // excerpt from the document
+  titulo: string; // e.g. "Contrato nº 001/2024"
+  trecho: string; // excerpt from the document
   obra?: string;
   relevancia: number; // 0–1
 }

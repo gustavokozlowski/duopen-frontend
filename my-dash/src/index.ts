@@ -9,7 +9,7 @@ const server = serve({
     "/*": index,
 
     // Dev proxy — forwards /proxy/* to the backend to avoid CORS issues.
-    "/proxy/*": async req => {
+    "/proxy/*": async (req) => {
       const url = new URL(req.url);
       const target = API_URL + url.pathname.replace("/proxy", "") + url.search;
       const headers = new Headers(req.headers);
@@ -32,7 +32,7 @@ const server = serve({
       },
     },
 
-    "/api/hello/:name": async req => {
+    "/api/hello/:name": async (req) => {
       const name = req.params.name;
       return Response.json({
         message: `Hello, ${name}!`,

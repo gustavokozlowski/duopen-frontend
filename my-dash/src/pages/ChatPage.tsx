@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PageLayout } from "../components/PageLayout";
-import { ChatMessage } from "../features/chat/ChatMessage";
 import { ChatInput } from "../features/chat/ChatInput";
-import { SuggestionList } from "../features/chat/SuggestionList";
+import { ChatMessage } from "../features/chat/ChatMessage";
 import { SessionHistory } from "../features/chat/SessionHistory";
+import { SuggestionList } from "../features/chat/SuggestionList";
 import { useChat } from "../features/chat/useChat";
 import styles from "./ChatPage.module.css";
-
 
 export function ChatPage() {
   const { messages, userMessages, isLoading, error, sendMessage, abort, clearHistory } = useChat();
@@ -55,11 +54,13 @@ export function ChatPage() {
           <div className={styles.messagesArea} role="log" aria-live="polite" aria-label="Conversa">
             {!hasMessages ? (
               <div className={styles.welcome}>
-                <span className={styles.welcomeIcon} aria-hidden>✦</span>
+                <span className={styles.welcomeIcon} aria-hidden>
+                  ✦
+                </span>
                 <h2 className={styles.welcomeTitle}>Agente RAG — Obras e Contratos</h2>
                 <p className={styles.welcomeSubtitle}>
-                  Consulte obras, contratos e fornecedores em linguagem natural.
-                  As respostas são fundamentadas nos documentos oficiais do sistema.
+                  Consulte obras, contratos e fornecedores em linguagem natural. As respostas são
+                  fundamentadas nos documentos oficiais do sistema.
                 </p>
               </div>
             ) : (
@@ -96,9 +97,7 @@ export function ChatPage() {
           )}
 
           {/* Suggestion chips — shown when empty or below input */}
-          {!hasMessages && (
-            <SuggestionList onSelect={handleSuggestion} disabled={isLoading} />
-          )}
+          {!hasMessages && <SuggestionList onSelect={handleSuggestion} disabled={isLoading} />}
 
           {/* Input */}
           <ChatInput

@@ -1,7 +1,7 @@
-import { describe, it, expect, mock, beforeEach } from "bun:test";
+import { beforeEach, describe, expect, it, mock } from "bun:test";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 const loginUser = mock(async () => ({
   access_token: "a",
@@ -14,7 +14,12 @@ const getMe = mock(async () => ({
   nome: "Gestor",
   perfil: "gestor" as const,
 }));
-const registerUser = mock(async () => ({ id: "1", email: "x", nome: "x", perfil: "gestor" as const }));
+const registerUser = mock(async () => ({
+  id: "1",
+  email: "x",
+  nome: "x",
+  perfil: "gestor" as const,
+}));
 const refreshTokens = mock(async () => {
   throw new Error("sem sessão");
 });
@@ -33,7 +38,7 @@ function renderLogin() {
           <Route path="/" element={<div>DASHBOARD</div>} />
         </Routes>
       </MemoryRouter>
-    </AuthProvider>
+    </AuthProvider>,
   );
 }
 

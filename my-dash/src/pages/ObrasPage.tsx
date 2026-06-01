@@ -1,29 +1,29 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PageLayout } from "../components/PageLayout";
+import type { BadgeVariant } from "../components/Badge";
 import { Badge } from "../components/Badge";
 import { IEOPBadge } from "../components/IEOPBadge";
+import { PageLayout } from "../components/PageLayout";
+import { type Column, Table } from "../components/Table";
 import { getIEOPColor } from "../features/dashboard/ieop";
-import { Table, type Column } from "../components/Table";
-import { ObrasFilters } from "../features/obras/ObrasFilters";
-import { ExecutionBar } from "../features/obras/ExecutionBar";
-import { RiskBadge } from "../features/obras/RiskBadge";
-import { useObras } from "../features/obras/useObras";
-import { filterObras, getDistinct, exportObrasCsv } from "../features/obras/obrasUtils";
-import { formatBRL, formatDate } from "../features/obras/formatters";
-import { DEFAULT_FILTER } from "../features/obras/types";
-import type { ObrasFilter, ObraListItem, ObraStatus } from "../features/obras/types";
 import { STATUS_LABELS } from "../features/mapa/types";
-import type { BadgeVariant } from "../components/Badge";
+import { ExecutionBar } from "../features/obras/ExecutionBar";
+import { formatBRL, formatDate } from "../features/obras/formatters";
+import { ObrasFilters } from "../features/obras/ObrasFilters";
+import { exportObrasCsv, filterObras, getDistinct } from "../features/obras/obrasUtils";
+import { RiskBadge } from "../features/obras/RiskBadge";
+import type { ObraListItem, ObraStatus, ObrasFilter } from "../features/obras/types";
+import { DEFAULT_FILTER } from "../features/obras/types";
+import { useObras } from "../features/obras/useObras";
 
 const STATUS_VARIANT: Record<ObraStatus, BadgeVariant> = {
-  em_andamento: "success",
-  concluida:    "neutral",
-  paralisada:   "warning",
-  atrasada:     "danger",
+  em_andamento: "info",
+  concluida: "success",
+  paralisada: "warning",
+  atrasada: "danger",
   nao_iniciada: "neutral",
+  cancelada: "danger",
 };
-
 
 const COLUMNS: Column<ObraListItem>[] = [
   {
@@ -32,8 +32,17 @@ const COLUMNS: Column<ObraListItem>[] = [
     sortable: true,
     render: (_, row) => (
       <div>
-        <div style={{ fontWeight: 500, color: "var(--color-text-primary)" }}>{String(row.nome)}</div>
-        <div style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", fontFamily: "var(--font-mono)", marginTop: 2 }}>
+        <div style={{ fontWeight: 500, color: "var(--color-text-primary)" }}>
+          {String(row.nome)}
+        </div>
+        <div
+          style={{
+            fontSize: "var(--text-xs)",
+            color: "var(--color-text-muted)",
+            fontFamily: "var(--font-mono)",
+            marginTop: 2,
+          }}
+        >
           {String(row.numero_contrato)}
         </div>
       </div>
@@ -125,11 +134,17 @@ export function ObrasPage() {
           onClick={() => exportObrasCsv(filtradas)}
           disabled={filtradas.length === 0}
           style={{
-            display: "flex", alignItems: "center", gap: "var(--space-2)",
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--space-2)",
             padding: "var(--space-2) var(--space-4)",
-            background: "var(--color-surface)", border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-md)", color: "var(--color-text-secondary)",
-            fontSize: "var(--text-sm)", fontWeight: 500, cursor: "pointer",
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "var(--radius-md)",
+            color: "var(--color-text-secondary)",
+            fontSize: "var(--text-sm)",
+            fontWeight: 500,
+            cursor: "pointer",
           }}
           aria-label="Exportar obras filtradas como CSV"
         >
@@ -152,7 +167,9 @@ export function ObrasPage() {
         data={filtradas}
         pageSize={15}
         searchable={false}
-        emptyMessage={isLoading ? "Carregando obras…" : "Nenhuma obra encontrada com os filtros aplicados."}
+        emptyMessage={
+          isLoading ? "Carregando obras…" : "Nenhuma obra encontrada com os filtros aplicados."
+        }
         onRowClick={(row) => navigate(`/obras/${String(row.id)}`)}
       />
     </PageLayout>

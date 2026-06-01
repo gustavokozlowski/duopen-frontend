@@ -6,7 +6,6 @@ import os
 import sys
 
 import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -32,7 +31,9 @@ with st.sidebar:
     sel_sec = st.multiselect("Secretaria", secretarias, default=secretarias)
     status_opts = sorted(df["status"].unique().tolist())
     sel_status = st.multiselect(
-        "Status", status_opts, default=status_opts,
+        "Status",
+        status_opts,
+        default=status_opts,
         format_func=lambda s: db.STATUS_LABELS.get(s, s),
     )
 
@@ -99,8 +100,12 @@ fig = px.scatter(
 )
 
 # Quadrantes medianos
-fig.add_vline(x=med_x, line_dash="dot", line_color="#2a2f42", annotation_text=f"mediana ({med_x:.0f})")
-fig.add_hline(y=med_y, line_dash="dot", line_color="#2a2f42", annotation_text=f"mediana ({med_y:.1%})")
+fig.add_vline(
+    x=med_x, line_dash="dot", line_color="#2a2f42", annotation_text=f"mediana ({med_x:.0f})"
+)
+fig.add_hline(
+    y=med_y, line_dash="dot", line_color="#2a2f42", annotation_text=f"mediana ({med_y:.1%})"
+)
 fig.add_hline(y=0.7, line_dash="dash", line_color="#A32D2D", annotation_text="alto risco 70%")
 fig.add_hline(y=0.4, line_dash="dash", line_color="#BA7517", annotation_text="médio risco 40%")
 
@@ -116,11 +121,7 @@ st.plotly_chart(fig, use_container_width=True)
 # ── Tabela top fornecedores ────────────────────────────────────────────────────
 
 st.subheader("Top fornecedores por risco")
-top_table = (
-    forn.sort_values("avg_prob_atraso", ascending=False)
-    .head(15)
-    .copy()
-)
+top_table = forn.sort_values("avg_prob_atraso", ascending=False).head(15).copy()
 top_table["avg_prob_atraso"] = top_table["avg_prob_atraso"].map("{:.1%}".format)
 top_table["avg_prob_estouro"] = top_table["avg_prob_estouro"].map("{:.1%}".format)
 top_table["valor_total"] = top_table["valor_total"].map("R$ {:,.0f}".format)

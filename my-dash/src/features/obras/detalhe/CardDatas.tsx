@@ -1,6 +1,6 @@
 import { formatDate } from "../formatters";
-import type { ObraDetalhe } from "./types";
 import styles from "./CardDatas.module.css";
+import type { ObraDetalhe } from "./types";
 
 interface CardDatasProps {
   obra: ObraDetalhe;
@@ -8,7 +8,11 @@ interface CardDatasProps {
 
 function AtrasoValue({ dias }: { dias: number }) {
   if (dias > 0)
-    return <span className={styles.atrasoPositive}>{dias} {dias === 1 ? "dia" : "dias"} de atraso</span>;
+    return (
+      <span className={styles.atrasoPositive}>
+        {dias} {dias === 1 ? "dia" : "dias"} de atraso
+      </span>
+    );
   if (dias < 0)
     return <span className={styles.atrasoNegative}>{Math.abs(dias)} dias adiantado</span>;
   return <span className={styles.atrasoZero}>No prazo</span>;

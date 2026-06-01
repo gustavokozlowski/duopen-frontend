@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { formatBRL, formatDate } from "../formatters";
+import styles from "./ContratoSection.module.css";
 import type { ContratoVinculado } from "./types";
 import { ADITIVO_TIPO_LABELS } from "./types";
-import styles from "./ContratoSection.module.css";
 
 interface ContratoSectionProps {
   contratos: ContratoVinculado[];
@@ -46,11 +46,19 @@ export function ContratoSection({ contratos }: ContratoSectionProps) {
               >
                 <span className={`${styles.chevron} ${isOpen ? styles.open : ""}`}>›</span>
                 <span className={styles.contratoNum}>{c.numero}</span>
-                <span className={styles.contratoObjeto} title={c.objeto}>{c.objeto}</span>
+                <span className={styles.contratoObjeto} title={c.objeto}>
+                  {c.objeto}
+                </span>
                 <span className={styles.contratoValor}>
                   {formatBRL(c.valor_inicial + totalAditivos)}
                 </span>
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--color-text-muted)", flexShrink: 0 }}>
+                <span
+                  style={{
+                    fontSize: "var(--text-xs)",
+                    color: "var(--color-text-muted)",
+                    flexShrink: 0,
+                  }}
+                >
                   {c.aditivos.length} {c.aditivos.length === 1 ? "aditivo" : "aditivos"}
                 </span>
               </div>
@@ -58,7 +66,13 @@ export function ContratoSection({ contratos }: ContratoSectionProps) {
               {isOpen && (
                 <div className={styles.aditivosList}>
                   {c.aditivos.length === 0 ? (
-                    <div style={{ padding: "var(--space-4) var(--space-6)", fontSize: "var(--text-xs)", color: "var(--color-text-muted)" }}>
+                    <div
+                      style={{
+                        padding: "var(--space-4) var(--space-6)",
+                        fontSize: "var(--text-xs)",
+                        color: "var(--color-text-muted)",
+                      }}
+                    >
                       Nenhum aditivo.
                     </div>
                   ) : (
@@ -75,7 +89,9 @@ export function ContratoSection({ contratos }: ContratoSectionProps) {
                         <div key={a.id} className={styles.aditivoRow}>
                           <span className={styles.aditivoNum}>{a.numero}</span>
                           <span>{ADITIVO_TIPO_LABELS[a.tipo]}</span>
-                          <span className={styles.aditivoMotivo} title={a.motivo}>{a.motivo}</span>
+                          <span className={styles.aditivoMotivo} title={a.motivo}>
+                            {a.motivo}
+                          </span>
                           <span>{a.valor > 0 ? formatBRL(a.valor) : "—"}</span>
                           <span>{a.prazo_dias > 0 ? `+${a.prazo_dias}d` : "—"}</span>
                           <span>{formatDate(a.data)}</span>

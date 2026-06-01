@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { buildNav } from "./nav";
 
 function paths(perfil: Parameters<typeof buildNav>[0]) {

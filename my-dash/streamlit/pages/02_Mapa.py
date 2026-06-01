@@ -1,5 +1,5 @@
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
 st.set_page_config(page_title="Mapa de Usuários", layout="wide")
 st.title("Distribuição Geográfica de Usuários")

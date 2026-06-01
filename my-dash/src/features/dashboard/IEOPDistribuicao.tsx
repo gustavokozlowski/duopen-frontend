@@ -1,15 +1,15 @@
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
 } from "recharts";
-import { IEOP_COLORS } from "./ieop";
 import type { IEOPStats } from "../../schemas/ieop.schema";
+import { IEOP_COLORS } from "./ieop";
 
 const CLASSES = ["Crítico", "Ruim", "Regular", "Bom", "Ótimo"] as const;
 
@@ -60,7 +60,11 @@ export function IEOPDistribuicao({ distribuicao }: Props) {
           <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#2a2f42" />
             <XAxis dataKey="classe" tick={{ fontSize: 11, fill: "#8b90a8" }} stroke="#2a2f42" />
-            <YAxis tick={{ fontSize: 11, fill: "#8b90a8" }} stroke="#2a2f42" allowDecimals={false} />
+            <YAxis
+              tick={{ fontSize: 11, fill: "#8b90a8" }}
+              stroke="#2a2f42"
+              allowDecimals={false}
+            />
             <Tooltip
               {...TOOLTIP_STYLE}
               cursor={{ fill: "rgba(255,255,255,0.04)" }}

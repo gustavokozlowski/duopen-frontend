@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuthContext } from "../auth/AuthContext";
 import { buildNav, type NavGroup } from "./nav";
@@ -53,9 +53,7 @@ export function PageLayout({ children, nav, pageTitle, headerRight }: PageLayout
                   key={item.path}
                   to={item.path}
                   end
-                  className={({ isActive }) =>
-                    `${styles.navItem} ${isActive ? styles.active : ""}`
-                  }
+                  className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ""}`}
                 >
                   {item.icon && (
                     <span className={styles.navIcon} aria-hidden>

@@ -11,7 +11,7 @@ export type { SSEEvent };
 
 export async function* postConsulta(
   pergunta: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): AsyncGenerator<SSEEvent> {
   const res = await fetch(`${BASE_URL}/api/v1/ia/consulta`, {
     method: "POST",

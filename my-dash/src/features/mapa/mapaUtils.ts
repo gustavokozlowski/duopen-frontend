@@ -1,7 +1,7 @@
 import L from "leaflet";
-import type { ObraMapPoint, MapFilter, RiscoNivel } from "./types";
-import { RISCO_COLORS } from "./types";
 import { getIEOPColor } from "../dashboard/ieop";
+import type { MapFilter, ObraMapPoint, RiscoNivel } from "./types";
+import { RISCO_COLORS } from "./types";
 
 export function getRiscoNivel(prob: number): RiscoNivel {
   if (prob >= 0.7) return "alto";
@@ -30,7 +30,7 @@ export function createMarkerIcon(risco: RiscoNivel): L.DivIcon {
 // Marcador colorido por IEOP. Defensivo: sem score, cai para a cor de risco.
 export function createMarkerIconByIEOP(
   score: number | null | undefined,
-  risco: RiscoNivel
+  risco: RiscoNivel,
 ): L.DivIcon {
   if (score == null) return dotIcon(RISCO_COLORS[risco]);
   return dotIcon(getIEOPColor(score));
@@ -65,26 +65,31 @@ export function filterObras(obras: ObraMapPoint[], filter: MapFilter): ObraMapPo
 
 function escapeField(v: string | number): string {
   const s = String(v);
-  return s.includes(",") || s.includes('"') || s.includes("\n")
-    ? `"${s.replace(/"/g, '""')}"`
-    : s;
+  return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
 export function exportToCsv(obras: ObraMapPoint[]): void {
   const headers = [
-    "Nome", "Secretaria", "Status",
-    "Execução %", "Prob. Atraso %", "Fornecedor",
-    "Lat", "Lng",
+    "Nome",
+    "Secretaria",
+    "Status",
+    "Execução %",
+    "Prob. Atraso %",
+    "Fornecedor",
+    "Lat",
+    "Lng",
   ];
   const rows = obras.map((o) => [
-    o.nome, o.secretaria, o.status,
+    o.nome,
+    o.secretaria,
+    o.status,
     o.execucao_percentual.toFixed(1),
     (o.prob_atraso * 100).toFixed(0),
-    o.fornecedor, o.lat, o.lng,
+    o.fornecedor,
+    o.lat,
+    o.lng,
   ]);
-  const csv = [headers, ...rows]
-    .map((r) => r.map(escapeField).join(","))
-    .join("\n");
+  const csv = [headers, ...rows].map((r) => r.map(escapeField).join(",")).join("\n");
 
   const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);

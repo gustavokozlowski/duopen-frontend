@@ -1,6 +1,6 @@
 import { IEOPBadge } from "../../components/IEOPBadge";
-import { getIEOPColor } from "./ieop";
 import type { IEOPStats } from "../../schemas/ieop.schema";
+import { getIEOPColor } from "./ieop";
 
 const FAIXAS = ["Crítico", "Ruim", "Regular", "Bom", "Ótimo"] as const;
 
@@ -32,7 +32,14 @@ export function IEOPCard({ stats }: Props) {
         IEOP Médio — Macaé
       </p>
 
-      <div style={{ display: "flex", alignItems: "flex-end", gap: "var(--space-3)", marginBottom: "var(--space-3)" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          gap: "var(--space-3)",
+          marginBottom: "var(--space-3)",
+        }}
+      >
         <span style={{ fontSize: "var(--text-3xl)", fontWeight: 700, lineHeight: 1, color: cor }}>
           {stats.media_geral.toFixed(1)}
         </span>
@@ -62,7 +69,14 @@ export function IEOPCard({ stats }: Props) {
       </div>
 
       {/* Legenda de faixas */}
-      <div style={{ display: "flex", gap: "var(--space-1)", fontSize: "var(--text-xs)", color: "var(--color-text-muted)" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "var(--space-1)",
+          fontSize: "var(--text-xs)",
+          color: "var(--color-text-muted)",
+        }}
+      >
         {FAIXAS.map((c) => (
           <span key={c} style={{ flex: 1, textAlign: "center" }}>
             {c}

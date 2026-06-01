@@ -1,19 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { Table, type Column } from "../../../components/Table";
+import type { BadgeVariant } from "../../../components/Badge";
 import { Badge } from "../../../components/Badge";
+import { type Column, Table } from "../../../components/Table";
+import { STATUS_LABELS } from "../../mapa/types";
 import { ExecutionBar } from "../../obras/ExecutionBar";
 import { RiskBadge } from "../../obras/RiskBadge";
 import { formatBRL, formatDate } from "../formatters";
-import { STATUS_LABELS } from "../../mapa/types";
-import type { BadgeVariant } from "../../../components/Badge";
 import type { ObraHistorico, ObraStatus } from "./types";
 
 const STATUS_VARIANT: Record<ObraStatus, BadgeVariant> = {
-  em_andamento: "success",
-  concluida:    "neutral",
-  paralisada:   "warning",
-  atrasada:     "danger",
+  em_andamento: "info",
+  concluida: "success",
+  paralisada: "warning",
+  atrasada: "danger",
   nao_iniciada: "neutral",
+  cancelada: "danger",
 };
 
 const COLUMNS: Column<ObraHistorico>[] = [
@@ -76,10 +77,14 @@ export function ObraHistoricoTable({ obras }: ObraHistoricoTableProps) {
 
   return (
     <div style={{ marginTop: "var(--space-6)" }}>
-      <p style={{
-        fontSize: "var(--text-sm)", fontWeight: "var(--font-semibold)",
-        color: "var(--color-text-secondary)", marginBottom: "var(--space-3)",
-      }}>
+      <p
+        style={{
+          fontSize: "var(--text-sm)",
+          fontWeight: "var(--font-semibold)",
+          color: "var(--color-text-secondary)",
+          marginBottom: "var(--space-3)",
+        }}
+      >
         Histórico de obras ({obras.length})
       </p>
       <Table<ObraHistorico>

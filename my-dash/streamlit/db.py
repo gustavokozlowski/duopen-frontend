@@ -54,6 +54,30 @@ RISK_COLORSCALE = [
     [1.00, "#6b0000"],
 ]
 
+# IEOP: quanto MAIOR o score (0–100), melhor → verde. Espelha as faixas/cores
+# do frontend (src/features/dashboard/ieop.ts).
+IEOP_COLORSCALE = [
+    [0.00, "#A32D2D"],  # Crítico
+    [0.20, "#D2691E"],  # Ruim
+    [0.40, "#BA7517"],  # Regular
+    [0.60, "#3FB984"],  # Bom
+    [1.00, "#1D9E75"],  # Ótimo
+]
+
+
+def ieop_classe(score: float) -> str:
+    """Faixa textual do IEOP a partir do score 0–100 (igual ao frontend)."""
+    if score >= 80:
+        return "Ótimo"
+    if score >= 60:
+        return "Bom"
+    if score >= 40:
+        return "Regular"
+    if score >= 20:
+        return "Ruim"
+    return "Crítico"
+
+
 # ── Supabase client ───────────────────────────────────────────────────────────
 
 
@@ -115,7 +139,16 @@ def sample_predicoes(n: int = 300, seed: int = 42) -> pd.DataFrame:
             "nome": [f"Obra #{i:04d} — {rng.choice(_SECRETARIAS)}" for i in range(n)],
             "secretaria": rng.choice(_SECRETARIAS, n),
             "bairro": rng.choice(
-                ["Centro", "Imbetiba", "Lagoa", "Glória", "Novo Horizonte", "Cabiúnas", "Imboassica"], n
+                [
+                    "Centro",
+                    "Imbetiba",
+                    "Lagoa",
+                    "Glória",
+                    "Novo Horizonte",
+                    "Cabiúnas",
+                    "Imboassica",
+                ],
+                n,
             ),
             "status": rng.choice(_STATUS, n, p=[0.40, 0.22, 0.10, 0.20, 0.08]),
             "prob_atraso": prob_atraso,
@@ -151,10 +184,42 @@ def sample_features(seed: int = 42) -> pd.DataFrame:
         ("equipe_fiscalizacao", "Tamanho da equipe de fiscalização"),
     ]
     rng = np.random.default_rng(seed)
-    names, descs = zip(*features)
+    names, descs = zip(*features, strict=False)
     imp = rng.dirichlet(np.array([6, 5, 4, 4, 3, 2, 3, 2, 1.5, 1.5, 1, 1, 2, 1, 1]))
     return (
         pd.DataFrame({"feature_name": names, "descricao": descs, "importance": imp.round(5)})
         .sort_values("importance", ascending=False)
         .reset_index(drop=True)
     )
+
+
+def sample_obras(n: int = 400, seed: int = 42) -> pd.DataFrame:
+    """Amostra de obras com IEOP, custo e atraso — base do scatter 3D."""
+    rng = np.random.default_rng(seed)
+
+    valor = rng.uniform(200_000, 15_000_000, n).round(0)
+    area = np.where(rng.random(n) < 0.85, rng.uniform(80, 20_000, n).round(0), np.nan)
+    # IEOP tende a cair quando há mais atraso; geramos correlacionado.
+    dias_atraso = rng.gamma(shape=2.0, scale=35, size=n).round(0)
+    base = rng.normal(58, 18, n)
+    ieop_score = np.clip(base - dias_atraso * 0.06, 0, 100).round(2)
+
+    df = pd.DataFrame(
+        {
+            "id": [f"obra-{i:04d}" for i in range(n)],
+            "nome": [f"Obra #{i:04d} — {rng.choice(_SECRETARIAS)}" for i in range(n)],
+            "secretaria": rng.choice(_SECRETARIAS, n),
+            "situacao": rng.choice(
+                ["Em andamento", "Concluída", "Paralisada", "Cancelada", "Em fase de planejamento"],
+                n,
+                p=[0.45, 0.25, 0.08, 0.07, 0.15],
+            ),
+            "valor_contrato": valor,
+            "area_m2": area,
+            "dias_atraso": dias_atraso,
+            "ieop_score": ieop_score,
+        }
+    )
+    df["ieop_classe"] = df["ieop_score"].apply(ieop_classe)
+    df["custo_m2"] = (df["valor_contrato"] / df["area_m2"]).round(0)
+    return df

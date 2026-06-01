@@ -1,5 +1,5 @@
-import { createPortal } from "react-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import styles from "./Toast.module.css";
 
 type ToastType = "error" | "warning";
@@ -30,11 +30,7 @@ function messageForStatus(status: number): { title: string; detail: string } {
 
 function ToastEntry({ toast, onDismiss }: { toast: ToastItem; onDismiss: (id: string) => void }) {
   return (
-    <div
-      className={`${styles.toast} ${styles[toast.type]}`}
-      role="alert"
-      aria-live="assertive"
-    >
+    <div className={`${styles.toast} ${styles[toast.type]}`} role="alert" aria-live="assertive">
       <span className={styles.icon} aria-hidden>
         {toast.type === "error" ? "⚠" : "⚡"}
       </span>
@@ -73,8 +69,20 @@ export function ToastContainer() {
       setToasts((prev) => {
         // Ignora toasts idênticos já visíveis (ex.: StrictMode dispara 2×)
         if (prev.some((t) => t.dedupeKey === dedupeKey)) return prev;
-        timers.current.set(id, setTimeout(() => dismiss(id), 6_000));
-        return [...prev, { id, type: "error", title, detail: `${method.toUpperCase()} ${url} — ${detail}`, dedupeKey }];
+        timers.current.set(
+          id,
+          setTimeout(() => dismiss(id), 6_000),
+        );
+        return [
+          ...prev,
+          {
+            id,
+            type: "error",
+            title,
+            detail: `${method.toUpperCase()} ${url} — ${detail}`,
+            dedupeKey,
+          },
+        ];
       });
     }
 
@@ -93,6 +101,6 @@ export function ToastContainer() {
         <ToastEntry key={t.id} toast={t} onDismiss={dismiss} />
       ))}
     </div>,
-    document.body
+    document.body,
   );
 }

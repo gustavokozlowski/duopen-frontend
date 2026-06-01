@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Source } from "./types";
 import styles from "./SourceCard.module.css";
+import type { Source } from "./types";
 
 function SourceItem({ source }: { source: Source }) {
   const [open, setOpen] = useState(false);
@@ -17,7 +17,9 @@ function SourceItem({ source }: { source: Source }) {
       >
         <span className={styles.cardTitle}>{source.titulo}</span>
         <div className={styles.cardMeta}>
-          <span className={styles.relevancia}>{Math.round(source.relevancia * 100)}% relevante</span>
+          <span className={styles.relevancia}>
+            {Math.round(source.relevancia * 100)}% relevante
+          </span>
           <span className={`${styles.chevron} ${open ? styles.open : ""}`}>›</span>
         </div>
       </div>

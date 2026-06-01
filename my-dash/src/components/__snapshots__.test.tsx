@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { render } from "@testing-library/react";
 import { Badge } from "./Badge";
 import { Card } from "./Card";
@@ -13,7 +13,7 @@ describe("snapshots", () => {
 
   it("Card (com tendência)", () => {
     const { container } = render(
-      <Card title="Alunos ativos" value="1.284" trend={12} trendLabel="vs. mês anterior" />
+      <Card title="Alunos ativos" value="1.284" trend={12} trendLabel="vs. mês anterior" />,
     );
     expect(container.innerHTML).toMatchSnapshot();
   });

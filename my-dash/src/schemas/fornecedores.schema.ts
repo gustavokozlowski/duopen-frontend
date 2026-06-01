@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { obraStatusSchema, situacaoToStatus, pageSchema } from "./obras.schema";
+import { obraStatusSchema, pageSchema, situacaoToStatus } from "./obras.schema";
 
 // ── Ranking (/api/v1/fornecedores) ────────────────────────────────
 export const fornecedorRankingSchema = z
@@ -134,10 +134,7 @@ function adaptObraHistorico(r: FornecedorObraRaw): ObraHistorico {
   };
 }
 
-export function adaptFornecedorPerfil(
-  detalhe: unknown,
-  obras: unknown
-): FornecedorPerfil {
+export function adaptFornecedorPerfil(detalhe: unknown, obras: unknown): FornecedorPerfil {
   const f = fornecedorRawSchema.parse(detalhe);
   const lista = fornecedorObraRawSchema.array().parse(obras);
   return {

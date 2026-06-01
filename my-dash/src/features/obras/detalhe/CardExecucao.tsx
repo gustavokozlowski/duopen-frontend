@@ -1,6 +1,6 @@
 import { formatBRL } from "../formatters";
-import type { ObraDetalhe } from "./types";
 import styles from "./CardExecucao.module.css";
+import type { ObraDetalhe } from "./types";
 
 function barColor(pct: number): string {
   if (pct >= 70) return "#1D9E75";
@@ -32,10 +32,7 @@ export function CardExecucao({ obra }: CardExecucaoProps) {
         aria-valuemin={0}
         aria-valuemax={100}
       >
-        <div
-          className={styles.barFill}
-          style={{ width: `${pct}%`, background: barColor(pct) }}
-        />
+        <div className={styles.barFill} style={{ width: `${pct}%`, background: barColor(pct) }} />
       </div>
 
       <div className={styles.valueTable}>
@@ -50,7 +47,9 @@ export function CardExecucao({ obra }: CardExecucaoProps) {
         <hr className={styles.divider} />
         <div className={styles.valueRow}>
           <span className={`${styles.valueLabel} ${styles.totalLabel}`}>Total</span>
-          <span className={`${styles.valueAmount} ${styles.totalAmount}`}>{formatBRL(valorTotal)}</span>
+          <span className={`${styles.valueAmount} ${styles.totalAmount}`}>
+            {formatBRL(valorTotal)}
+          </span>
         </div>
       </div>
     </div>
