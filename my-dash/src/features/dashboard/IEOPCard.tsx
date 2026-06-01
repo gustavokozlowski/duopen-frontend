@@ -1,7 +1,7 @@
 import { IEOPBadge } from "../../components/IEOPBadge";
 import type { IEOPStats } from "../../schemas/ieop.schema";
 import styles from "./IEOPCard.module.css";
-import { colorForClasse, getIEOPColor } from "./ieop";
+import { getIEOPColor } from "./ieop";
 
 // Faixas exibidas da pior para a melhor (espelha o protótipo).
 const FAIXAS = [
@@ -12,18 +12,30 @@ const FAIXAS = [
   { classe: "Ótimo", cor: "var(--ieop-otimo)" },
 ] as const;
 
-interface Props {
-  stats: IEOPStats;
+export interface IEOPComponente {
+  sig: string; // C · P · R · E
+  nome: string;
+  valor: number; // 0–100
 }
 
-export function IEOPCard({ stats }: Props) {
+interface Props {
+  stats: IEOPStats;
+  /** Subtítulo opcional no cabeçalho (ex.: "média municipal · 342 obras"). */
+  subtitle?: string;
+  /** Componentes C·P·R·E (média municipal real). Omitido quando indisponível. */
+  componentes?: IEOPComponente[];
+}
+
+export function IEOPCard({ stats, subtitle, componentes }: Props) {
   const cor = getIEOPColor(stats.media_geral);
   const pct = Math.min(100, Math.max(0, stats.media_geral));
-  const corClasse = colorForClasse(stats.classe_geral).hex;
 
   return (
     <div className={styles.card}>
-      <p className={styles.title}>Índice de Eficiência — Macaé</p>
+      <div className={styles.head}>
+        <span className={styles.title}>Índice de Eficiência — Macaé</span>
+        {subtitle && <span className={styles.sub}>{subtitle}</span>}
+      </div>
 
       <div className={styles.top}>
         <div
@@ -45,17 +57,18 @@ export function IEOPCard({ stats }: Props) {
             className={styles.metaTitle}
             style={{ display: "flex", gap: 10, alignItems: "center" }}
           >
-            Classificação geral <IEOPBadge classe={stats.classe_geral} />
+            Classe geral <IEOPBadge classe={stats.classe_geral} />
           </div>
           <p className={styles.metaSub}>
-            Média ponderada do índice de eficiência das obras públicas monitoradas no município.
+            O IEOP combina quatro componentes — custo, atraso, recorrência e execução — num índice
+            de 0 a 100 por obra.
           </p>
           <div className={styles.faixas}>
             {FAIXAS.map((f) => {
               const on = f.classe === stats.classe_geral;
               return (
                 <div key={f.classe} className={`${styles.faixa} ${on ? styles.on : ""}`}>
-                  <div className={styles.faixaBar} style={{ background: on ? corClasse : f.cor }} />
+                  <div className={styles.faixaBar} style={{ background: f.cor }} />
                   <div className={styles.faixaLbl}>{f.classe}</div>
                 </div>
               );
@@ -63,6 +76,33 @@ export function IEOPCard({ stats }: Props) {
           </div>
         </div>
       </div>
+
+      {componentes && componentes.length > 0 && (
+        <div className={styles.comps}>
+          {componentes.map((c) => {
+            const cc = getIEOPColor(c.valor);
+            return (
+              <div key={c.sig}>
+                <div className={styles.compHead}>
+                  <span className={styles.compName}>
+                    <span className={styles.compSig}>{c.sig}</span>
+                    {c.nome}
+                  </span>
+                  <span className={styles.compVal} style={{ color: cc }}>
+                    {c.valor.toFixed(0)}
+                  </span>
+                </div>
+                <div className={styles.compTrack}>
+                  <div
+                    className={styles.compFill}
+                    style={{ width: `${Math.min(100, Math.max(0, c.valor))}%`, background: cc }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { SearchIcon } from "../../components/icons";
 import type { ObrasFilterValues } from "../../schemas/obras.schema";
 import { RISCO_LABELS, STATUS_LABELS } from "../mapa/types";
 import styles from "./ObrasFilters.module.css";
@@ -35,7 +36,7 @@ export function ObrasFilters({ filter, onChange, secretarias, bairros }: ObrasFi
       <div className={styles.row}>
         <div className={styles.searchWrapper}>
           <span className={styles.searchIcon} aria-hidden>
-            ⌕
+            <SearchIcon />
           </span>
           <input
             type="search"
