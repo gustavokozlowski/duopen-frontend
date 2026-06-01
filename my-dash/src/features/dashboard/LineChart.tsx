@@ -1,14 +1,15 @@
 import {
+  Area,
   CartesianGrid,
-  Legend,
+  ComposedChart,
   Line,
-  LineChart as ReLineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { formatMes } from "./formatters";
+import styles from "./LineChart.module.css";
 import { ChartSkeleton } from "./Skeleton";
 import type { EvolucaoMes } from "./types";
 
@@ -39,53 +40,58 @@ export function LineChart({ data, isLoading }: LineChartProps) {
   const formatted = data.map((d) => ({ ...d, mes: formatMes(d.mes) }));
 
   return (
-    <div
-      style={{
-        background: "var(--color-surface)",
-        border: "1px solid var(--color-border)",
-        borderRadius: "var(--radius-lg)",
-        padding: "var(--space-6)",
-      }}
-    >
-      <p
-        style={{
-          fontSize: "var(--text-sm)",
-          fontWeight: 600,
-          color: "var(--color-text-secondary)",
-          marginBottom: "var(--space-4)",
-        }}
-      >
-        Evolução mensal — obras iniciadas vs concluídas
-      </p>
-      <div style={{ height: 240 }}>
+    <div className={styles.card}>
+      <div className={styles.head}>
+        <span className={styles.title}>Evolução mensal</span>
+        <span className={styles.sub}>iniciadas vs. concluídas</span>
+      </div>
+
+      <div className={styles.legend}>
+        <span className={styles.leg}>
+          <i style={{ background: "#3FB984" }} /> Iniciadas
+        </span>
+        <span className={styles.leg}>
+          <i style={{ background: "#8b90a8" }} /> Concluídas
+        </span>
+      </div>
+
+      <div className={styles.chart}>
         <ResponsiveContainer width="100%" height="100%">
-          <ReLineChart data={formatted} margin={{ left: 0, right: 16, top: 4, bottom: 4 }}>
+          <ComposedChart data={formatted} margin={{ left: 0, right: 16, top: 4, bottom: 4 }}>
+            <defs>
+              <linearGradient id="evoFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#3FB984" stopOpacity={0.22} />
+                <stop offset="100%" stopColor="#3FB984" stopOpacity={0} />
+              </linearGradient>
+            </defs>
             <CartesianGrid {...GRID} />
             <XAxis dataKey="mes" tick={AXIS} axisLine={false} tickLine={false} />
             <YAxis tick={AXIS} axisLine={false} tickLine={false} allowDecimals={false} />
             <Tooltip {...TOOLTIP_STYLE} />
-            <Legend
-              formatter={(value) => <span style={{ color: "#8b90a8", fontSize: 12 }}>{value}</span>}
-            />
-            <Line
+            {/* Iniciadas: linha verde sólida + área */}
+            <Area
               type="monotone"
               dataKey="iniciadas"
               name="Iniciadas"
-              stroke="#1D9E75"
-              strokeWidth={2}
-              dot={{ fill: "#1D9E75", r: 3 }}
+              stroke="#3FB984"
+              strokeWidth={2.2}
+              strokeLinecap="round"
+              fill="url(#evoFill)"
+              dot={{ fill: "#3FB984", r: 3 }}
               activeDot={{ r: 5 }}
             />
+            {/* Concluídas: linha cinza tracejada */}
             <Line
               type="monotone"
               dataKey="concluidas"
               name="Concluídas"
-              stroke="#BA7517"
+              stroke="#8b90a8"
               strokeWidth={2}
-              dot={{ fill: "#BA7517", r: 3 }}
+              strokeDasharray="5 4"
+              dot={{ fill: "#161b27", stroke: "#8b90a8", strokeWidth: 1.5, r: 3 }}
               activeDot={{ r: 5 }}
             />
-          </ReLineChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
     </div>
