@@ -6,6 +6,7 @@ import { HeaderObra } from "../features/obras/detalhe/HeaderObra";
 import { CardExecucao } from "../features/obras/detalhe/CardExecucao";
 import { CardDatas } from "../features/obras/detalhe/CardDatas";
 import { CardPredicaoML } from "../features/obras/detalhe/CardPredicaoML";
+import { CardIEOP } from "../features/obras/detalhe/CardIEOP";
 import { ContratoSection } from "../features/obras/detalhe/ContratoSection";
 import { MiniMapa } from "../features/obras/detalhe/MiniMapa";
 import { CardFornecedor } from "../features/obras/detalhe/CardFornecedor";
@@ -44,6 +45,7 @@ export function ObraDetalhePage() {
               <ContratoSection contratos={obra.contratos} />
 
               <div className={styles.sidebar}>
+                <CardIEOP obra={obra} />
                 <MiniMapa
                   lat={obra.lat}
                   lng={obra.lng}
