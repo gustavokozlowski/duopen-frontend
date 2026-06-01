@@ -1,7 +1,11 @@
 import { serve } from "bun";
 import index from "./index.html";
 
-const API_URL = process.env.BUN_PUBLIC_API_URL ?? "http://localhost:8000";
+// Alvo do proxy server-side. API_PROXY_TARGET é só do servidor (não vaza pro
+// bundle do cliente, ao contrário de BUN_PUBLIC_*) — útil em container, onde o
+// backend do host é alcançado via host.docker.internal.
+const API_URL =
+  process.env.API_PROXY_TARGET ?? process.env.BUN_PUBLIC_API_URL ?? "http://localhost:8000";
 
 const server = serve({
   routes: {

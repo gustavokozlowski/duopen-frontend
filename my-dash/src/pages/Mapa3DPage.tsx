@@ -8,7 +8,7 @@ export function Mapa3DPage() {
   const comCoords = obras.filter((o) => o.lat !== 0 && o.lng !== 0);
 
   return (
-    <PageLayout pageTitle="Mapa 3D">
+    <PageLayout pageTitle="Mapa 3D" breadcrumb="Macaé / Relatórios / Mapa 3D">
       <div className={styles.wrapper}>
         <div className={styles.toolbar}>
           <div className={styles.toolbarLeft}>

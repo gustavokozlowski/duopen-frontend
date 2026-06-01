@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { useAuthContext } from "../auth/AuthContext";
+import { useMemo, useState } from "react";
+import { Footer } from "../components/Footer";
 import { PageLayout } from "../components/PageLayout";
 import { AlertCard } from "../features/dashboard/AlertCard";
 import { DonutChart } from "../features/dashboard/DonutChart";
 import { HBarChart } from "../features/dashboard/HBarChart";
-import { IEOPCard } from "../features/dashboard/IEOPCard";
+import { IEOPCard, type IEOPComponente } from "../features/dashboard/IEOPCard";
 import { IEOPDistribuicao } from "../features/dashboard/IEOPDistribuicao";
 import { LineChart } from "../features/dashboard/LineChart";
 import { MetricCards } from "../features/dashboard/MetricCards";
@@ -16,59 +16,70 @@ import {
   useIEOPStats,
   useTopAlerts,
 } from "../features/dashboard/useDashboard";
+import { useObras } from "../features/obras/useObras";
 import styles from "./Dashboard.module.css";
 
+// Definição dos 4 componentes do IEOP (custo, atraso, recorrência, execução).
+const COMP_DEFS = [
+  { sig: "C", nome: "Custo", key: "ieop_custo" },
+  { sig: "P", nome: "Atraso", key: "ieop_atraso" },
+  { sig: "R", nome: "Recorrência", key: "ieop_recorrencia" },
+  { sig: "E", nome: "Execução", key: "ieop_execucao" },
+] as const;
+
 export function Dashboard() {
-  const { user, logout } = useAuthContext();
   const [period, setPeriod] = useState(defaultPeriod);
 
   const summary = useDashboardSummary(period);
   const alerts = useTopAlerts(period);
   const ieop = useIEOPStats();
+  const obras = useObras();
+
+  // Média municipal real de cada componente C·P·R·E, calculada a partir da
+  // lista de obras (cada obra carrega ieop_custo/atraso/recorrencia/execucao).
+  // Só exibimos os 4 quando todos têm dados — nada é fabricado.
+  const componentes = useMemo<IEOPComponente[] | undefined>(() => {
+    const lista = obras.data ?? [];
+    if (lista.length === 0) return undefined;
+    const out: IEOPComponente[] = [];
+    for (const def of COMP_DEFS) {
+      const vals = lista.map((o) => o[def.key]).filter((v): v is number => typeof v === "number");
+      if (vals.length === 0) return undefined;
+      out.push({
+        sig: def.sig,
+        nome: def.nome,
+        valor: vals.reduce((s, v) => s + v, 0) / vals.length,
+      });
+    }
+    return out;
+  }, [obras.data]);
+
+  const ieopSubtitle =
+    summary.data != null ? `média municipal · ${summary.data.total_obras} obras` : undefined;
 
   return (
     <PageLayout
       pageTitle="Dashboard"
+      breadcrumb="Macaé / Painel analítico"
       headerRight={
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
-          <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)" }}>
-            {user?.nome ?? user?.email}
+        <>
+          <span className={styles.live}>
+            <span className={styles.liveDot} /> ao vivo
           </span>
-          <button
-            onClick={logout}
-            style={{
-              fontSize: "var(--text-sm)",
-              color: "var(--color-text-muted)",
-              background: "none",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius-sm)",
-              padding: "var(--space-1) var(--space-3)",
-              cursor: "pointer",
-            }}
-          >
-            Sair
-          </button>
-        </div>
+          <PeriodFilter value={period} onChange={setPeriod} />
+        </>
       }
     >
-      {/* ── Filtro de período ── */}
-      <PeriodFilter value={period} onChange={setPeriod} />
-
-      {/* ── Métricas globais ── */}
-      <section className={styles.gridMetrics} aria-label="Métricas globais">
-        <MetricCards data={summary.data} isLoading={summary.isLoading} />
-      </section>
-
-      {/* ── IEOP: indicador principal ── */}
-      <section className={styles.gridTwo} aria-label="Índice de Eficiência da Obra Pública">
+      {/* ── Herói IEOP: indicador principal ── */}
+      <section className={styles.gridHero} aria-label="Índice de Eficiência da Obra Pública">
         {ieop.isLoading ? (
           <>
-            <ChartSkeleton title="IEOP Médio — Macaé" />
+            <ChartSkeleton title="Índice de Eficiência — Macaé" />
             <ChartSkeleton title="Distribuição por classe IEOP" />
           </>
         ) : ieop.data ? (
           <>
-            <IEOPCard stats={ieop.data} />
+            <IEOPCard stats={ieop.data} subtitle={ieopSubtitle} componentes={componentes} />
             <IEOPDistribuicao distribuicao={ieop.data.distribuicao} />
           </>
         ) : (
@@ -89,17 +100,24 @@ export function Dashboard() {
         )}
       </section>
 
-      {/* ── Alertas + Rosca ── */}
+      {/* ── Métricas globais ── */}
+      <section className={styles.gridMetrics} aria-label="Métricas globais">
+        <MetricCards data={summary.data} isLoading={summary.isLoading} />
+      </section>
+
+      {/* ── Alertas (Top 5 risco) + Rosca (status) ── */}
       <section className={styles.gridTwo} aria-label="Alertas e distribuição">
         <AlertCard data={alerts.data} isLoading={alerts.isLoading} />
         <DonutChart data={summary.data?.por_status} isLoading={summary.isLoading} />
       </section>
 
-      {/* ── Barras + Linha ── */}
+      {/* ── Barras por secretaria + Evolução mensal ── */}
       <section className={styles.gridCharts} aria-label="Análises">
         <HBarChart data={summary.data?.por_secretaria} isLoading={summary.isLoading} />
         <LineChart data={summary.data?.evolucao_mensal} isLoading={summary.isLoading} />
       </section>
+
+      <Footer />
     </PageLayout>
   );
 }

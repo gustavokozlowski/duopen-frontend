@@ -1,11 +1,14 @@
 import type { ReactNode } from "react";
 import { canUseRAG } from "../auth/permissions";
 import type { Perfil } from "../schemas/auth.schema";
+import { DashboardIcon, FornecedoresIcon, IAIcon, Mapa3DIcon, MapaIcon, ObrasIcon } from "./icons";
 
 export interface NavItem {
   path: string;
   label: string;
   icon?: ReactNode;
+  /** Contador opcional exibido à direita do item (ex.: Obras "342"). */
+  badge?: string;
 }
 
 export interface NavGroup {
@@ -17,13 +20,13 @@ export interface NavGroup {
 // perfis com permissão (admin/gestor) — readonly não vê.
 export function buildNav(perfil: Perfil | undefined): NavGroup[] {
   const principal: NavItem[] = [
-    { path: "/", label: "Dashboard", icon: "◈" },
-    { path: "/obras", label: "Obras", icon: "◉" },
-    { path: "/fornecedores", label: "Fornecedores", icon: "◎" },
+    { path: "/", label: "Dashboard", icon: DashboardIcon({}) },
+    { path: "/obras", label: "Obras", icon: ObrasIcon({}) },
+    { path: "/fornecedores", label: "Fornecedores", icon: FornecedoresIcon({}) },
   ];
 
   if (canUseRAG(perfil)) {
-    principal.push({ path: "/ia", label: "Agente IA", icon: "✦" });
+    principal.push({ path: "/ia", label: "Agente IA", icon: IAIcon({}) });
   }
 
   return [
@@ -31,8 +34,8 @@ export function buildNav(perfil: Perfil | undefined): NavGroup[] {
     {
       label: "Relatórios",
       items: [
-        { path: "/mapa", label: "Mapa", icon: "◌" },
-        { path: "/mapa-3d", label: "Mapa 3D", icon: "◍" },
+        { path: "/mapa", label: "Mapa", icon: MapaIcon({}) },
+        { path: "/mapa-3d", label: "Mapa 3D", icon: Mapa3DIcon({}) },
       ],
     },
   ];

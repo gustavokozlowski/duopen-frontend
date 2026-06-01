@@ -38,7 +38,7 @@ export function ChatPage() {
   const hasMessages = messages.length > 0;
 
   return (
-    <PageLayout pageTitle="Agente IA">
+    <PageLayout pageTitle="Agente IA" breadcrumb="Macaé / Assistente RAG">
       <div className={styles.container}>
         {/* Sidebar: session history (visible when there are messages) */}
         {hasMessages && (

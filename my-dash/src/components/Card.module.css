@@ -35,6 +35,8 @@
   flex-shrink: 0;
 }
 
+.icon svg { width: 20px; height: 20px; }
+
 .icon.success { background: var(--color-success-bg); color: var(--color-success); }
 .icon.warning { background: var(--color-warning-bg); color: var(--color-warning); }
 .icon.danger  { background: var(--color-danger-bg);  color: var(--color-danger);  }
@@ -47,10 +49,12 @@
 }
 
 .value {
+  font-family: var(--font-mono);
   font-size: var(--text-3xl);
   font-weight: var(--font-bold);
   color: var(--color-text-primary);
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .footer {

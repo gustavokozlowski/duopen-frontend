@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { ErrorBoundary } from "../components/ErrorBoundary";
+import { Footer } from "../components/Footer";
 import { PageLayout } from "../components/PageLayout";
 import { ObraHistoricoTable } from "../features/fornecedores/perfil/ObraHistoricoTable";
 import { PerfilHeader } from "../features/fornecedores/perfil/PerfilHeader";
@@ -14,7 +15,7 @@ export function FornecedorPerfilPage() {
   const { data: perfil, isLoading, error } = useFornecedorPerfil(id);
 
   return (
-    <PageLayout pageTitle="Perfil do fornecedor">
+    <PageLayout pageTitle="Perfil do fornecedor" breadcrumb="Macaé / Fornecedores / Perfil">
       <ErrorBoundary>
         {isLoading || !perfil ? (
           <PerfilSkeleton />
@@ -41,6 +42,8 @@ export function FornecedorPerfilPage() {
             </div>
 
             <ObraHistoricoTable obras={perfil.obras} />
+
+            <Footer />
           </>
         )}
       </ErrorBoundary>

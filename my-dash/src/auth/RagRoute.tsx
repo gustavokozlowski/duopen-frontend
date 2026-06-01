@@ -10,7 +10,7 @@ export function RagRoute() {
 
   if (!canUseRAG(user?.perfil)) {
     return (
-      <PageLayout pageTitle="Agente IA">
+      <PageLayout pageTitle="Agente IA" breadcrumb="Macaé / Assistente RAG">
         <div
           role="alert"
           style={{

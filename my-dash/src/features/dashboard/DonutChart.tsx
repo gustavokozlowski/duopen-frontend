@@ -53,6 +53,9 @@ export function DonutChart({ data, isLoading }: DonutChartProps) {
         border: "1px solid var(--color-border)",
         borderRadius: "var(--radius-lg)",
         padding: "var(--space-6)",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <p
@@ -65,7 +68,7 @@ export function DonutChart({ data, isLoading }: DonutChartProps) {
       >
         Distribuição por status
       </p>
-      <div style={{ height: 240 }}>
+      <div style={{ flex: 1, minHeight: 240 }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie

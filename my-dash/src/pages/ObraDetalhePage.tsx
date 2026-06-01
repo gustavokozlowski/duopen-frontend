@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { ErrorBoundary } from "../components/ErrorBoundary";
+import { Footer } from "../components/Footer";
 import { PageLayout } from "../components/PageLayout";
 import { CardDatas } from "../features/obras/detalhe/CardDatas";
 import { CardExecucao } from "../features/obras/detalhe/CardExecucao";
@@ -18,7 +19,7 @@ export function ObraDetalhePage() {
   const { data: obra, isLoading, error } = useObraDetalhe(id);
 
   return (
-    <PageLayout pageTitle="Detalhe da obra">
+    <PageLayout pageTitle="Detalhe da obra" breadcrumb="Macaé / Obras / Detalhe">
       <ErrorBoundary>
         {isLoading || !obra ? (
           <DetailSkeleton />
@@ -59,6 +60,8 @@ export function ObraDetalhePage() {
                 <CardFornecedor fornecedor={obra.fornecedor} />
               </div>
             </div>
+
+            <Footer />
           </>
         )}
       </ErrorBoundary>
