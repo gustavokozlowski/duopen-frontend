@@ -19,7 +19,10 @@ export function IEOPDistribuicao({ distribuicao, totalObras }: Props) {
   }));
   const max = Math.max(1, ...entries.map((e) => e.count));
   const classificadas = entries.reduce((s, e) => s + e.count, 0);
-  const total = totalObras ?? classificadas;
+  // Só mostra "N de TOTAL" quando o total é coerente (>= classificadas).
+  // O endpoint de IEOP pode classificar um conjunto diferente do total
+  // municipal — nesse caso exibimos apenas a contagem, sem "de X".
+  const showTotal = totalObras != null && totalObras >= classificadas;
 
   return (
     <div className={styles.card}>
@@ -45,7 +48,13 @@ export function IEOPDistribuicao({ distribuicao, totalObras }: Props) {
       <div className={styles.foot}>
         <span>Obras classificadas</span>
         <span>
-          <b>{classificadas}</b> de {total}
+          {showTotal ? (
+            <>
+              <b>{classificadas}</b> de {totalObras}
+            </>
+          ) : (
+            <b>{classificadas}</b>
+          )}
         </span>
       </div>
     </div>
