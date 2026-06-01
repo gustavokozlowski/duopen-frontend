@@ -30,4 +30,5 @@ export const STATUS_LABELS: Record<ObraStatus, string> = {
   paralisada:    "Paralisada",
   atrasada:      "Atrasada",
   nao_iniciada:  "Não iniciada",
+  cancelada:     "Cancelada",
 };

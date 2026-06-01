@@ -35,6 +35,12 @@
   border-color: var(--color-border);
 }
 
+.info {
+  color: var(--color-info);
+  background-color: var(--color-info-bg);
+  border-color: var(--color-info-border);
+}
+
 .dot {
   width: 6px;
   height: 6px;

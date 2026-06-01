@@ -11,6 +11,7 @@ export const obraStatusSchema = z.enum([
   "paralisada",
   "atrasada",
   "nao_iniciada",
+  "cancelada",
 ]);
 export type ObraStatus = z.infer<typeof obraStatusSchema>;
 
@@ -75,7 +76,7 @@ const SITUACAO_TO_STATUS: Record<string, ObraStatus> = {
   "Concluida": "concluida",
   "Paralisada": "paralisada",
   "Em fase de planejamento": "nao_iniciada",
-  "Cancelada": "paralisada",
+  "Cancelada": "cancelada",
   "Indefinido": "nao_iniciada",
 };
 

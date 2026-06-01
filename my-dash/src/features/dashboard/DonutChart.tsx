@@ -3,11 +3,12 @@ import { ChartSkeleton } from "./Skeleton";
 import type { StatusCount } from "./types";
 
 const STATUS_COLORS: Record<string, string> = {
-  em_andamento: "#1D9E75",
-  concluida:    "#6b7280",
+  em_andamento: "#3b82f6",
+  concluida:    "#1D9E75",
   paralisada:   "#BA7517",
   atrasada:     "#A32D2D",
-  nao_iniciada: "#3b82f6",
+  nao_iniciada: "#6b7280",
+  cancelada:    "#7f1d1d",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -16,6 +17,7 @@ const STATUS_LABELS: Record<string, string> = {
   paralisada:   "Paralisada",
   atrasada:     "Atrasada",
   nao_iniciada: "Não iniciada",
+  cancelada:    "Cancelada",
 };
 
 const TOOLTIP_STYLE = {

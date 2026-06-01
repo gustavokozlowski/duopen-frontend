@@ -9,11 +9,12 @@ import type { BadgeVariant } from "../../../components/Badge";
 import type { ObraHistorico, ObraStatus } from "./types";
 
 const STATUS_VARIANT: Record<ObraStatus, BadgeVariant> = {
-  em_andamento: "success",
-  concluida:    "neutral",
+  em_andamento: "info",
+  concluida:    "success",
   paralisada:   "warning",
   atrasada:     "danger",
   nao_iniciada: "neutral",
+  cancelada:    "danger",
 };
 
 const COLUMNS: Column<ObraHistorico>[] = [

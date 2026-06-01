@@ -17,11 +17,12 @@ import { STATUS_LABELS } from "../features/mapa/types";
 import type { BadgeVariant } from "../components/Badge";
 
 const STATUS_VARIANT: Record<ObraStatus, BadgeVariant> = {
-  em_andamento: "success",
-  concluida:    "neutral",
+  em_andamento: "info",
+  concluida:    "success",
   paralisada:   "warning",
   atrasada:     "danger",
   nao_iniciada: "neutral",
+  cancelada:    "danger",
 };
 
 
