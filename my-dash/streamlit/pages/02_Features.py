@@ -18,15 +18,18 @@ st.caption("Features mais relevantes do modelo de predição de atraso e estouro
 
 # ── Dados ─────────────────────────────────────────────────────────────────────
 
-df = db.fetch("features_obras")
-if df.empty:
-    db.notice_sample()
+# A importância das features é um artefato do modelo treinado — não fica em
+# `features_obras` (que guarda as features POR obra). Lemos a tabela de
+# importâncias publicada pelo treino; enquanto ela não existir (ou vier sem as
+# colunas esperadas), exibimos uma amostra representativa em vez de quebrar.
+df = db.fetch("feature_importance")
+if df.empty or {"feature_name", "importance"} - set(df.columns):
+    st.info(
+        "ℹ️ **Importâncias de exemplo.** O modelo ainda não publicou a tabela "
+        "`feature_importance` no Supabase — exibindo uma amostra representativa.",
+        icon="ℹ️",
+    )
     df = db.sample_features()
-
-# Garantir colunas mínimas
-if "importance" not in df.columns or "feature_name" not in df.columns:
-    st.error("Tabela `features_obras` não contém as colunas esperadas: feature_name, importance.")
-    st.stop()
 
 df = df.sort_values("importance", ascending=False).reset_index(drop=True)
 
