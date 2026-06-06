@@ -15,13 +15,15 @@ export const PERFIL_LABELS: Record<Perfil, string> = {
 };
 
 // Usuário retornado por /me, /login e /register.
-// perfil tem default "gestor" (espelha o DEFAULT da coluna no backend),
-// então respostas sem o campo continuam válidas.
+// perfil cai para "gestor" com `.catch` (não `.default`): o backend tipa a
+// coluna como Optional[str], então contas antigas podem vir com perfil `null`
+// ou fora do enum — `.default` só cobre `undefined` e deixaria o parse estourar
+// (ZodError → "Erro inesperado" no login). `.catch` cobre null/valor inválido.
 export const userResponseSchema = z.object({
   id: z.string(),
   email: z.string(),
   nome: z.string(),
-  perfil: perfilSchema.default("gestor"),
+  perfil: perfilSchema.catch("gestor"),
 });
 export type UserResponse = z.infer<typeof userResponseSchema>;
 
