@@ -14,16 +14,16 @@ declare module "axios" {
   }
 }
 
-// Em produção (build estático, ex.: Vercel) usa a URL pública da API embutida
-// no build. Em dev usa o proxy do servidor Bun (/proxy) para evitar CORS.
+// Quando BUN_PUBLIC_API_URL está setada (ex.: Vercel), usa a URL pública da API
+// embutida no build; senão cai no proxy do servidor Bun (/proxy), usado no dev
+// para evitar CORS. Bun inlina `process.env["BUN_PUBLIC_API_URL"]` como literal
+// no bundle, então não há referência a `process` em runtime.
 //
-// Bun inlina `process.env.*` como literais no bundle, então NÃO há referência a
-// `process` em runtime. O guard antigo `typeof process !== "undefined"` era
-// avaliado no navegador (onde `process` não existe) → virava `false` → forçava
-// "/proxy" mesmo com BUN_PUBLIC_API_URL setada, quebrando o deploy estático.
-const PROD_API_URL = process.env["BUN_PUBLIC_API_URL"];
-export const BASE_URL =
-  process.env.NODE_ENV === "production" && PROD_API_URL ? PROD_API_URL : "/proxy";
+// Não gateamos por NODE_ENV: no build do Bun na Vercel o `--env` faz o NODE_ENV
+// vir do ambiente (não do --define) e nem sempre é "production", o que zerava a
+// URL e forçava "/proxy". Pra rodar o dev com proxy, deixe BUN_PUBLIC_API_URL
+// fora do .env local e aponte o backend via API_PROXY_TARGET (vide src/index.ts).
+export const BASE_URL = process.env["BUN_PUBLIC_API_URL"] || "/proxy";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
