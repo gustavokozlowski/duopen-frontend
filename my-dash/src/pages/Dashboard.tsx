@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Footer } from "../components/Footer";
+import { BellIcon, SearchIcon } from "../components/icons";
 import { PageLayout } from "../components/PageLayout";
 import { AlertCard } from "../features/dashboard/AlertCard";
 import { DonutChart } from "../features/dashboard/DonutChart";
@@ -8,8 +9,9 @@ import { IEOPCard, type IEOPComponente } from "../features/dashboard/IEOPCard";
 import { IEOPDistribuicao } from "../features/dashboard/IEOPDistribuicao";
 import { LineChart } from "../features/dashboard/LineChart";
 import { MetricCards } from "../features/dashboard/MetricCards";
-import { PeriodFilter } from "../features/dashboard/PeriodFilter";
+import { PeriodToggle } from "../features/dashboard/PeriodToggle";
 import { ChartSkeleton } from "../features/dashboard/Skeleton";
+import type { Period } from "../features/dashboard/types";
 import {
   defaultPeriod,
   useDashboardSummary,
@@ -27,6 +29,25 @@ const COMP_DEFS = [
   { sig: "E", nome: "Execução", key: "ieop_execucao" },
 ] as const;
 
+// Período imediatamente anterior, de mesma duração — base do delta das métricas.
+function previousPeriod(p: Period): Period {
+  const inicio = new Date(p.dataInicio);
+  const fim = new Date(p.dataFim);
+  const dias = Math.max(1, Math.round((fim.getTime() - inicio.getTime()) / 86_400_000));
+  const prevFim = new Date(inicio);
+  prevFim.setDate(prevFim.getDate() - 1);
+  const prevInicio = new Date(prevFim);
+  prevInicio.setDate(prevInicio.getDate() - dias);
+  const iso = (d: Date) => d.toISOString().slice(0, 10);
+  return { dataInicio: iso(prevInicio), dataFim: iso(prevFim) };
+}
+
+// Variação % entre o valor atual e o anterior (null quando não há base).
+function pctDelta(cur: number, prev: number): number {
+  if (prev > 0) return ((cur - prev) / prev) * 100;
+  return cur > 0 ? 100 : 0;
+}
+
 export function Dashboard() {
   const [period, setPeriod] = useState(defaultPeriod);
 
@@ -34,6 +55,21 @@ export function Dashboard() {
   const alerts = useTopAlerts(period);
   const ieop = useIEOPStats();
   const obras = useObras();
+
+  // Resumo do período anterior → delta real das métricas (sem fabricar dado).
+  const prevPeriod = useMemo(() => previousPeriod(period), [period]);
+  const summaryPrev = useDashboardSummary(prevPeriod);
+  const deltas = useMemo(() => {
+    const cur = summary.data;
+    const prev = summaryPrev.data;
+    if (!cur || !prev) return undefined;
+    return {
+      totalObras: pctDelta(cur.total_obras, prev.total_obras),
+      emAndamento: pctDelta(cur.obras_em_andamento, prev.obras_em_andamento),
+      valor: pctDelta(cur.valor_total_contratado, prev.valor_total_contratado),
+      execucao: pctDelta(cur.media_execucao, prev.media_execucao),
+    };
+  }, [summary.data, summaryPrev.data]);
 
   // Média municipal real de cada componente C·P·R·E, calculada a partir da
   // lista de obras (cada obra carrega ieop_custo/atraso/recorrencia/execucao).
@@ -66,7 +102,13 @@ export function Dashboard() {
           <span className={styles.live}>
             <span className={styles.liveDot} /> ao vivo
           </span>
-          <PeriodFilter value={period} onChange={setPeriod} />
+          <PeriodToggle onChange={setPeriod} />
+          <button type="button" className={styles.iconBtn} aria-label="Buscar">
+            <SearchIcon />
+          </button>
+          <button type="button" className={styles.iconBtn} aria-label="Notificações">
+            <BellIcon />
+          </button>
         </>
       }
     >
@@ -80,7 +122,10 @@ export function Dashboard() {
         ) : ieop.data ? (
           <>
             <IEOPCard stats={ieop.data} subtitle={ieopSubtitle} componentes={componentes} />
-            <IEOPDistribuicao distribuicao={ieop.data.distribuicao} />
+            <IEOPDistribuicao
+              distribuicao={ieop.data.distribuicao}
+              totalObras={summary.data?.total_obras}
+            />
           </>
         ) : (
           <div
@@ -102,7 +147,7 @@ export function Dashboard() {
 
       {/* ── Métricas globais ── */}
       <section className={styles.gridMetrics} aria-label="Métricas globais">
-        <MetricCards data={summary.data} isLoading={summary.isLoading} />
+        <MetricCards data={summary.data} isLoading={summary.isLoading} deltas={deltas} />
       </section>
 
       {/* ── Alertas (Top 5 risco) + Rosca (status) ── */}

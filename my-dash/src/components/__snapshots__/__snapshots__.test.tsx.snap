@@ -2,6 +2,6 @@
 
 exports[`snapshots Badge (danger) 1`] = `"<span class="undefined undefined"><span aria-hidden="true"></span>Risco alto</span>"`;
 
-exports[`snapshots Card (com tendência) 1`] = `"<div><div><span>Alunos ativos</span></div><span>1.284</span><div><span class="undefined undefined">+12%</span><span>vs. mês anterior</span></div></div>"`;
+exports[`snapshots Card (com tendência) 1`] = `"<div><div><span class="undefined undefined" title="vs. mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>12%</span></div><span>1.284</span><span>Alunos ativos</span></div>"`;
 
 exports[`snapshots LoadingSpinner (lg) 1`] = `"<div class="undefined undefined" role="status"><div aria-hidden="true"></div><span class="sr-only">Carregando…</span></div>"`;

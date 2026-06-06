@@ -10,7 +10,12 @@ import { type Column, Table } from "../components/Table";
 import { getIEOPColor } from "../features/dashboard/ieop";
 import { STATUS_LABELS } from "../features/mapa/types";
 import { ExecutionBar } from "../features/obras/ExecutionBar";
-import { formatBRL, formatDate } from "../features/obras/formatters";
+import {
+  formatBRL,
+  formatDateShort,
+  normalizeNome,
+  normalizeSecretaria,
+} from "../features/obras/formatters";
 import { ObrasFilters } from "../features/obras/ObrasFilters";
 import { exportObrasCsv, filterObras, getDistinct } from "../features/obras/obrasUtils";
 import { RiskBadge } from "../features/obras/RiskBadge";
@@ -33,9 +38,20 @@ const COLUMNS: Column<ObraListItem>[] = [
     header: "Obra / Contrato",
     sortable: true,
     render: (_, row) => (
-      <div>
-        <div style={{ fontWeight: 500, color: "var(--color-text-primary)" }}>
-          {String(row.nome)}
+      <div style={{ maxWidth: 240 }}>
+        <div
+          title={String(row.nome)}
+          style={{
+            fontWeight: 500,
+            color: "var(--color-text-primary)",
+            lineHeight: 1.3,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {normalizeNome(String(row.nome))}
         </div>
         <div
           style={{
@@ -50,7 +66,16 @@ const COLUMNS: Column<ObraListItem>[] = [
       </div>
     ),
   },
-  { key: "secretaria", header: "Secretaria", sortable: true },
+  {
+    key: "secretaria",
+    header: "Secretaria",
+    sortable: true,
+    render: (v) => (
+      <span title={String(v)} style={{ whiteSpace: "nowrap" }}>
+        {normalizeSecretaria(String(v))}
+      </span>
+    ),
+  },
   { key: "bairro", header: "Bairro", sortable: true },
   {
     key: "status",
@@ -115,7 +140,7 @@ const COLUMNS: Column<ObraListItem>[] = [
     key: "previsao_termino",
     header: "Previsão término",
     sortable: true,
-    render: (v) => formatDate(String(v)),
+    render: (v) => formatDateShort(String(v)),
   },
 ];
 
@@ -131,32 +156,56 @@ export function ObrasPage() {
   return (
     <PageLayout
       pageTitle="Obras"
-      breadcrumb="Macaé / Obras públicas"
+      breadcrumb="Macaé / Obras"
       headerRight={
-        <button
-          type="button"
-          onClick={() => exportObrasCsv(filtradas)}
-          disabled={filtradas.length === 0}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "var(--space-2)",
-            padding: "var(--space-2) var(--space-4)",
-            background: "var(--color-surface)",
-            border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-md)",
-            color: "var(--color-text-secondary)",
-            fontSize: "var(--text-sm)",
-            fontWeight: 500,
-            cursor: "pointer",
-          }}
-          aria-label="Exportar obras filtradas como CSV"
-        >
-          <DownloadIcon width={16} height={16} /> Exportar CSV
-          <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>
-            ({filtradas.length})
+        <>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.72rem",
+              color: "var(--color-text-muted)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "var(--color-success)",
+                boxShadow: "0 0 6px var(--color-success)",
+              }}
+            />
+            {obras.length} obras no município
           </span>
-        </button>
+          <button
+            type="button"
+            onClick={() => exportObrasCsv(filtradas)}
+            disabled={filtradas.length === 0}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-2)",
+              padding: "var(--space-2) var(--space-4)",
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-md)",
+              color: "var(--color-text-secondary)",
+              fontSize: "var(--text-sm)",
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
+            aria-label="Exportar obras filtradas como CSV"
+          >
+            <DownloadIcon width={16} height={16} /> Exportar CSV
+            <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>
+              ({filtradas.length})
+            </span>
+          </button>
+        </>
       }
     >
       <ObrasFilters

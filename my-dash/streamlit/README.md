@@ -68,21 +68,15 @@ lateral, ordenados pelo prefixo numérico do nome.
 
 | Arquivo | Título | Conteúdo |
 |---------|--------|----------|
-| `pages/01_predicoes.py` | 🌡️ Mapa de Calor de Risco | risco por secretaria × status |
-| `pages/02_features.py` | 📊 Importância de Features (XGBoost) | ranking de features do modelo |
-| `pages/03_fornecedores.py` | 🏢 Risco × Recorrência | scatter por fornecedor |
-| `pages/04_evolucao.py` | 📈 Evolução Temporal das Predições | série temporal de risco |
-| `pages/05_comparativo.py` | ⚖️ Execução Real vs Prevista | desvio de execução |
+| `pages/01_Predições.py` | 🌡️ Mapa de Calor de Risco | risco por secretaria × status |
+| `pages/02_Features.py` | 📊 Importância de Features (XGBoost) | ranking de features do modelo |
+| `pages/03_Fornecedores.py` | 🏢 Risco × Recorrência | scatter por fornecedor |
+| `pages/04_Evolução.py` | 📈 Evolução Temporal das Predições | série temporal de risco |
+| `pages/05_Comparativo.py` | ⚖️ Execução Real vs Prevista | desvio de execução |
+| `pages/06_IEOP_3D.py` | 🧊 IEOP 3D | dispersão 3D custo × atraso × IEOP |
 
-### Páginas de template (legado)
-
-Herdadas do template inicial e **não relacionadas ao IEOP** — candidatas a
-remoção:
-
-| Arquivo | Título |
-|---------|--------|
-| `pages/01_Metricas.py` | Métricas de Aprendizado |
-| `pages/02_Mapa.py` | Distribuição Geográfica de Usuários |
+> Os nomes dos arquivos definem o rótulo e a ordem na barra lateral; por isso
+> usam Title Case com acento (ex.: "Predições", "Evolução").
 
 ---
 

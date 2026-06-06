@@ -19,10 +19,9 @@ st.caption("Probabilidade média de atraso por secretaria e status da obra.")
 
 # ── Dados ─────────────────────────────────────────────────────────────────────
 
-df = db.fetch("predicoes")
-if df.empty:
+df = db.load_predicoes()
+if not db.is_configured():
     db.notice_sample()
-    df = db.sample_predicoes()
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 

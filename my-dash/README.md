@@ -209,9 +209,10 @@ Conjunto IEOP / ML (destacado na home):
 | 🏢 Fornecedores | scatter risco × recorrência por fornecedor |
 | 📈 Evolução | evolução temporal das predições de risco |
 | ⚖️ Comparativo | execução real vs. prevista (desvio) |
+| 🧊 IEOP 3D | dispersão 3D custo × atraso × IEOP |
 
-Páginas de demonstração herdadas do template (não relacionadas ao IEOP):
-**Métricas** e **Mapa de Usuários**.
+Todas as páginas (`pages/01..06`) são do conjunto IEOP/ML — as páginas-demo do
+template (Métricas, Mapa de Usuários) foram removidas.
 
 ---
 

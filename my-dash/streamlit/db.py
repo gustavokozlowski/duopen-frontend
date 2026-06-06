@@ -165,6 +165,77 @@ def sample_predicoes(n: int = 300, seed: int = 42) -> pd.DataFrame:
     )
 
 
+@st.cache_data(ttl=300)
+def load_predicoes() -> pd.DataFrame:
+    """Predições denormalizadas (predicoes ⨝ obras ⨝ fornecedores).
+
+    A tabela `predicoes` é normalizada (id_obra, prob_atraso, prob_estouro,
+    atualizado_em). As páginas esperam secretaria/status/valor/fornecedor/
+    data_predicao — então juntamos com `obras` e `fornecedores`. Sem Supabase
+    (ou tabelas vazias) cai para a amostra.
+    """
+    pred = fetch("predicoes")
+    obras = fetch("obras")
+    if pred.empty or obras.empty:
+        return sample_predicoes()
+
+    pred_slim = pred[["id_obra", "prob_atraso", "prob_estouro", "atualizado_em"]].rename(
+        columns={"id_obra": "obra_id", "atualizado_em": "_ts"}
+    )
+    obra_cols = [
+        c
+        for c in [
+            "id",
+            "nome",
+            "secretaria",
+            "bairro",
+            "situacao",
+            "valor_contrato",
+            "cnpj_executora",
+        ]
+        if c in obras.columns
+    ]
+    obras_slim = obras[obra_cols].rename(columns={"id": "obra_id"})
+    df = pred_slim.merge(obras_slim, on="obra_id", how="inner")
+    if df.empty:
+        return sample_predicoes()
+
+    # Nome do fornecedor via cnpj_executora → fornecedores.razao_social.
+    forn = fetch("fornecedores")
+    forn_nome = pd.Series("—", index=df.index)
+    if not forn.empty and {"cnpj", "razao_social"} <= set(forn.columns) and "cnpj_executora" in df:
+        mapa = dict(zip(forn["cnpj"], forn["razao_social"], strict=False))
+        forn_nome = df["cnpj_executora"].map(mapa).fillna(df["cnpj_executora"]).fillna("—")
+
+    secretaria = (
+        df["secretaria"].fillna("Não informado").astype(str).str.title()
+        if "secretaria" in df
+        else "Não informado"
+    )
+
+    return pd.DataFrame(
+        {
+            "obra_id": df["obra_id"],
+            "nome": df.get("nome", ""),
+            "secretaria": secretaria,
+            "bairro": df.get("bairro"),
+            "status": df["situacao"].fillna("Não informado")
+            if "situacao" in df
+            else "Não informado",
+            "prob_atraso": pd.to_numeric(df["prob_atraso"], errors="coerce").fillna(0.0),
+            "prob_estouro": pd.to_numeric(df["prob_estouro"], errors="coerce").fillna(0.0),
+            "valor_contratado": pd.to_numeric(df.get("valor_contrato"), errors="coerce").fillna(
+                0.0
+            ),
+            "data_predicao": pd.to_datetime(df["_ts"], errors="coerce", utc=True).dt.strftime(
+                "%Y-%m"
+            ),
+            "fornecedor_id": (df["cnpj_executora"].fillna("—") if "cnpj_executora" in df else "—"),
+            "fornecedor_nome": forn_nome,
+        }
+    )
+
+
 def sample_features(seed: int = 42) -> pd.DataFrame:
     features = [
         ("atraso_historico_fornecedor", "Histórico de atrasos do fornecedor"),

@@ -80,3 +80,12 @@ export function normalizeSecretaria(raw: string): string {
 export function truncate(s: string, max = 20): string {
   return s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
 }
+
+// Nome de obra/contrato: vem longo e muitas vezes em CAIXA ALTA. Só
+// re-capitaliza quando está todo em maiúsculas (preserva nomes já legíveis).
+export function normalizeNome(raw: string): string {
+  const cleaned = raw.trim().replace(/\s+/g, " ");
+  if (!cleaned) return cleaned;
+  const hasLower = /[a-záéíóúâêôãõàç]/.test(cleaned);
+  return hasLower ? cleaned : titleCase(cleaned);
+}

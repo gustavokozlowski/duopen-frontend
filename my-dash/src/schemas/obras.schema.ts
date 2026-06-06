@@ -122,13 +122,30 @@ export function pageSchema<T extends z.ZodTypeAny>(item: T) {
 
 export const obrasPageSchema = pageSchema(obraRawSchema);
 
+const BAIRRO_SMALL = new Set(["de", "do", "da", "dos", "das", "e", "y"]);
+
+// O campo `bairro` do backend vem sujo: null, CAIXA ALTA e, às vezes,
+// coordenadas vazando ("[-41.78,-22.36]" ou listas). Normaliza para Title
+// Case (dedup "AROEIRA"/"Aroeira") e descarta o lixo como "—".
+function cleanBairro(raw: string | null | undefined): string {
+  if (!raw) return "—";
+  const s = raw.trim().replace(/\s+/g, " ");
+  if (!s || s.includes("[") || s.includes("]") || /-?\d{1,3}\.\d{3,}/.test(s)) return "—";
+  const titled = s
+    .toLowerCase()
+    .split(" ")
+    .map((w, i) => (i > 0 && BAIRRO_SMALL.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(" ");
+  return titled.replace(/[.…\s]+$/, ""); // remove pontuação/espaço no fim ("Miramar." → "Miramar")
+}
+
 export function adaptObra(r: ObraRaw): ObraListItem {
   return {
     id: r.id,
     nome: r.nome,
     numero_contrato: r.num_contrato ?? "—",
     secretaria: r.secretaria ?? "Não informado",
-    bairro: r.bairro ?? "—",
+    bairro: cleanBairro(r.bairro),
     status: situacaoToStatus(r.situacao),
     execucao_percentual: r.percentual_executado ?? 0,
     valor_contratado: r.valor_contrato ?? 0,

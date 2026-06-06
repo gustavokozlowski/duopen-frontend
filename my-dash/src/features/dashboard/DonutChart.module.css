@@ -1,0 +1,97 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 0.82rem;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  flex: 1;
+}
+
+.donut {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.total {
+  font-family: var(--font-mono);
+  font-size: 1.85rem;
+  font-weight: var(--font-bold);
+  line-height: 1;
+  color: var(--color-text-primary);
+}
+
+.totalLbl {
+  font-size: 0.62rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  min-width: 0;
+}
+
+.legItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.name {
+  white-space: nowrap;
+}
+
+/* número colado ao rótulo (gap pequeno e uniforme) */
+.val {
+  margin-left: 6px;
+  font-family: var(--font-mono);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 460px) {
+  .wrap {
+    flex-direction: column;
+  }
+}
