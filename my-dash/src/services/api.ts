@@ -14,8 +14,16 @@ declare module "axios" {
   }
 }
 
+// Em produção (build estático, ex.: Vercel) usa a URL pública da API embutida
+// no build. Em dev usa o proxy do servidor Bun (/proxy) para evitar CORS.
+//
+// Bun inlina `process.env.*` como literais no bundle, então NÃO há referência a
+// `process` em runtime. O guard antigo `typeof process !== "undefined"` era
+// avaliado no navegador (onde `process` não existe) → virava `false` → forçava
+// "/proxy" mesmo com BUN_PUBLIC_API_URL setada, quebrando o deploy estático.
+const PROD_API_URL = process.env["BUN_PUBLIC_API_URL"];
 export const BASE_URL =
-  (typeof process !== "undefined" && process.env["BUN_PUBLIC_API_URL"]) || "/proxy";
+  process.env.NODE_ENV === "production" && PROD_API_URL ? PROD_API_URL : "/proxy";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
